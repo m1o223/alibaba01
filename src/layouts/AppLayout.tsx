@@ -148,7 +148,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             <span>الرئيسية</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
-          <a href="#menu" onClick={() => setIsMenuOpen(false)}>
+          <a href="/menu" onClick={() => setIsMenuOpen(false)}>
             <ClipboardList aria-hidden="true" size={22} strokeWidth={2.3} />
             <span>المنيو</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
@@ -211,7 +211,13 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             </div>
             <h2 id="cart-drawer-title">سلة المشتريات فارغة</h2>
             <p>ابدأ بإضافة منتجات من المنيو لتظهر هنا.</p>
-            <button type="button" onClick={() => setIsCartOpen(false)}>
+            <button
+              type="button"
+              onClick={() => {
+                setIsCartOpen(false);
+                window.location.href = "/menu";
+              }}
+            >
               الذهاب إلى المنيو
             </button>
           </section>
@@ -322,7 +328,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           <nav className="footer-links" aria-label="Quick links">
             <h2>روابط سريعة</h2>
             <a href="/">الصفحة الرئيسية</a>
-            <a href="#menu">المنيو</a>
+            <a href="/menu">المنيو</a>
             <a href="#about">من نحن</a>
             <a href="/contact">تواصل معنا</a>
           </nav>

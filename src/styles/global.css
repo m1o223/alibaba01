@@ -1267,6 +1267,93 @@ button {
   display: none;
 }
 
+.menu-page {
+  width: min(860px, 100%);
+  margin: 0 auto;
+  padding: clamp(28px, 7vw, 54px) clamp(18px, 5vw, 42px) clamp(46px, 9vw, 76px);
+  direction: rtl;
+}
+
+.menu-page-header {
+  margin-bottom: clamp(12px, 3vw, 20px);
+}
+
+.menu-page-header h1 {
+  margin: 0;
+  color: var(--color-black);
+  font-size: clamp(30px, 7vw, 42px);
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.menu-categories {
+  display: grid;
+  width: 100%;
+}
+
+.menu-category-row {
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 0;
+  color: var(--color-black);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform 180ms ease;
+}
+
+.menu-category-row:hover {
+  color: var(--color-red);
+  background: rgba(215, 25, 32, 0.035);
+}
+
+.menu-category-row:active {
+  transform: translateX(-2px);
+}
+
+.menu-category-thumb {
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 15px;
+  background: #fff7f7;
+}
+
+.menu-category-thumb img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.menu-category-name {
+  min-width: 0;
+  font-size: clamp(17px, 4.4vw, 20px);
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.menu-category-chevron {
+  justify-self: end;
+  color: rgba(17, 17, 17, 0.42);
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+.menu-category-row:hover .menu-category-chevron {
+  color: var(--color-red);
+  transform: translateX(-2px);
+}
+
 .order-type-button:focus-visible,
 .icon-button:focus-visible,
 .cart-button:focus-visible,
@@ -1285,6 +1372,7 @@ button {
 .contact-detail-row:focus-visible,
 .contact-form button:focus-visible,
 .contact-map-link:focus-visible,
+.menu-category-row:focus-visible,
 .cart-close-button:focus-visible,
 .cart-drawer-empty button:focus-visible,
 .cart-menu-link:focus-visible {
