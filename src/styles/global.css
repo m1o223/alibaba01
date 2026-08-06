@@ -338,6 +338,195 @@ button {
   line-height: 1.6;
 }
 
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  width: min(85vw, 430px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--color-black);
+  background: var(--color-white);
+  border-radius: 0 20px 20px 0;
+  box-shadow: 18px 0 38px rgba(17, 17, 17, 0.14);
+  transform: translateX(-104%);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  direction: rtl;
+}
+
+.cart-drawer.is-open {
+  transform: translateX(0);
+}
+
+.cart-drawer-hero {
+  position: relative;
+  min-height: 186px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  color: var(--color-white);
+  background: var(--color-red);
+}
+
+.cart-drawer-brand {
+  position: relative;
+  z-index: 1;
+  color: var(--color-white);
+  font-size: clamp(42px, 13vw, 58px);
+}
+
+.cart-drawer-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.16);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.cart-drawer-close:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: translateY(-1px);
+}
+
+.cart-drawer-wave {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 74px;
+  color: var(--color-white);
+  pointer-events: none;
+}
+
+.cart-drawer-wave path {
+  fill: currentColor;
+}
+
+.cart-drawer-body {
+  flex: 1 1 auto;
+  display: grid;
+  align-items: center;
+  overflow-y: auto;
+  padding: clamp(22px, 6vw, 34px) 22px;
+}
+
+.cart-drawer-empty {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.cart-drawer-empty-icon {
+  width: 92px;
+  height: 92px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 26px;
+  color: var(--color-red);
+  background: rgba(215, 25, 32, 0.08);
+}
+
+.cart-drawer-empty h2 {
+  margin: 4px 0 0;
+  color: var(--color-black);
+  font-size: clamp(24px, 6vw, 31px);
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.cart-drawer-empty p {
+  max-width: 20rem;
+  margin: 0;
+  color: rgba(17, 17, 17, 0.62);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.cart-drawer-empty button {
+  min-width: min(100%, 250px);
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 18px;
+  color: var(--color-white);
+  background: var(--color-red);
+  font-weight: 900;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.cart-drawer-empty button:hover {
+  transform: translateY(-1px);
+  background: #bd151b;
+}
+
+.cart-drawer-summary {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 14px;
+  padding: 16px 22px 20px;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  background: var(--color-white);
+}
+
+.cart-drawer-summary div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: rgba(17, 17, 17, 0.62);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.cart-drawer-summary strong {
+  color: var(--color-black);
+  font-size: 21px;
+  line-height: 1;
+}
+
+.cart-drawer-summary button {
+  min-height: 54px;
+  border: 0;
+  border-radius: 18px;
+  color: var(--color-white);
+  background: var(--color-red);
+  font-weight: 900;
+}
+
+.cart-drawer-summary-disabled {
+  opacity: 0.45;
+}
+
+.cart-drawer-summary-disabled button {
+  cursor: not-allowed;
+  background: rgba(17, 17, 17, 0.3);
+}
+
 .auth-overlay {
   position: fixed;
   inset: 0;
@@ -1078,6 +1267,7 @@ button {
 .cart-button:focus-visible,
 .brand-mark:focus-visible,
 .side-menu-close:focus-visible,
+.cart-drawer-close:focus-visible,
 .side-menu-nav a:focus-visible,
 .side-menu-nav button:focus-visible,
 .auth-sheet-close:focus-visible,
@@ -1091,6 +1281,7 @@ button {
 .contact-form button:focus-visible,
 .contact-map-link:focus-visible,
 .cart-close-button:focus-visible,
+.cart-drawer-empty button:focus-visible,
 .cart-menu-link:focus-visible {
   outline: 3px solid var(--color-black);
   outline-offset: 3px;
@@ -1395,7 +1586,16 @@ button {
     border-radius: 0 18px 18px 0;
   }
 
+  .cart-drawer {
+    width: 85vw;
+    border-radius: 0 18px 18px 0;
+  }
+
   .side-menu-hero {
+    min-height: 176px;
+  }
+
+  .cart-drawer-hero {
     min-height: 176px;
   }
 

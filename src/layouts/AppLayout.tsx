@@ -22,6 +22,7 @@ type AppLayoutProps = {
 
 export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const isContactPage = currentPath === "/contact";
@@ -42,11 +43,12 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   }, [currentPath]);
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen || isAuthOpen ? "hidden" : "";
+    document.body.style.overflow = isMenuOpen || isCartOpen || isAuthOpen ? "hidden" : "";
 
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setIsMenuOpen(false);
+        setIsCartOpen(false);
         setIsAuthOpen(false);
       }
     }
@@ -57,7 +59,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [isMenuOpen, isAuthOpen]);
+  }, [isMenuOpen, isCartOpen, isAuthOpen]);
 
   function openAuthSheet(mode: "login" | "signup" = "login") {
     setAuthMode(mode);
@@ -74,7 +76,10 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           aria-label="Open menu"
           aria-expanded={isMenuOpen}
           aria-controls="site-menu"
-          onClick={() => setIsMenuOpen(true)}
+          onClick={() => {
+            setIsCartOpen(false);
+            setIsMenuOpen(true);
+          }}
         >
           <Menu aria-hidden="true" size={30} strokeWidth={2.7} />
         </button>
@@ -83,18 +88,31 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           Alibaba
         </a>
 
-        <a className="cart-button" href="/cart" aria-label="Open cart">
+        <button
+          className="cart-button"
+          type="button"
+          aria-label="Open cart"
+          aria-expanded={isCartOpen}
+          aria-controls="cart-drawer"
+          onClick={() => {
+            setIsMenuOpen(false);
+            setIsCartOpen(true);
+          }}
+        >
           <ShoppingCart aria-hidden="true" size={26} strokeWidth={2.5} />
           <span className="cart-count" aria-label="Cart items">
             0
           </span>
-        </a>
+        </button>
       </header>
 
       <div
-        className={`menu-overlay ${isMenuOpen ? "is-open" : ""}`}
+        className={`menu-overlay ${isMenuOpen || isCartOpen ? "is-open" : ""}`}
         aria-hidden="true"
-        onClick={() => setIsMenuOpen(false)}
+        onClick={() => {
+          setIsMenuOpen(false);
+          setIsCartOpen(false);
+        }}
       />
 
       <aside
@@ -156,6 +174,58 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           <p>Alibaba Restaurant</p>
           <span>ألذ شاورما... بطعم لا ينسى.</span>
         </div>
+      </aside>
+
+      <aside
+        id="cart-drawer"
+        className={`cart-drawer ${isCartOpen ? "is-open" : ""}`}
+        aria-hidden={!isCartOpen}
+        aria-labelledby="cart-drawer-title"
+      >
+        <div className="cart-drawer-hero">
+          <button
+            className="cart-drawer-close"
+            type="button"
+            aria-label="Close cart"
+            onClick={() => setIsCartOpen(false)}
+          >
+            <X aria-hidden="true" size={24} strokeWidth={2.6} />
+          </button>
+
+          <span className="cart-drawer-brand alibaba-logo">Alibaba</span>
+
+          <svg
+            className="cart-drawer-wave"
+            viewBox="0 0 430 86"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path d="M0 38C40 58 74 70 122 50C172 30 203 18 252 38C302 59 346 68 430 42V86H0V38Z" />
+          </svg>
+        </div>
+
+        <div className="cart-drawer-body">
+          <section className="cart-drawer-empty" aria-labelledby="cart-drawer-title">
+            <div className="cart-drawer-empty-icon" aria-hidden="true">
+              <ShoppingCart size={52} strokeWidth={2.1} />
+            </div>
+            <h2 id="cart-drawer-title">سلة المشتريات فارغة</h2>
+            <p>ابدأ بإضافة منتجات من المنيو لتظهر هنا.</p>
+            <button type="button" onClick={() => setIsCartOpen(false)}>
+              الذهاب إلى المنيو
+            </button>
+          </section>
+        </div>
+
+        <section className="cart-drawer-summary cart-drawer-summary-disabled" aria-label="Order summary">
+          <div>
+            <span>إجمالي الطلب</span>
+            <strong>0 kr</strong>
+          </div>
+          <button type="button" disabled>
+            متابعة الطلب
+          </button>
+        </section>
       </aside>
 
       <div
