@@ -525,9 +525,17 @@ button {
 }
 
 .footer-links a {
+  width: min(100%, 180px);
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
   justify-self: start;
   font-size: 15px;
   line-height: 1.4;
+}
+
+.footer-links a:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
 .footer-links a:hover,
@@ -580,47 +588,7 @@ button {
   border: 1px solid rgba(17, 17, 17, 0.08);
   border-radius: 20px;
   background: var(--color-white);
-}
-
-.map-road {
-  position: absolute;
-  left: 50%;
-  width: 125%;
-  height: 2px;
-  border-radius: 999px;
-  background: rgba(17, 17, 17, 0.1);
-  transform-origin: center;
-}
-
-.map-road-one {
-  top: 30%;
-  transform: translateX(-50%) rotate(-13deg);
-}
-
-.map-road-two {
-  top: 58%;
-  transform: translateX(-50%) rotate(11deg);
-}
-
-.map-road-three {
-  top: 78%;
-  transform: translateX(-50%) rotate(-7deg);
-}
-
-.map-pin-dot {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 58px;
-  height: 58px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 8px solid var(--color-white);
-  border-radius: 999px;
-  color: var(--color-red);
-  background: #fafafa;
-  transform: translate(-50%, -50%);
+  display: block;
 }
 
 .map-meta {

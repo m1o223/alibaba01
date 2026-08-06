@@ -21,6 +21,8 @@ type AppLayoutProps = {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Stockholmsv%C3%A4gen%2018";
+  const googleMapsEmbedUrl = "https://www.google.com/maps?q=Stockholmsv%C3%A4gen%2018&output=embed";
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
@@ -149,7 +151,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           <nav className="footer-links" aria-label="Quick links">
             <h2>روابط سريعة</h2>
-            <a href="/">الرئيسية</a>
+            <a href="/">الصفحة الرئيسية</a>
             <a href="#menu">المنيو</a>
             <a href="#about">من نحن</a>
             <a href="#contact">تواصل معنا</a>
@@ -168,7 +170,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               <bdi dir="ltr">Blodan17@gmail.com</bdi>
             </a>
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Stockholmsv%C3%A4gen%2018"
+              href={googleMapsUrl}
               target="_blank"
               rel="noreferrer"
             >
@@ -179,21 +181,21 @@ export function AppLayout({ children }: AppLayoutProps) {
           </section>
 
           <section className="footer-map" aria-label="Alibaba location map">
-            <div className="footer-map-preview" aria-hidden="true">
-              <span className="map-road map-road-one" />
-              <span className="map-road map-road-two" />
-              <span className="map-road map-road-three" />
-              <span className="map-pin-dot">
-                <MapPin aria-hidden="true" size={30} strokeWidth={2.4} />
-              </span>
-            </div>
+            <iframe
+              className="footer-map-preview"
+              title="Alibaba Restaurant location on Google Maps"
+              src={googleMapsEmbedUrl}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
             <div className="map-meta">
               <span>
                 <MapPin aria-hidden="true" size={17} strokeWidth={2.3} />
                 <bdi dir="ltr">Stockholmsvägen 18</bdi>
               </span>
               <a
-                href="https://www.google.com/maps/search/?api=1&query=Stockholmsv%C3%A4gen%2018"
+                href={googleMapsUrl}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -208,7 +210,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         <div className="footer-bottom">
           <p dir="ltr">
-            © 2026 <span>Alibaba</span> Restaurant
+            © 2017 <span>Alibaba</span> Restaurant
           </p>
           <p>All Rights Reserved</p>
         </div>
