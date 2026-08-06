@@ -27,6 +27,10 @@ export function AppLayout({ children }: AppLayoutProps) {
       <main className="app-main">
         {children}
       </main>
+      <footer className="app-footer">
+        <p>© Alibaba Restaurant</p>
+        <p>All Rights Reserved</p>
+      </footer>
     </div>
   );
 }

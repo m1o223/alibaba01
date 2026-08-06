@@ -36,6 +36,8 @@ button {
 
 .app-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--color-white);
 }
 
@@ -55,6 +57,7 @@ button {
 
 .app-main {
   width: 100%;
+  flex: 1;
 }
 
 .icon-button,
@@ -94,7 +97,7 @@ button {
 .brand-mark {
   justify-self: center;
   color: var(--color-red);
-  font-size: 28px;
+  font-size: clamp(25px, 4.8vw, 30px);
   font-weight: 800;
   line-height: 1;
   text-decoration: none;
@@ -125,7 +128,7 @@ button {
 
 .hero-section {
   position: relative;
-  min-height: clamp(280px, 44vh, 460px);
+  min-height: clamp(300px, 45vh, 470px);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -137,7 +140,7 @@ button {
   position: relative;
   z-index: 1;
   width: min(92vw, 760px);
-  padding: 56px 16px 88px;
+  padding: clamp(58px, 9vw, 82px) 16px clamp(92px, 12vw, 126px);
   text-align: center;
 }
 
@@ -150,7 +153,7 @@ button {
 }
 
 .hero-content p {
-  margin: 22px 0 0;
+  margin: clamp(18px, 3vw, 24px) 0 0;
   color: var(--color-white);
   font-size: clamp(18px, 3vw, 28px);
   font-weight: 600;
@@ -163,7 +166,7 @@ button {
   bottom: -1px;
   left: 0;
   width: 100%;
-  height: clamp(82px, 8.5vw, 132px);
+  height: clamp(84px, 8.8vw, 136px);
   display: block;
   color: var(--color-white);
   pointer-events: none;
@@ -175,28 +178,27 @@ button {
 
 .order-type-section {
   width: min(92vw, 760px);
-  margin: 42px auto 0;
+  margin: clamp(30px, 5vw, 46px) auto 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-  padding-bottom: 48px;
   direction: rtl;
 }
 
 .order-type-button {
-  min-height: 76px;
+  min-height: clamp(68px, 7vw, 78px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   border: 2px solid var(--color-red);
-  border-radius: 22px;
+  border-radius: 20px;
   color: var(--color-white);
   background: var(--color-red);
   font-size: clamp(17px, 2.6vw, 22px);
   font-weight: 800;
   line-height: 1.2;
-  box-shadow: 0 18px 34px rgba(215, 25, 32, 0.16);
+  box-shadow: 0 14px 28px rgba(215, 25, 32, 0.14);
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
@@ -215,19 +217,131 @@ button {
 
 .order-type-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 22px 42px rgba(215, 25, 32, 0.22);
+  box-shadow: 0 18px 34px rgba(215, 25, 32, 0.18);
 }
 
 .order-type-button:active {
-  transform: translateY(-1px);
+  transform: translateY(0) scale(0.99);
 }
 
 .order-type-button:focus-visible,
 .icon-button:focus-visible,
 .cart-button:focus-visible,
-.brand-mark:focus-visible {
+.brand-mark:focus-visible,
+.contact-row:focus-visible,
+.maps-link:focus-visible {
   outline: 3px solid var(--color-black);
   outline-offset: 3px;
+}
+
+.contact-section {
+  width: min(92vw, 760px);
+  margin: clamp(28px, 5vw, 44px) auto clamp(34px, 6vw, 56px);
+  direction: rtl;
+}
+
+.contact-card {
+  padding: clamp(22px, 5vw, 32px);
+  border: 1px solid rgba(17, 17, 17, 0.07);
+  border-radius: 24px;
+  background: var(--color-white);
+  box-shadow: 0 16px 38px rgba(17, 17, 17, 0.07);
+}
+
+.contact-card h2 {
+  margin: 0 0 18px;
+  color: var(--color-black);
+  font-size: clamp(26px, 5vw, 34px);
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.contact-list {
+  display: grid;
+  gap: 12px;
+}
+
+.contact-row {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  color: var(--color-black);
+  background: var(--color-white);
+  text-decoration: none;
+  line-height: 1.45;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.contact-row svg {
+  flex: 0 0 auto;
+  color: var(--color-red);
+}
+
+.contact-text {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+a.contact-row:hover {
+  color: var(--color-red);
+  background: rgba(215, 25, 32, 0.06);
+  transform: translateY(-1px);
+}
+
+.maps-link {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px 16px;
+  border: 2px solid var(--color-red);
+  border-radius: 18px;
+  color: var(--color-white);
+  background: var(--color-red);
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.maps-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(215, 25, 32, 0.16);
+}
+
+.maps-link:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.app-footer {
+  padding: 24px 16px 28px;
+  color: var(--color-black);
+  background: var(--color-white);
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  text-align: center;
+}
+
+.app-footer p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.app-footer p:first-child {
+  color: var(--color-red);
+  font-weight: 800;
 }
 
 @media (max-width: 640px) {
@@ -248,11 +362,11 @@ button {
   }
 
   .hero-section {
-    min-height: 330px;
+    min-height: 328px;
   }
 
   .hero-content {
-    padding: 54px 12px 96px;
+    padding: 56px 12px 98px;
   }
 
   .hero-wave {
@@ -261,13 +375,21 @@ button {
 
   .order-type-section {
     grid-template-columns: 1fr;
-    margin-top: 34px;
+    margin-top: 32px;
     gap: 14px;
-    padding-bottom: 34px;
   }
 
   .order-type-button {
     min-height: 68px;
     border-radius: 18px;
+  }
+
+  .contact-card {
+    border-radius: 22px;
+  }
+
+  .contact-row {
+    align-items: flex-start;
+    font-size: 15px;
   }
 }
