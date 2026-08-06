@@ -234,18 +234,21 @@ button {
   direction: rtl;
 }
 
-.side-menu-nav a {
+.side-menu-nav a,
+.side-menu-nav button {
   min-height: 58px;
   display: grid;
   grid-template-columns: 28px 1fr 18px;
   align-items: center;
   gap: 13px;
   padding: 15px 4px;
+  border: 0;
   border-bottom: 1px solid rgba(17, 17, 17, 0.07);
   border-radius: 0;
   color: var(--color-black);
   background: var(--color-white);
   font-weight: 800;
+  text-align: inherit;
   text-decoration: none;
   transition:
     color 170ms ease,
@@ -254,18 +257,21 @@ button {
     transform 170ms ease;
 }
 
-.side-menu-nav a svg {
+.side-menu-nav a svg,
+.side-menu-nav button svg {
   color: var(--color-red);
 }
 
-.side-menu-nav a:hover {
+.side-menu-nav a:hover,
+.side-menu-nav button:hover {
   color: var(--color-red);
   background: rgba(215, 25, 32, 0.05);
   border-radius: 12px;
   transform: translateX(-2px);
 }
 
-.side-menu-nav a:active {
+.side-menu-nav a:active,
+.side-menu-nav button:active {
   background: rgba(215, 25, 32, 0.08);
   border-radius: 12px;
   transform: translateX(0) scale(0.99);
@@ -298,6 +304,201 @@ button {
   color: rgba(17, 17, 17, 0.58);
   font-size: 13px;
   line-height: 1.6;
+}
+
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(0);
+  transition:
+    opacity 280ms ease,
+    backdrop-filter 280ms ease;
+}
+
+.auth-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  backdrop-filter: blur(5px);
+}
+
+.auth-sheet {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 70;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overflow-y: auto;
+  color: var(--color-black);
+  background: var(--color-white);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -20px 42px rgba(17, 17, 17, 0.16);
+  transform: translateY(104%);
+  transition: transform 290ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  direction: rtl;
+}
+
+.auth-sheet.is-open {
+  transform: translateY(0);
+}
+
+.auth-sheet-hero {
+  position: relative;
+  min-height: clamp(170px, 33vh, 235px);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  color: var(--color-white);
+  background: var(--color-red);
+}
+
+.auth-sheet-brand {
+  position: relative;
+  z-index: 1;
+  color: var(--color-white);
+  font-size: clamp(48px, 14vw, 82px);
+}
+
+.auth-sheet-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.16);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.auth-sheet-close:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: translateY(-1px);
+}
+
+.auth-sheet-wave {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: clamp(72px, 14vw, 96px);
+  color: var(--color-white);
+  pointer-events: none;
+}
+
+.auth-sheet-wave path {
+  fill: currentColor;
+}
+
+.auth-sheet-body {
+  width: min(440px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+  padding: clamp(22px, 5vw, 34px) clamp(18px, 5vw, 30px) 34px;
+}
+
+.auth-sheet-body h2 {
+  margin: 0;
+  color: var(--color-black);
+  font-size: clamp(27px, 7vw, 36px);
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.auth-form {
+  display: grid;
+  gap: 15px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 7px;
+  color: rgba(17, 17, 17, 0.7);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.auth-form input {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 16px;
+  padding: 0 14px;
+  color: var(--color-black);
+  background: #fafafa;
+  font: inherit;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.auth-form input:focus {
+  border-color: var(--color-red);
+  background: var(--color-white);
+  box-shadow: 0 0 0 4px rgba(215, 25, 32, 0.1);
+}
+
+.auth-form > button {
+  min-height: 56px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 18px;
+  color: var(--color-white);
+  background: var(--color-red);
+  font-weight: 900;
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease;
+}
+
+.auth-form > button:hover {
+  transform: translateY(-1px);
+  background: #bd151b;
+}
+
+.auth-form > button:active {
+  transform: translateY(0);
+}
+
+.auth-mode-switch {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: rgba(17, 17, 17, 0.62);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.auth-mode-switch button {
+  border: 0;
+  padding: 0;
+  color: var(--color-red);
+  background: transparent;
+  font-weight: 900;
 }
 
 .home-page {
@@ -850,6 +1051,10 @@ button {
 .brand-mark:focus-visible,
 .side-menu-close:focus-visible,
 .side-menu-nav a:focus-visible,
+.side-menu-nav button:focus-visible,
+.auth-sheet-close:focus-visible,
+.auth-form > button:focus-visible,
+.auth-mode-switch button:focus-visible,
 .footer-logo:focus-visible,
 .footer-links a:focus-visible,
 .footer-contact a:focus-visible,

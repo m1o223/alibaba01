@@ -21,16 +21,19 @@ type AppLayoutProps = {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const facebookUrl = "https://www.facebook.com/share/1Bkx4G3fua/?mibextid=wwXIfr";
   const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
   const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    document.body.style.overflow = isMenuOpen || isAuthOpen ? "hidden" : "";
 
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
         setIsMenuOpen(false);
+        setIsAuthOpen(false);
       }
     }
 
@@ -40,7 +43,13 @@ export function AppLayout({ children }: AppLayoutProps) {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isAuthOpen]);
+
+  function openAuthSheet(mode: "login" | "signup" = "login") {
+    setAuthMode(mode);
+    setIsMenuOpen(false);
+    setIsAuthOpen(true);
+  }
 
   return (
     <div className="app-shell">
@@ -112,11 +121,11 @@ export function AppLayout({ children }: AppLayoutProps) {
             <span>المنيو</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
-          <a href="#login" onClick={() => setIsMenuOpen(false)}>
+          <button type="button" onClick={() => openAuthSheet("login")}>
             <LogIn aria-hidden="true" size={22} strokeWidth={2.3} />
             <span>تسجيل الدخول</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
-          </a>
+          </button>
           <a href="#about" onClick={() => setIsMenuOpen(false)}>
             <Info aria-hidden="true" size={22} strokeWidth={2.3} />
             <span>من نحن</span>
@@ -132,6 +141,82 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="side-menu-footer">
           <p>Alibaba Restaurant</p>
           <span>ألذ شاورما... بطعم لا ينسى.</span>
+        </div>
+      </aside>
+
+      <div
+        className={`auth-overlay ${isAuthOpen ? "is-open" : ""}`}
+        aria-hidden="true"
+        onClick={() => setIsAuthOpen(false)}
+      />
+
+      <aside
+        className={`auth-sheet ${isAuthOpen ? "is-open" : ""}`}
+        aria-hidden={!isAuthOpen}
+        aria-labelledby="auth-sheet-title"
+      >
+        <div className="auth-sheet-hero">
+          <button
+            className="auth-sheet-close"
+            type="button"
+            aria-label="Close login"
+            onClick={() => setIsAuthOpen(false)}
+          >
+            <X aria-hidden="true" size={23} strokeWidth={2.6} />
+          </button>
+
+          <span className="auth-sheet-brand alibaba-logo">Alibaba</span>
+
+          <svg
+            className="auth-sheet-wave"
+            viewBox="0 0 430 86"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path d="M0 38C40 58 74 70 122 50C172 30 203 18 252 38C302 59 346 68 430 42V86H0V38Z" />
+          </svg>
+        </div>
+
+        <div className="auth-sheet-body">
+          <h2 id="auth-sheet-title">
+            {authMode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+          </h2>
+
+          <form className="auth-form">
+            <label>
+              <span>البريد الإلكتروني</span>
+              <input type="email" autoComplete="email" />
+            </label>
+
+            <label>
+              <span>كلمة المرور</span>
+              <input
+                type="password"
+                autoComplete={authMode === "login" ? "current-password" : "new-password"}
+              />
+            </label>
+
+            {authMode === "signup" ? (
+              <label>
+                <span>تأكيد كلمة المرور</span>
+                <input type="password" autoComplete="new-password" />
+              </label>
+            ) : null}
+
+            <button type="button">
+              {authMode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+            </button>
+          </form>
+
+          <p className="auth-mode-switch">
+            {authMode === "login" ? "ليس لديك حساب؟" : "لديك حساب بالفعل؟"}
+            <button
+              type="button"
+              onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
+            >
+              {authMode === "login" ? "إنشاء حساب" : "تسجيل الدخول"}
+            </button>
+          </p>
         </div>
       </aside>
 
