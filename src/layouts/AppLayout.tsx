@@ -21,8 +21,9 @@ type AppLayoutProps = {
 
 export function AppLayout({ children }: AppLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Stockholmsv%C3%A4gen%2018";
-  const googleMapsEmbedUrl = "https://www.google.com/maps?q=Stockholmsv%C3%A4gen%2018&output=embed";
+  const facebookUrl = "https://www.facebook.com/share/1Bkx4G3fua/?mibextid=wwXIfr";
+  const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
+  const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
@@ -177,6 +178,20 @@ export function AppLayout({ children }: AppLayoutProps) {
               <MapPin aria-hidden="true" size={18} strokeWidth={2.3} />
               <span>العنوان</span>
               <bdi dir="ltr">Stockholmsvägen 18</bdi>
+            </a>
+            <a
+              className="footer-social-link"
+              href={facebookUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Open Alibaba Facebook page"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+                <path
+                  fill="currentColor"
+                  d="M22 12A10 10 0 1 0 10.4 21.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.7-1.6 1.5v2h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12Z"
+                />
+              </svg>
             </a>
           </section>
 
