@@ -35,6 +35,7 @@ button {
 }
 
 .app-shell {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -127,6 +128,37 @@ button {
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
+}
+
+.app-shell-home .app-header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  background: var(--color-red);
+  border-bottom: 0;
+}
+
+.app-shell-home .brand-mark,
+.app-shell-home .icon-button,
+.app-shell-home .cart-button {
+  color: var(--color-white);
+}
+
+.app-shell-home .icon-button,
+.app-shell-home .cart-button {
+  background: transparent;
+}
+
+.app-shell-home .icon-button:hover,
+.app-shell-home .cart-button:hover {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.app-shell-home .cart-count {
+  color: var(--color-red);
+  background: var(--color-white);
 }
 
 .menu-overlay {

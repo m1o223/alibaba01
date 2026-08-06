@@ -30,6 +30,18 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
 
   useEffect(() => {
+    let themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+
+    if (!themeColor) {
+      themeColor = document.createElement("meta");
+      themeColor.name = "theme-color";
+      document.head.appendChild(themeColor);
+    }
+
+    themeColor.content = currentPath === "/" ? "#d71920" : "#ffffff";
+  }, [currentPath]);
+
+  useEffect(() => {
     document.body.style.overflow = isMenuOpen || isAuthOpen ? "hidden" : "";
 
     function handleEscape(event: KeyboardEvent) {
@@ -54,7 +66,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${currentPath === "/" ? "app-shell-home" : ""}`}>
       <header className="app-header" aria-label="Site header">
         <button
           className="icon-button"
