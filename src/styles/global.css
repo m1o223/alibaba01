@@ -343,23 +343,23 @@ button {
 }
 
 .hero-food-shawarma {
-  width: clamp(210px, 27vw, 390px);
-  top: 48%;
-  right: clamp(-310px, -13vw, -170px);
+  width: clamp(230px, 29vw, 420px);
+  top: 56%;
+  right: clamp(-240px, -10vw, -116px);
   transform: translateY(-36%) rotate(14deg);
   opacity: 0.86;
 }
 
 .hero-food-coke {
   width: clamp(76px, 8.4vw, 130px);
-  top: clamp(-102px, -5.5vw, -60px);
+  top: clamp(-68px, -3.6vw, -36px);
   left: clamp(26px, 12vw, 178px);
   transform: rotate(-12deg);
 }
 
 .hero-food-pepsi {
   width: clamp(70px, 7.6vw, 116px);
-  top: clamp(-64px, -3.8vw, -34px);
+  top: clamp(-42px, -2.4vw, -18px);
   right: clamp(24px, 11vw, 164px);
   transform: rotate(16deg);
   opacity: 0.86;
@@ -694,16 +694,16 @@ button {
   }
 
   .hero-food-shawarma {
-    width: 192px;
+    width: 224px;
     top: 70%;
-    right: -132px;
+    right: -126px;
     transform: translateY(-36%) rotate(13deg);
     opacity: 0.82;
   }
 
   .hero-food-coke {
     width: 72px;
-    top: -106px;
+    top: -72px;
     left: -14px;
     transform: rotate(-13deg);
     opacity: 0.9;
@@ -711,7 +711,7 @@ button {
 
   .hero-food-pepsi {
     width: 64px;
-    top: -58px;
+    top: -34px;
     right: 8px;
     transform: rotate(16deg);
     opacity: 0.84;
