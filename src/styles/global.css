@@ -159,13 +159,18 @@ button {
 
 .hero-wave {
   position: absolute;
-  left: 50%;
-  bottom: -58px;
-  width: 140%;
-  height: 132px;
-  border-radius: 50% 50% 0 0;
-  background: var(--color-white);
-  transform: translateX(-50%);
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: clamp(82px, 8.5vw, 132px);
+  display: block;
+  color: var(--color-white);
+  pointer-events: none;
+}
+
+.hero-wave path {
+  fill: currentColor;
 }
 
 .order-type-section {
@@ -251,9 +256,7 @@ button {
   }
 
   .hero-wave {
-    bottom: -44px;
-    width: 170%;
-    height: 104px;
+    height: 86px;
   }
 
   .order-type-section {
