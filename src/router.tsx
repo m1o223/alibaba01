@@ -1,8 +1,10 @@
 import { AppLayout } from "./layouts/AppLayout";
+import { ContactPage } from "./pages/ContactPage";
 import { HomePage } from "./pages/HomePage";
 
 const routes = {
   "/": <HomePage />,
+  "/contact": <ContactPage />,
 } as const;
 
 export function AppRouter() {

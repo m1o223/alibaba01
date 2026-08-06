@@ -122,7 +122,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <span>من نحن</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
-          <a href="#contact" onClick={() => setIsMenuOpen(false)}>
+          <a href="/contact" onClick={() => setIsMenuOpen(false)}>
             <MessageCircle aria-hidden="true" size={22} strokeWidth={2.3} />
             <span>تواصل معنا</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
@@ -155,7 +155,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <a href="/">الصفحة الرئيسية</a>
             <a href="#menu">المنيو</a>
             <a href="#about">من نحن</a>
-            <a href="#contact">تواصل معنا</a>
+            <a href="/contact">تواصل معنا</a>
           </nav>
 
           <section className="footer-contact" aria-labelledby="footer-contact-title">
