@@ -531,7 +531,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.16);
   opacity: 0;
   pointer-events: none;
   backdrop-filter: blur(0);
@@ -543,7 +543,7 @@ button {
 .auth-overlay.is-open {
   opacity: 1;
   pointer-events: auto;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(4px);
 }
 
 .auth-sheet {
@@ -552,7 +552,10 @@ button {
   bottom: 0;
   left: 0;
   z-index: 70;
-  height: 95vh;
+  height: 92vh;
+  height: 92svh;
+  max-height: 95vh;
+  max-height: 95svh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
