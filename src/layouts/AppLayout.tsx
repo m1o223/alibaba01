@@ -60,12 +60,12 @@ export function AppLayout({ children }: AppLayoutProps) {
           Alibaba
         </a>
 
-        <button className="cart-button" type="button" aria-label="Open cart">
+        <a className="cart-button" href="/cart" aria-label="Open cart">
           <ShoppingCart aria-hidden="true" size={26} strokeWidth={2.5} />
           <span className="cart-count" aria-label="Cart items">
             0
           </span>
-        </button>
+        </a>
       </header>
 
       <div

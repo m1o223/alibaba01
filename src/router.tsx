@@ -1,9 +1,11 @@
 import { AppLayout } from "./layouts/AppLayout";
+import { CartPage } from "./pages/CartPage";
 import { ContactPage } from "./pages/ContactPage";
 import { HomePage } from "./pages/HomePage";
 
 const routes = {
   "/": <HomePage />,
+  "/cart": <CartPage />,
   "/contact": <ContactPage />,
 } as const;
 
