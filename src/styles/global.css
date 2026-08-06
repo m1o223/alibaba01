@@ -860,24 +860,23 @@ button {
 }
 
 .contact-page {
-  width: min(1120px, 100%);
+  width: min(860px, 100%);
   margin: 0 auto;
-  padding: clamp(34px, 7vw, 70px) clamp(16px, 4vw, 48px) clamp(44px, 8vw, 82px);
+  padding: clamp(34px, 7vw, 70px) clamp(18px, 5vw, 48px) clamp(48px, 8vw, 82px);
   background: var(--color-white);
   direction: rtl;
 }
 
 .contact-hero {
   display: grid;
-  gap: 12px;
-  margin-bottom: clamp(28px, 5vw, 44px);
-  text-align: center;
+  gap: 10px;
+  margin-bottom: clamp(30px, 6vw, 50px);
+  text-align: right;
 }
 
 .contact-hero h1,
 .contact-details h2,
-.contact-form h2,
-.contact-map-heading h2 {
+.contact-form h2 {
   margin: 0;
   color: var(--color-black);
   font-weight: 900;
@@ -885,46 +884,41 @@ button {
 }
 
 .contact-hero h1 {
-  font-size: clamp(36px, 9vw, 58px);
+  font-size: clamp(34px, 8vw, 54px);
 }
 
 .contact-hero p {
-  max-width: 34rem;
-  margin: 0 auto;
+  max-width: 36rem;
+  margin: 0;
   color: rgba(17, 17, 17, 0.68);
   font-size: clamp(16px, 3vw, 19px);
   line-height: 1.8;
 }
 
-.contact-content {
+.contact-details,
+.contact-form,
+.contact-map-section {
   display: grid;
-  gap: 22px;
+  gap: 16px;
 }
 
 .contact-details,
 .contact-form {
-  display: grid;
-  align-content: start;
-  gap: 15px;
-  padding: clamp(18px, 4vw, 26px);
-  border: 1px solid rgba(17, 17, 17, 0.08);
-  border-radius: 22px;
-  background: #fafafa;
+  margin-bottom: clamp(34px, 7vw, 54px);
 }
 
 .contact-details h2,
-.contact-form h2,
-.contact-map-heading h2 {
-  font-size: clamp(21px, 4vw, 28px);
+.contact-form h2 {
+  font-size: clamp(22px, 4vw, 28px);
 }
 
 .contact-detail-row {
   display: grid;
   grid-template-columns: 24px auto 1fr;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   min-width: 0;
-  padding: 12px 0;
+  padding: 14px 0;
   border-bottom: 1px solid rgba(17, 17, 17, 0.08);
   color: var(--color-black);
   text-decoration: none;
@@ -935,7 +929,7 @@ button {
 }
 
 .contact-detail-row svg,
-.contact-map-heading a svg {
+.contact-map-link svg {
   color: var(--color-red);
 }
 
@@ -954,7 +948,7 @@ button {
 
 .contact-form label {
   display: grid;
-  gap: 7px;
+  gap: 8px;
   color: rgba(17, 17, 17, 0.7);
   font-size: 14px;
   font-weight: 800;
@@ -964,10 +958,10 @@ button {
 .contact-form textarea {
   width: 100%;
   border: 1px solid rgba(17, 17, 17, 0.12);
-  border-radius: 16px;
-  padding: 13px 14px;
+  border-radius: 15px;
+  padding: 14px 15px;
   color: var(--color-black);
-  background: var(--color-white);
+  background: #fff;
   font: inherit;
   line-height: 1.4;
   outline: none;
@@ -987,11 +981,12 @@ button {
 }
 
 .contact-form button {
-  min-height: 52px;
+  min-height: 54px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
+  width: 100%;
   border: 0;
   border-radius: 16px;
   color: var(--color-white);
@@ -1012,23 +1007,15 @@ button {
 }
 
 .contact-map-section {
-  display: grid;
-  gap: 14px;
-  margin-top: clamp(28px, 5vw, 44px);
+  gap: 12px;
+  margin-top: 0;
 }
 
-.contact-map-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.contact-map-heading a {
+.contact-map-link {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  flex: 0 0 auto;
+  justify-self: start;
   color: var(--color-red);
   font-size: 14px;
   font-weight: 900;
@@ -1043,6 +1030,15 @@ button {
   border: 1px solid rgba(17, 17, 17, 0.08);
   border-radius: 22px;
   background: #fafafa;
+}
+
+.app-footer-contact-page .footer-content {
+  grid-template-columns: 1fr;
+}
+
+.app-footer-contact-page .footer-contact,
+.app-footer-contact-page .footer-map {
+  display: none;
 }
 
 .order-type-button:focus-visible,
@@ -1061,7 +1057,7 @@ button {
 .map-meta a:focus-visible,
 .contact-detail-row:focus-visible,
 .contact-form button:focus-visible,
-.contact-map-heading a:focus-visible,
+.contact-map-link:focus-visible,
 .cart-close-button:focus-visible,
 .cart-menu-link:focus-visible {
   outline: 3px solid var(--color-black);
@@ -1260,11 +1256,6 @@ button {
 }
 
 @media (min-width: 760px) {
-  .contact-content {
-    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
-    align-items: start;
-  }
-
   .footer-content {
     grid-template-columns: 1.2fr 0.7fr 1fr;
     align-items: start;
@@ -1365,11 +1356,6 @@ button {
   .order-type-button {
     min-height: 68px;
     border-radius: 18px;
-  }
-
-  .contact-map-heading {
-    align-items: start;
-    flex-direction: column;
   }
 
   .side-menu {

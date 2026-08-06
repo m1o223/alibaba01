@@ -17,12 +17,14 @@ import {
 
 type AppLayoutProps = {
   children: ReactNode;
+  currentPath?: string;
 };
 
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const isContactPage = currentPath === "/contact";
   const facebookUrl = "https://www.facebook.com/share/1Bkx4G3fua/?mibextid=wwXIfr";
   const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
   const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
@@ -223,7 +225,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <main className="app-main">
         {children}
       </main>
-      <footer id="contact" className="app-footer">
+      <footer id="contact" className={`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`}>
         <div className="footer-content">
           <section className="footer-brand" aria-label="About Alibaba">
             <a className="footer-logo alibaba-logo" href="/">
