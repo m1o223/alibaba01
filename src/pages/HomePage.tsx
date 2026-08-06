@@ -37,7 +37,7 @@ export function HomePage() {
         </button>
       </section>
 
-      <section className="contact-section" aria-labelledby="contact-title">
+      <section id="contact" className="contact-section" aria-labelledby="contact-title">
         <div className="contact-card">
           <h2 id="contact-title">تواصل معنا</h2>
 
