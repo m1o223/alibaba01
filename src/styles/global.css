@@ -135,6 +135,8 @@ button {
   top: 0;
   right: 0;
   left: 0;
+  height: calc(64px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
   background: var(--color-red);
   border-bottom: 0;
 }
@@ -777,7 +779,7 @@ button {
 
 .hero-food-coke {
   width: clamp(76px, 8.4vw, 130px);
-  top: clamp(-68px, -3.6vw, -36px);
+  top: calc(env(safe-area-inset-top) + clamp(30px, 4vw, 72px));
   left: clamp(26px, 12vw, 178px);
   transform: rotate(-12deg);
 }
@@ -1510,6 +1512,11 @@ button {
     padding: 0 14px;
   }
 
+  .app-shell-home .app-header {
+    height: calc(58px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 14px 0;
+  }
+
   .brand-mark {
     font-size: 25px;
   }
@@ -1551,7 +1558,7 @@ button {
 
   .hero-food-coke {
     width: 72px;
-    top: -72px;
+    top: calc(env(safe-area-inset-top) + 66px);
     left: -14px;
     transform: rotate(-13deg);
     opacity: 0.9;
@@ -1559,7 +1566,7 @@ button {
 
   .hero-food-pepsi {
     width: 64px;
-    top: -34px;
+    top: calc(env(safe-area-inset-top) + 56px);
     right: 8px;
     transform: rotate(16deg);
     opacity: 0.84;
