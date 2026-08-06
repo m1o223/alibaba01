@@ -7,6 +7,12 @@ export function HomePage() {
   return (
     <div className="home-page" aria-label="Alibaba restaurant home page">
       <section className="hero-section" aria-labelledby="home-title">
+        <div className="hero-food-layer" aria-hidden="true">
+          <img className="hero-food hero-food-pizza" src="/assets/hero-pizza.webp" alt="" />
+          <img className="hero-food hero-food-shawarma" src="/assets/hero-shawarma.webp" alt="" />
+          <img className="hero-food hero-food-coke" src="/assets/hero-coke.webp" alt="" />
+          <img className="hero-food hero-food-pepsi" src="/assets/hero-pepsi.webp" alt="" />
+        </div>
         <div className="hero-content">
           <h1 id="home-title">Alibaba</h1>
           <p>ألذ شاورما... بطعم لا ينسى.</p>

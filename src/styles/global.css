@@ -300,6 +300,7 @@ button {
 
 .hero-section {
   position: relative;
+  isolation: isolate;
   min-height: clamp(300px, 45vh, 470px);
   display: grid;
   place-items: center;
@@ -308,9 +309,58 @@ button {
   background: var(--color-red);
 }
 
+.hero-food-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-food {
+  position: absolute;
+  display: block;
+  max-width: none;
+  object-fit: contain;
+  opacity: 0.9;
+  filter: drop-shadow(0 14px 18px rgba(24, 18, 16, 0.13));
+  user-select: none;
+}
+
+.hero-food-pizza {
+  width: clamp(220px, 29vw, 430px);
+  bottom: clamp(-128px, -8vw, -68px);
+  left: clamp(-188px, -9vw, -90px);
+  transform: rotate(-14deg);
+  opacity: 0.88;
+}
+
+.hero-food-shawarma {
+  width: clamp(210px, 27vw, 390px);
+  top: 48%;
+  right: clamp(-310px, -13vw, -170px);
+  transform: translateY(-36%) rotate(14deg);
+  opacity: 0.86;
+}
+
+.hero-food-coke {
+  width: clamp(76px, 8.4vw, 130px);
+  top: clamp(-102px, -5.5vw, -60px);
+  left: clamp(26px, 12vw, 178px);
+  transform: rotate(-12deg);
+}
+
+.hero-food-pepsi {
+  width: clamp(70px, 7.6vw, 116px);
+  top: clamp(-64px, -3.8vw, -34px);
+  right: clamp(24px, 11vw, 164px);
+  transform: rotate(16deg);
+  opacity: 0.86;
+}
+
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(92vw, 760px);
   padding: clamp(58px, 9vw, 82px) 16px clamp(92px, 12vw, 126px);
   text-align: center;
@@ -334,6 +384,7 @@ button {
 
 .hero-wave {
   position: absolute;
+  z-index: 1;
   right: 0;
   bottom: -1px;
   left: 0;
@@ -658,6 +709,42 @@ button {
 
   .hero-section {
     min-height: 328px;
+  }
+
+  .hero-food {
+    filter: drop-shadow(0 10px 14px rgba(24, 18, 16, 0.11));
+  }
+
+  .hero-food-pizza {
+    width: 208px;
+    bottom: -52px;
+    left: -106px;
+    transform: rotate(-15deg);
+    opacity: 0.84;
+  }
+
+  .hero-food-shawarma {
+    width: 192px;
+    top: 70%;
+    right: -132px;
+    transform: translateY(-36%) rotate(13deg);
+    opacity: 0.82;
+  }
+
+  .hero-food-coke {
+    width: 72px;
+    top: -106px;
+    left: -14px;
+    transform: rotate(-13deg);
+    opacity: 0.9;
+  }
+
+  .hero-food-pepsi {
+    width: 64px;
+    top: -58px;
+    right: 8px;
+    transform: rotate(16deg);
+    opacity: 0.84;
   }
 
   .hero-content {
