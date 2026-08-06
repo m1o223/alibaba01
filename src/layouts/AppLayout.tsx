@@ -158,7 +158,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             <span>تسجيل الدخول</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </button>
-          <a href="#about" onClick={() => setIsMenuOpen(false)}>
+          <a href="/about" onClick={() => setIsMenuOpen(false)}>
             <Info aria-hidden="true" size={22} strokeWidth={2.3} />
             <span>من نحن</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
@@ -329,7 +329,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             <h2>روابط سريعة</h2>
             <a href="/">الصفحة الرئيسية</a>
             <a href="/menu">المنيو</a>
-            <a href="#about">من نحن</a>
+            <a href="/about">من نحن</a>
             <a href="/contact">تواصل معنا</a>
           </nav>
 
