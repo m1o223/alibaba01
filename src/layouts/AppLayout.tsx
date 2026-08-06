@@ -2,7 +2,10 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import {
   ExternalLink,
+  ClipboardList,
+  Info,
   Home,
+  LogIn,
   Mail,
   MapPin,
   Menu,
@@ -73,8 +76,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         className={`side-menu ${isMenuOpen ? "is-open" : ""}`}
         aria-hidden={!isMenuOpen}
       >
-        <div className="side-menu-header">
-          <span className="side-menu-brand">Alibaba</span>
+        <div className="side-menu-hero">
           <button
             className="side-menu-close"
             type="button"
@@ -83,18 +85,51 @@ export function AppLayout({ children }: AppLayoutProps) {
           >
             <X aria-hidden="true" size={24} strokeWidth={2.6} />
           </button>
+
+          <span className="side-menu-brand">Alibaba</span>
+
+          <svg
+            className="side-menu-wave"
+            viewBox="0 0 430 86"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path d="M0 38C40 58 74 70 122 50C172 30 203 18 252 38C302 59 346 68 430 42V86H0V38Z" />
+          </svg>
         </div>
 
         <nav className="side-menu-nav" aria-label="Main menu">
           <a href="/" onClick={() => setIsMenuOpen(false)}>
             <Home aria-hidden="true" size={22} strokeWidth={2.3} />
             <span>الرئيسية</span>
+            <span className="menu-item-arrow" aria-hidden="true">›</span>
+          </a>
+          <a href="#menu" onClick={() => setIsMenuOpen(false)}>
+            <ClipboardList aria-hidden="true" size={22} strokeWidth={2.3} />
+            <span>المنيو</span>
+            <span className="menu-item-arrow" aria-hidden="true">›</span>
+          </a>
+          <a href="#login" onClick={() => setIsMenuOpen(false)}>
+            <LogIn aria-hidden="true" size={22} strokeWidth={2.3} />
+            <span>تسجيل الدخول</span>
+            <span className="menu-item-arrow" aria-hidden="true">›</span>
+          </a>
+          <a href="#about" onClick={() => setIsMenuOpen(false)}>
+            <Info aria-hidden="true" size={22} strokeWidth={2.3} />
+            <span>من نحن</span>
+            <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
           <a href="#contact" onClick={() => setIsMenuOpen(false)}>
             <MessageCircle aria-hidden="true" size={22} strokeWidth={2.3} />
             <span>تواصل معنا</span>
+            <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
         </nav>
+
+        <div className="side-menu-footer">
+          <p>Alibaba Restaurant</p>
+          <span>ألذ شاورما... بطعم لا ينسى.</span>
+        </div>
       </aside>
 
       <main className="app-main">
