@@ -55,7 +55,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <Menu aria-hidden="true" size={30} strokeWidth={2.7} />
         </button>
 
-        <a className="brand-mark" href="/" aria-label="Alibaba home">
+        <a className="brand-mark alibaba-logo" href="/" aria-label="Alibaba home">
           Alibaba
         </a>
 
@@ -88,7 +88,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             <X aria-hidden="true" size={24} strokeWidth={2.6} />
           </button>
 
-          <span className="side-menu-brand">Alibaba</span>
+          <span className="side-menu-brand alibaba-logo">Alibaba</span>
 
           <svg
             className="side-menu-wave"
@@ -140,7 +140,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <footer id="contact" className="app-footer">
         <div className="footer-content">
           <section className="footer-brand" aria-label="About Alibaba">
-            <a className="footer-logo" href="/">
+            <a className="footer-logo alibaba-logo" href="/">
               Alibaba
             </a>
             <p>
@@ -210,7 +210,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         <div className="footer-bottom">
           <p dir="ltr">
-            © 2017 <span>Alibaba</span> Restaurant
+            © 2017 <span className="alibaba-logo">Alibaba</span> Restaurant
           </p>
           <p>All Rights Reserved</p>
         </div>

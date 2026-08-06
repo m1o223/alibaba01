@@ -93,13 +93,22 @@ button {
   transform: translateY(-1px);
 }
 
+.alibaba-logo {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: none;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
 .brand-mark {
   justify-self: center;
   color: var(--color-red);
   font-size: clamp(25px, 4.8vw, 30px);
-  font-weight: 800;
-  line-height: 1;
-  text-decoration: none;
 }
 
 .cart-count {
@@ -178,8 +187,6 @@ button {
   z-index: 1;
   color: var(--color-white);
   font-size: clamp(42px, 13vw, 58px);
-  font-weight: 900;
-  line-height: 1;
 }
 
 .side-menu-close {
@@ -370,7 +377,6 @@ button {
   margin: 0;
   color: var(--color-white);
   font-size: clamp(68px, 14vw, 156px);
-  font-weight: 900;
   line-height: 0.88;
 }
 
@@ -485,9 +491,6 @@ button {
   justify-self: start;
   color: var(--color-red);
   font-size: clamp(32px, 8vw, 42px);
-  font-weight: 900;
-  line-height: 1;
-  text-decoration: none;
 }
 
 .footer-brand p {
@@ -633,7 +636,6 @@ button {
 
 .footer-bottom span {
   color: var(--color-red);
-  font-weight: 800;
 }
 
 @media (min-width: 760px) {

@@ -14,7 +14,7 @@ export function HomePage() {
           <img className="hero-food hero-food-pepsi" src="/assets/hero-pepsi.webp" alt="" />
         </div>
         <div className="hero-content">
-          <h1 id="home-title">Alibaba</h1>
+          <h1 id="home-title" className="alibaba-logo">Alibaba</h1>
           <p>ألذ شاورما... بطعم لا ينسى.</p>
         </div>
         <svg
