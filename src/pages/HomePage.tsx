@@ -13,7 +13,8 @@ export function HomePage() {
       <section aria-labelledby="home-title">
         <div>
           <h1 id="home-title">
-            <img className="home-logo" src="/assets/alibaba-logo-transparent.png" alt="Alibaba" width="1280" height="1280" />
+            <img className="home-logo" src="/assets/alibaba-logo-transparent.png" alt="" width="1280" height="1280" />
+            <span className="home-restaurant-name">Alibaba</span>
           </h1>
           <p className="home-description">Utsökt shawarma med en smak du aldrig glömmer.</p>
         </div>

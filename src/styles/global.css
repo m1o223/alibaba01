@@ -86,6 +86,26 @@ button {
   margin: 0;
 }
 
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/assets/cormorant-garamond-semibold.ttf") format("truetype");
+}
+
+.home-restaurant-name {
+  display: block;
+  /* Account for the transparent padding inside the unchanged logo image. */
+  margin-top: -28px;
+  color: #4a2818;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
 .home-logo {
   display: block;
   width: min(240px, 72%);
@@ -218,6 +238,11 @@ button {
 }
 
 @media (min-width: 700px) {
+  .home-restaurant-name {
+    margin-top: -36px;
+    font-size: 44px;
+  }
+
   .home-logo {
     width: 280px;
   }
