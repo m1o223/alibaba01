@@ -9,38 +9,38 @@ import {
 const highlights = [
   {
     icon: Zap,
-    title: "سريع",
-    text: "طلباتك جاهزة بسرعة.",
+    title: "Snabb service",
+    text: "Din mat blir snabbt klar.",
   },
   {
     icon: Utensils,
-    title: "طعم مميز",
-    text: "وصفاتنا الخاصة.",
+    title: "Unik smak",
+    text: "Våra egna recept.",
   },
   {
     icon: BadgeDollarSign,
-    title: "سعر مناسب",
-    text: "جودة بسعر جيد.",
+    title: "Prisvärt",
+    text: "Kvalitet till ett bra pris.",
   },
   {
     icon: Heart,
-    title: "نصنعها بحب",
-    text: "نهتم بكل وجبة.",
+    title: "Lagat med kärlek",
+    text: "Vi bryr oss om varje måltid.",
   },
 ];
 
 const timeline = [
   {
     title: "2017",
-    text: "البداية بمطعم صغير.",
+    text: "Starten i en liten restaurang.",
   },
   {
-    title: "كبرنا",
-    text: "كبرت ثقة زبائننا.",
+    title: "Vi växte",
+    text: "Våra gästers förtroende växte.",
   },
   {
-    title: "Alibaba اليوم",
-    text: "مكان أكبر وتطور مستمر.",
+    title: "Alibaba idag",
+    text: "Större lokaler och fortsatt utveckling.",
   },
 ];
 
@@ -48,23 +48,22 @@ export function AboutPage() {
   return (
     <div className="about-page" aria-labelledby="about-title">
       <section className="about-hero">
-        <img src="/assets/hero-pizza.webp" alt="" />
         <div className="about-hero-copy">
-          <p>قصتنا</p>
-          <h1 id="about-title">من بداية صغيرة في 2017… إلى Alibaba اليوم.</h1>
+          <p>Vår historia</p>
+          <h1 id="about-title">Från en liten början 2017… till Alibaba idag.</h1>
         </div>
       </section>
 
       <section className="about-story" aria-labelledby="about-story-title">
-        <span className="about-kicker">قصتنا</span>
-        <h2 id="about-story-title">منذ 2017</h2>
+        <span className="about-kicker">Vår historia</span>
+        <h2 id="about-story-title">Sedan 2017</h2>
         <p>
-          بدأنا بمطعم صغير عام 2017. ومع ثقة زبائننا ونجاح Alibaba، انتقلنا إلى مكان أكبر، وما زلنا نتطور كل يوم.
+          Vi började med en liten restaurang 2017. Tack vare våra gästers förtroende och Alibabas framgång flyttade vi till större lokaler, och vi fortsätter att utvecklas varje dag.
         </p>
       </section>
 
       <section className="about-highlights" aria-labelledby="about-highlights-title">
-        <h2 id="about-highlights-title">لماذا تختار Alibaba؟</h2>
+        <h2 id="about-highlights-title">Varför välja Alibaba?</h2>
         <div className="about-highlight-grid">
           {highlights.map((highlight) => {
             const Icon = highlight.icon;
@@ -83,7 +82,7 @@ export function AboutPage() {
       </section>
 
       <section className="about-timeline" aria-labelledby="about-timeline-title">
-        <h2 id="about-timeline-title">رحلة Alibaba</h2>
+        <h2 id="about-timeline-title">Alibabas resa</h2>
         <ol>
           {timeline.map((item, index) => (
             <li key={item.title}>
@@ -102,9 +101,9 @@ export function AboutPage() {
         </ol>
       </section>
 
-      <section className="about-closing" aria-label="About closing">
-        <p>من 2017… وقصتنا مستمرة. ❤️</p>
-        <a href="/menu">اكتشف المنيو</a>
+      <section className="about-closing" aria-label="Vår fortsatta resa">
+        <p>Sedan 2017… och vår historia fortsätter.</p>
+        <a href="/menu">Upptäck menyn</a>
       </section>
     </div>
   );

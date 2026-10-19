@@ -7,28 +7,28 @@ export function ContactPage() {
   return (
     <div className="contact-page" aria-labelledby="contact-page-title">
       <section className="contact-hero">
-        <h1 id="contact-page-title">تواصل معنا</h1>
-        <p>يسعدنا التواصل معكم والإجابة عن جميع استفساراتكم.</p>
+        <h1 id="contact-page-title">Kontakta oss</h1>
+        <p>Vi hjälper dig gärna och svarar på dina frågor.</p>
       </section>
 
       <section className="contact-details" aria-labelledby="contact-details-title">
-        <h2 id="contact-details-title">معلومات التواصل</h2>
+        <h2 id="contact-details-title">Kontaktuppgifter</h2>
 
         <a href="tel:011103358" className="contact-detail-row">
           <Phone aria-hidden="true" size={20} strokeWidth={2.3} />
-          <span>رقم الهاتف</span>
+          <span>Telefon</span>
           <bdi dir="ltr">011103358</bdi>
         </a>
 
         <a href="mailto:Blodan17@gmail.com" className="contact-detail-row">
           <Mail aria-hidden="true" size={20} strokeWidth={2.3} />
-          <span>البريد الإلكتروني</span>
+          <span>E-post</span>
           <bdi dir="ltr">Blodan17@gmail.com</bdi>
         </a>
 
-        <div className="contact-detail-row" aria-label="Restaurant address">
+        <div className="contact-detail-row" aria-label="Restaurangens adress">
           <MapPin aria-hidden="true" size={20} strokeWidth={2.3} />
-          <span>العنوان</span>
+          <span>Adress</span>
           <bdi dir="ltr">Stockholmsvägen 18</bdi>
         </div>
       </section>
@@ -39,33 +39,33 @@ export function ContactPage() {
         method="post"
         encType="text/plain"
       >
-        <h2>أرسل رسالة</h2>
+        <h2>Skicka ett meddelande</h2>
 
         <label>
-          <span>الاسم</span>
+          <span>Namn</span>
           <input name="name" type="text" autoComplete="name" required />
         </label>
 
         <label>
-          <span>البريد الإلكتروني</span>
+          <span>E-post</span>
           <input name="email" type="email" autoComplete="email" required />
         </label>
 
         <label>
-          <span>الرسالة</span>
+          <span>Meddelande</span>
           <textarea name="message" rows={5} required />
         </label>
 
         <button type="submit">
           <Send aria-hidden="true" size={19} strokeWidth={2.4} />
-          <span>إرسال الرسالة</span>
+          <span>Skicka meddelande</span>
         </button>
       </form>
 
-      <section className="contact-map-section" aria-label="موقع المطعم على Google Maps">
+      <section className="contact-map-section" aria-label="Restaurangens plats på Google Maps">
         <iframe
           className="contact-map-frame"
-          title="Alibaba Restaurant location on Google Maps"
+          title="Alibaba restaurang på Google Maps"
           src={googleMapsEmbedUrl}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
@@ -74,7 +74,7 @@ export function ContactPage() {
 
         <a className="contact-map-link" href={googleMapsUrl} target="_blank" rel="noreferrer">
           <span>
-            فتح في <bdi dir="ltr">Google Maps</bdi>
+            Öppna i <bdi dir="ltr">Google Maps</bdi>
           </span>
           <ExternalLink aria-hidden="true" size={16} strokeWidth={2.3} />
         </a>
