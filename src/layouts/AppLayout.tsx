@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
+import { CartDrawerContent } from "../components/CartDrawerContent";
+import { useDrawerFocus } from "../hooks/useDrawerFocus";
 import {
   ExternalLink,
   ChevronRight,
@@ -27,6 +29,9 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const menuRef = useRef<HTMLElement>(null);
+  const cartRef = useRef<HTMLElement>(null);
+  useDrawerFocus(menuRef, isMenuOpen);
+  useDrawerFocus(cartRef, isCartOpen);
   const menuPath = currentPath.replace(/\/+$/, "") || "/";
   const isHomePage = currentPath === "/";
   const isContactPage = currentPath === "/contact";
@@ -65,36 +70,6 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
       window.removeEventListener("keydown", handleEscape);
     };
   }, [isMenuOpen, isCartOpen, isAuthOpen]);
-
-  useEffect(() => {
-    if (!isMenuOpen) return;
-
-    const drawer = menuRef.current;
-    const opener = document.activeElement;
-    drawer?.querySelector<HTMLButtonElement>(".side-menu-close")?.focus();
-
-    function keepFocusInMenu(event: KeyboardEvent) {
-      if (event.key !== "Tab" || !drawer) return;
-      const controls = drawer.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)");
-      const first = controls[0];
-      const last = controls[controls.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last?.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first?.focus();
-      }
-    }
-
-    drawer?.addEventListener("keydown", keepFocusInMenu);
-    return () => {
-      drawer?.removeEventListener("keydown", keepFocusInMenu);
-      if (opener instanceof HTMLElement && drawer?.contains(document.activeElement)) {
-        opener.focus();
-      }
-    };
-  }, [isMenuOpen]);
 
   function openAuthSheet(mode: "login" | "signup" = "login") {
     setAuthMode(mode);
@@ -216,11 +191,16 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
 
       <aside
         id="cart-drawer"
+        ref={cartRef}
         className={`cart-drawer ${isCartOpen ? "is-open" : ""}`}
         aria-hidden={!isCartOpen}
+        inert={!isCartOpen}
+        role="dialog"
+        aria-modal={isCartOpen || undefined}
         aria-labelledby="cart-drawer-title"
       >
         <div className="cart-drawer-hero">
+          <h2 id="cart-drawer-title">Din varukorg</h2>
           <button
             className="cart-drawer-close"
             type="button"
@@ -229,38 +209,16 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           >
             <X aria-hidden="true" size={24} strokeWidth={2.6} />
           </button>
-
-          <span className="cart-drawer-brand alibaba-logo">Alibaba</span>
         </div>
 
-        <div className="cart-drawer-body">
-          <section className="cart-drawer-empty" aria-labelledby="cart-drawer-title">
-            <div className="cart-drawer-empty-icon" aria-hidden="true">
-              <ShoppingCart size={52} strokeWidth={2.1} />
-            </div>
-            <h2 id="cart-drawer-title">Din varukorg är tom</h2>
-            <p>Lägg till rätter från menyn så visas de här.</p>
-            <button
-              type="button"
-              onClick={() => {
-                setIsCartOpen(false);
-                window.location.href = "/menu";
-              }}
-            >
-              {"Gå till menyn"}
-            </button>
-          </section>
-        </div>
-
-        <section className="cart-drawer-summary cart-drawer-summary-disabled" aria-label="Beställningsöversikt">
-          <div>
-            <span>Totalt</span>
-            <strong>0 kr</strong>
-          </div>
-          <button type="button" disabled>
-            {"Fortsätt beställningen"}
-          </button>
-        </section>
+        <CartDrawerContent
+          items={[]}
+          totalLabel="0 kr"
+          onGoToMenu={() => {
+            setIsCartOpen(false);
+            window.location.href = "/menu";
+          }}
+        />
       </aside>
 
       <div
