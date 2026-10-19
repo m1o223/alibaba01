@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { CartDrawerContent } from "../components/CartDrawerContent";
 import { AuthBottomSheet } from "../components/AuthBottomSheet";
+import { useDemoCart } from "../demo/DemoCartContext";
 import { useDrawerFocus } from "../hooks/useDrawerFocus";
 import {
   ExternalLink,
@@ -25,6 +26,7 @@ type AppLayoutProps = {
 };
 
 export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
+  const demoCart = useDemoCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -133,7 +135,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
         >
           <ShoppingCart aria-hidden="true" size={26} strokeWidth={2.5} />
           <span className={pageClass("cart-count")} aria-label="Varor i varukorgen">
-            0
+            {demoCart?.count ?? 0}
           </span>
         </button>
       </header>
@@ -231,12 +233,15 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           </button>
         </div>
 
+        {demoCart && demoCart.count > 0 ? <p className="demo-cart-notice">Demovarukorg. Tillfälliga priser. Beställning och betalning är avstängda.</p> : null}
         <CartDrawerContent
-          items={[]}
-          totalLabel="0 kr"
+          items={demoCart?.items ?? []}
+          totalLabel={demoCart?.totalLabel ?? "0 kr"}
+          onQuantityChange={demoCart?.changeQuantity}
+          onRemove={demoCart?.remove}
           onGoToMenu={() => {
             setIsCartOpen(false);
-            window.location.href = "/menu";
+            window.location.href = __DEMO_MENU__ ? `/menu${window.location.search}` : "/menu";
           }}
         />
       </aside>

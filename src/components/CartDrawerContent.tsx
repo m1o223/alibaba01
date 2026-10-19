@@ -5,6 +5,7 @@ export type CartLineView = {
   id: string;
   name: string;
   imageUrl?: string;
+  emoji?: string;
   options: readonly string[];
   quantity: number;
   unitPriceLabel: string;
@@ -49,7 +50,7 @@ export function CartDrawerContent({
             {items.map((item) => (
               <li className="cart-drawer-item" key={item.id}>
                 <div className="cart-item-details">
-                  {item.imageUrl ? <img src={item.imageUrl} alt="" width="56" height="56" /> : null}
+                  {item.imageUrl ? <img src={item.imageUrl} alt="" width="56" height="56" /> : item.emoji ? <span className="cart-item-demo-emoji" aria-hidden="true">{item.emoji}</span> : null}
                   <div>
                     <h3>{item.name}</h3>
                     {item.options.length > 0 ? <p>{item.options.join(", ")}</p> : null}
