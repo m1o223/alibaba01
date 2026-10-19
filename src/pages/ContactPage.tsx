@@ -1,4 +1,5 @@
 import { ExternalLink, Mail, MapPin, Phone, Send } from "lucide-react";
+import "../styles/contact.css";
 
 const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
 const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
@@ -15,31 +16,38 @@ export function ContactPage() {
         <h2 id="contact-details-title">Kontaktuppgifter</h2>
 
         <a href="tel:011103358" className="contact-detail-row">
-          <Phone aria-hidden="true" size={20} strokeWidth={2.3} />
-          <span>Telefon</span>
-          <bdi dir="ltr">011103358</bdi>
+          <span className="contact-detail-icon"><Phone aria-hidden="true" size={20} strokeWidth={1.8} /></span>
+          <span className="contact-detail-text">
+            <span>Telefon</span>
+            <bdi dir="ltr">011103358</bdi>
+          </span>
         </a>
 
         <a href="mailto:Blodan17@gmail.com" className="contact-detail-row">
-          <Mail aria-hidden="true" size={20} strokeWidth={2.3} />
-          <span>E-post</span>
-          <bdi dir="ltr">Blodan17@gmail.com</bdi>
+          <span className="contact-detail-icon"><Mail aria-hidden="true" size={20} strokeWidth={1.8} /></span>
+          <span className="contact-detail-text">
+            <span>E-post</span>
+            <bdi dir="ltr">Blodan17@gmail.com</bdi>
+          </span>
         </a>
 
         <div className="contact-detail-row" aria-label="Restaurangens adress">
-          <MapPin aria-hidden="true" size={20} strokeWidth={2.3} />
-          <span>Adress</span>
-          <bdi dir="ltr">Stockholmsvägen 18</bdi>
+          <span className="contact-detail-icon"><MapPin aria-hidden="true" size={20} strokeWidth={1.8} /></span>
+          <span className="contact-detail-text">
+            <span>Adress</span>
+            <bdi dir="ltr">Stockholmsvägen 18</bdi>
+          </span>
         </div>
       </section>
 
       <form
         className="contact-form"
+        aria-labelledby="contact-form-title"
         action="mailto:Blodan17@gmail.com"
         method="post"
         encType="text/plain"
       >
-        <h2>Skicka ett meddelande</h2>
+        <h2 id="contact-form-title">Skicka ett meddelande</h2>
 
         <label>
           <span>Namn</span>
@@ -57,7 +65,7 @@ export function ContactPage() {
         </label>
 
         <button type="submit">
-          <Send aria-hidden="true" size={19} strokeWidth={2.4} />
+          <Send aria-hidden="true" size={18} strokeWidth={1.8} />
           <span>Skicka meddelande</span>
         </button>
       </form>
@@ -72,12 +80,15 @@ export function ContactPage() {
           allowFullScreen
         />
 
-        <a className="contact-map-link" href={googleMapsUrl} target="_blank" rel="noreferrer">
-          <span>
-            Öppna i <bdi dir="ltr">Google Maps</bdi>
-          </span>
-          <ExternalLink aria-hidden="true" size={16} strokeWidth={2.3} />
-        </a>
+        <div className="contact-map-meta">
+          <h2>Hitta till oss</h2>
+          <a className="contact-map-link" href={googleMapsUrl} target="_blank" rel="noreferrer">
+            <span>
+              Öppna i <bdi dir="ltr">Google Maps</bdi>
+            </span>
+            <ExternalLink aria-hidden="true" size={16} strokeWidth={1.8} />
+          </a>
+        </div>
       </section>
     </div>
   );

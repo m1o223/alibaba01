@@ -421,7 +421,8 @@ button:disabled {
 
 .side-menu,
 .cart-drawer,
-.auth-sheet {
+.auth-sheet,
+.contact-shell {
   --drawer-background: #f5efe6;
   --drawer-text: #241c18;
   --drawer-accent: #4a2818;

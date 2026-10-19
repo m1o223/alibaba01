@@ -41,6 +41,22 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const facebookUrl = "https://www.facebook.com/share/1Bkx4G3fua/?mibextid=wwXIfr";
   const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
   const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
+  const facebookLink = (
+    <a
+      className={pageClass("footer-social-link")}
+      href={facebookUrl}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Öppna Alibabas Facebook-sida"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+        <path
+          fill="currentColor"
+          d="M22 12A10 10 0 1 0 10.4 21.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.7-1.6 1.5v2h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12Z"
+        />
+      </svg>
+    </a>
+  );
 
   useEffect(() => {
     let themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
@@ -80,7 +96,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   }
 
   return (
-    <div className={isHomePage ? "home-foundation" : "app-shell"} lang="sv">
+    <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}`} lang="sv">
       <header className={pageClass("app-header")} aria-label="Sidhuvud" inert={isAuthOpen}>
         <button
           ref={menuTriggerRef}
@@ -237,7 +253,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
       </main>
       <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`, "home-info")} inert={isAuthOpen}>
         <div className={pageClass("footer-content", "home-info-grid")}>
-          <section className={pageClass("footer-brand", "home-info-about")} aria-label="Om Alibaba">
+          {!isContactPage ? <section className={pageClass("footer-brand", "home-info-about")} aria-label="Om Alibaba">
             {!isHomePage ? (
               <a className="footer-logo alibaba-logo" href="/">
                 Alibaba
@@ -246,7 +262,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             <p>
               {"Vi serverar utsökt shawarma och nylagade rätter med hög kvalitet och snabb service. Ät hos oss eller ta med maten."}
             </p>
-          </section>
+          </section> : null}
 
           <nav className={pageClass("footer-links", "home-links")} aria-label="Snabblänkar">
             <h2>Snabblänkar</h2>
@@ -256,7 +272,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             <a href="/contact">Kontakta oss</a>
           </nav>
 
-          <section className={pageClass("footer-contact", "home-contact")} aria-labelledby="footer-contact-title">
+          {isContactPage ? facebookLink : <section className={pageClass("footer-contact", "home-contact")} aria-labelledby="footer-contact-title">
             <h2 id="footer-contact-title">Kontakta oss</h2>
             <a href="tel:011103358">
               <Phone aria-hidden="true" size={18} strokeWidth={2.3} />
@@ -277,23 +293,10 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
               <span>{"Adress: "}</span>
               <bdi dir="ltr">Stockholmsvägen 18</bdi>
             </a>
-            <a
-              className={pageClass("footer-social-link")}
-              href={facebookUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Öppna Alibabas Facebook-sida"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
-                <path
-                  fill="currentColor"
-                  d="M22 12A10 10 0 1 0 10.4 21.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.7-1.6 1.5v2h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12Z"
-                />
-              </svg>
-            </a>
-          </section>
+            {facebookLink}
+          </section>}
 
-          <section className={pageClass("footer-map", "home-map")} aria-label="Karta till Alibaba">
+          {!isContactPage ? <section className={pageClass("footer-map", "home-map")} aria-label="Karta till Alibaba">
             <iframe
               className={pageClass("footer-map-preview")}
               title="Alibaba restaurang på Google Maps"
@@ -318,7 +321,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
                 <ExternalLink aria-hidden="true" size={15} strokeWidth={2.3} />
               </a>
             </div>
-          </section>
+          </section> : null}
         </div>
 
         <div className={pageClass("footer-bottom", "home-copyright")}>
