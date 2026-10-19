@@ -37,6 +37,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const menuPath = currentPath.replace(/\/+$/, "") || "/";
   const isHomePage = currentPath === "/";
   const isContactPage = currentPath === "/contact";
+  const isMenuPage = currentPath === "/menu";
   const pageClass = (className: string, homeClass?: string) => isHomePage ? homeClass : className;
   const facebookUrl = "https://www.facebook.com/share/1Bkx4G3fua/?mibextid=wwXIfr";
   const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
@@ -96,7 +97,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   }
 
   return (
-    <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}`} lang="sv">
+    <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}${isMenuPage ? " menu-shell" : ""}`} lang="sv">
       <header className={pageClass("app-header")} aria-label="Sidhuvud" inert={isAuthOpen}>
         <button
           ref={menuTriggerRef}

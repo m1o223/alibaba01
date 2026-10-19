@@ -354,26 +354,6 @@ button:disabled {
   display: none;
 }
 
-.menu-category-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-block: 8px;
-}
-
-.menu-category-thumb,
-.menu-category-thumb img {
-  display: block;
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
-  object-fit: contain;
-}
-
-.menu-category-name {
-  flex: 1;
-}
-
 .contact-form,
 .auth-form {
   display: grid;
@@ -422,7 +402,8 @@ button:disabled {
 .side-menu,
 .cart-drawer,
 .auth-sheet,
-.contact-shell {
+.contact-shell,
+.menu-shell {
   --drawer-background: #f5efe6;
   --drawer-text: #241c18;
   --drawer-accent: #4a2818;
