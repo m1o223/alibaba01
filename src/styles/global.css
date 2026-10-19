@@ -34,6 +34,39 @@ button {
   cursor: pointer;
 }
 
+/* Only spacing, overflow protection, and native typography for the bare homepage. */
+.home-foundation {
+  margin: 8px;
+  padding-top: env(safe-area-inset-top);
+  color: black;
+  font-family: initial;
+}
+
+.home-foundation > header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.home-foundation > header button,
+.home-foundation > main button {
+  font: revert;
+}
+
+.home-foundation > footer a {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.home-foundation > footer iframe {
+  max-width: 100%;
+}
+
+.home-foundation > aside[aria-hidden="true"] {
+  visibility: hidden;
+}
+
 .app-shell {
   position: relative;
   min-height: 100vh;
@@ -128,39 +161,6 @@ button {
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
-}
-
-.app-shell-home .app-header {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: calc(64px + env(safe-area-inset-top));
-  padding-top: env(safe-area-inset-top);
-  background: var(--color-red);
-  border-bottom: 0;
-}
-
-.app-shell-home .brand-mark,
-.app-shell-home .icon-button,
-.app-shell-home .cart-button {
-  color: var(--color-white);
-}
-
-.app-shell-home .icon-button,
-.app-shell-home .cart-button {
-  background: transparent;
-}
-
-.app-shell-home .icon-button:hover,
-.app-shell-home .cart-button:hover {
-  color: var(--color-white);
-  background: rgba(255, 255, 255, 0.13);
-}
-
-.app-shell-home .cart-count {
-  color: var(--color-red);
-  background: var(--color-white);
 }
 
 .menu-overlay {
@@ -725,159 +725,6 @@ button {
   color: var(--color-red);
   background: transparent;
   font-weight: 900;
-}
-
-.home-page {
-  padding-bottom: clamp(34px, 7vw, 64px);
-  background: var(--color-white);
-}
-
-.hero-section {
-  position: relative;
-  isolation: isolate;
-  min-height: clamp(300px, 45vh, 470px);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  color: var(--color-white);
-  background: var(--color-red);
-}
-
-.hero-food-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.hero-food {
-  position: absolute;
-  display: block;
-  max-width: none;
-  object-fit: contain;
-  opacity: 0.9;
-  filter: drop-shadow(0 14px 18px rgba(24, 18, 16, 0.13));
-  user-select: none;
-}
-
-.hero-food-pizza {
-  width: clamp(220px, 29vw, 430px);
-  bottom: clamp(-128px, -8vw, -68px);
-  left: clamp(-188px, -9vw, -90px);
-  transform: rotate(-14deg);
-  opacity: 0.88;
-}
-
-.hero-food-shawarma {
-  width: clamp(230px, 29vw, 420px);
-  top: 56%;
-  right: clamp(-240px, -10vw, -116px);
-  transform: translateY(-36%) rotate(14deg);
-  opacity: 0.86;
-}
-
-.hero-food-coke {
-  width: clamp(76px, 8.4vw, 130px);
-  top: calc(env(safe-area-inset-top) + clamp(30px, 4vw, 72px));
-  left: clamp(26px, 12vw, 178px);
-  transform: rotate(-12deg);
-}
-
-.hero-food-pepsi {
-  width: clamp(70px, 7.6vw, 116px);
-  top: clamp(-42px, -2.4vw, -18px);
-  right: clamp(24px, 11vw, 164px);
-  transform: rotate(16deg);
-  opacity: 0.86;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  width: min(92vw, 760px);
-  padding: clamp(58px, 9vw, 82px) 16px clamp(92px, 12vw, 126px);
-  text-align: center;
-}
-
-.hero-content h1 {
-  margin: 0;
-  color: var(--color-white);
-  font-size: clamp(68px, 14vw, 156px);
-  line-height: 0.88;
-}
-
-.hero-content p {
-  margin: clamp(18px, 3vw, 24px) 0 0;
-  color: var(--color-white);
-  font-size: clamp(18px, 3vw, 28px);
-  font-weight: 600;
-  line-height: 1.6;
-}
-
-.hero-wave {
-  position: absolute;
-  z-index: 1;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: clamp(84px, 8.8vw, 136px);
-  display: block;
-  color: var(--color-white);
-  pointer-events: none;
-}
-
-.hero-wave path {
-  fill: currentColor;
-}
-
-.order-type-section {
-  width: min(92vw, 760px);
-  margin: clamp(30px, 5vw, 46px) auto 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  direction: rtl;
-}
-
-.order-type-button {
-  min-height: clamp(68px, 7vw, 78px);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border: 2px solid var(--color-red);
-  border-radius: 20px;
-  color: var(--color-white);
-  background: var(--color-red);
-  font-size: clamp(17px, 2.6vw, 22px);
-  font-weight: 800;
-  line-height: 1.2;
-  box-shadow: 0 14px 28px rgba(215, 25, 32, 0.14);
-  transition:
-    transform 180ms ease,
-    box-shadow 180ms ease,
-    color 180ms ease,
-    background-color 180ms ease;
-}
-
-.order-type-button svg {
-  flex: 0 0 auto;
-}
-
-.order-type-button-outline {
-  color: var(--color-red);
-  background: var(--color-white);
-}
-
-.order-type-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 34px rgba(215, 25, 32, 0.18);
-}
-
-.order-type-button:active {
-  transform: translateY(0) scale(0.99);
 }
 
 .cart-page {
@@ -1606,7 +1453,6 @@ button {
   transform: translateX(-2px);
 }
 
-.order-type-button:focus-visible,
 .icon-button:focus-visible,
 .cart-button:focus-visible,
 .brand-mark:focus-visible,
@@ -1853,11 +1699,6 @@ button {
     padding: 0 14px;
   }
 
-  .app-shell-home .app-header {
-    height: calc(58px + env(safe-area-inset-top));
-    padding: env(safe-area-inset-top) 14px 0;
-  }
-
   .brand-mark {
     font-size: 25px;
   }
@@ -1871,65 +1712,6 @@ button {
   .cart-page {
     min-height: calc(100vh - 58px);
     padding-top: 14px;
-  }
-
-  .hero-section {
-    min-height: 328px;
-  }
-
-  .hero-food {
-    filter: drop-shadow(0 10px 14px rgba(24, 18, 16, 0.11));
-  }
-
-  .hero-food-pizza {
-    width: 208px;
-    bottom: -52px;
-    left: -106px;
-    transform: rotate(-15deg);
-    opacity: 0.84;
-  }
-
-  .hero-food-shawarma {
-    width: 224px;
-    top: 70%;
-    right: -126px;
-    transform: translateY(-36%) rotate(13deg);
-    opacity: 0.82;
-  }
-
-  .hero-food-coke {
-    width: 72px;
-    top: calc(env(safe-area-inset-top) + 66px);
-    left: -14px;
-    transform: rotate(-13deg);
-    opacity: 0.9;
-  }
-
-  .hero-food-pepsi {
-    width: 64px;
-    top: calc(env(safe-area-inset-top) + 56px);
-    right: 8px;
-    transform: rotate(16deg);
-    opacity: 0.84;
-  }
-
-  .hero-content {
-    padding: 56px 12px 98px;
-  }
-
-  .hero-wave {
-    height: 86px;
-  }
-
-  .order-type-section {
-    grid-template-columns: 1fr;
-    margin-top: 32px;
-    gap: 14px;
-  }
-
-  .order-type-button {
-    min-height: 68px;
-    border-radius: 18px;
   }
 
   .side-menu {

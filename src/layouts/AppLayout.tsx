@@ -25,7 +25,10 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const isHomePage = currentPath === "/";
   const isContactPage = currentPath === "/contact";
+  const pageClass = (className: string) => isHomePage ? undefined : className;
+  const text = (swedish: string, original: string) => isHomePage ? swedish : original;
   const facebookUrl = "https://www.facebook.com/share/1Bkx4G3fua/?mibextid=wwXIfr";
   const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
   const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
@@ -39,7 +42,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
       document.head.appendChild(themeColor);
     }
 
-    themeColor.content = currentPath === "/" ? "#d71920" : "#ffffff";
+    themeColor.content = "#ffffff";
   }, [currentPath]);
 
   useEffect(() => {
@@ -68,12 +71,12 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   }
 
   return (
-    <div className={`app-shell ${currentPath === "/" ? "app-shell-home" : ""}`}>
-      <header className="app-header" aria-label="Site header">
+    <div className={isHomePage ? "home-foundation" : "app-shell"} lang={isHomePage ? "sv" : undefined}>
+      <header className={pageClass("app-header")} aria-label={text("Sidhuvud", "Site header")}>
         <button
-          className="icon-button"
+          className={pageClass("icon-button")}
           type="button"
-          aria-label="Open menu"
+          aria-label={text("Öppna meny", "Open menu")}
           aria-expanded={isMenuOpen}
           aria-controls="site-menu"
           onClick={() => {
@@ -84,14 +87,14 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           <Menu aria-hidden="true" size={30} strokeWidth={2.7} />
         </button>
 
-        <a className="brand-mark alibaba-logo" href="/" aria-label="Alibaba home">
+        <a className={pageClass("brand-mark alibaba-logo")} href="/" aria-label={text("Alibaba startsida", "Alibaba home")}>
           Alibaba
         </a>
 
         <button
-          className="cart-button"
+          className={pageClass("cart-button")}
           type="button"
-          aria-label="Open cart"
+          aria-label={text("Öppna varukorg", "Open cart")}
           aria-expanded={isCartOpen}
           aria-controls="cart-drawer"
           onClick={() => {
@@ -100,7 +103,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           }}
         >
           <ShoppingCart aria-hidden="true" size={26} strokeWidth={2.5} />
-          <span className="cart-count" aria-label="Cart items">
+          <span className={pageClass("cart-count")} aria-label={text("Varor i varukorgen", "Cart items")}>
             0
           </span>
         </button>
@@ -124,7 +127,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           <button
             className="side-menu-close"
             type="button"
-            aria-label="Close menu"
+            aria-label={text("Stäng meny", "Close menu")}
             onClick={() => setIsMenuOpen(false)}
           >
             <X aria-hidden="true" size={24} strokeWidth={2.6} />
@@ -142,37 +145,37 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           </svg>
         </div>
 
-        <nav className="side-menu-nav" aria-label="Main menu">
+        <nav className="side-menu-nav" aria-label={text("Huvudmeny", "Main menu")}>
           <a href="/" onClick={() => setIsMenuOpen(false)}>
             <Home aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>الرئيسية</span>
+            <span>{text("Startsida", "الرئيسية")}</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
           <a href="/menu" onClick={() => setIsMenuOpen(false)}>
             <ClipboardList aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>المنيو</span>
+            <span>{text("Meny", "المنيو")}</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
           <button type="button" onClick={() => openAuthSheet("login")}>
             <LogIn aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>تسجيل الدخول</span>
+            <span>{text("Logga in", "تسجيل الدخول")}</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </button>
           <a href="/about" onClick={() => setIsMenuOpen(false)}>
             <Info aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>من نحن</span>
+            <span>{text("Om oss", "من نحن")}</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
           <a href="/contact" onClick={() => setIsMenuOpen(false)}>
             <MessageCircle aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>تواصل معنا</span>
+            <span>{text("Kontakta oss", "تواصل معنا")}</span>
             <span className="menu-item-arrow" aria-hidden="true">›</span>
           </a>
         </nav>
 
         <div className="side-menu-footer">
           <p>Alibaba Restaurant</p>
-          <span>ألذ شاورما... بطعم لا ينسى.</span>
+          <span>{text("Utsökt shawarma med en smak du aldrig glömmer.", "ألذ شاورما... بطعم لا ينسى.")}</span>
         </div>
       </aside>
 
@@ -186,7 +189,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           <button
             className="cart-drawer-close"
             type="button"
-            aria-label="Close cart"
+            aria-label={text("Stäng varukorg", "Close cart")}
             onClick={() => setIsCartOpen(false)}
           >
             <X aria-hidden="true" size={24} strokeWidth={2.6} />
@@ -209,8 +212,8 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             <div className="cart-drawer-empty-icon" aria-hidden="true">
               <ShoppingCart size={52} strokeWidth={2.1} />
             </div>
-            <h2 id="cart-drawer-title">سلة المشتريات فارغة</h2>
-            <p>ابدأ بإضافة منتجات من المنيو لتظهر هنا.</p>
+            <h2 id="cart-drawer-title">{text("Din varukorg är tom", "سلة المشتريات فارغة")}</h2>
+            <p>{text("Lägg till rätter från menyn så visas de här.", "ابدأ بإضافة منتجات من المنيو لتظهر هنا.")}</p>
             <button
               type="button"
               onClick={() => {
@@ -218,18 +221,18 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
                 window.location.href = "/menu";
               }}
             >
-              الذهاب إلى المنيو
+              {text("Gå till menyn", "الذهاب إلى المنيو")}
             </button>
           </section>
         </div>
 
-        <section className="cart-drawer-summary cart-drawer-summary-disabled" aria-label="Order summary">
+        <section className="cart-drawer-summary cart-drawer-summary-disabled" aria-label={text("Beställningsöversikt", "Order summary")}>
           <div>
-            <span>إجمالي الطلب</span>
+            <span>{text("Totalt", "إجمالي الطلب")}</span>
             <strong>0 kr</strong>
           </div>
           <button type="button" disabled>
-            متابعة الطلب
+            {text("Fortsätt beställningen", "متابعة الطلب")}
           </button>
         </section>
       </aside>
@@ -249,7 +252,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           <button
             className="auth-sheet-close"
             type="button"
-            aria-label="Close login"
+            aria-label={text("Stäng inloggning", "Close login")}
             onClick={() => setIsAuthOpen(false)}
           >
             <X aria-hidden="true" size={23} strokeWidth={2.6} />
@@ -269,17 +272,17 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
 
         <div className="auth-sheet-body">
           <h2 id="auth-sheet-title">
-            {authMode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+            {authMode === "login" ? text("Logga in", "تسجيل الدخول") : text("Skapa konto", "إنشاء حساب")}
           </h2>
 
           <form className="auth-form">
             <label>
-              <span>البريد الإلكتروني</span>
+              <span>{text("E-post", "البريد الإلكتروني")}</span>
               <input type="email" autoComplete="email" />
             </label>
 
             <label>
-              <span>كلمة المرور</span>
+              <span>{text("Lösenord", "كلمة المرور")}</span>
               <input
                 type="password"
                 autoComplete={authMode === "login" ? "current-password" : "new-password"}
@@ -288,61 +291,60 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
 
             {authMode === "signup" ? (
               <label>
-                <span>تأكيد كلمة المرور</span>
+                <span>{text("Bekräfta lösenord", "تأكيد كلمة المرور")}</span>
                 <input type="password" autoComplete="new-password" />
               </label>
             ) : null}
 
             <button type="button">
-              {authMode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+              {authMode === "login" ? text("Logga in", "تسجيل الدخول") : text("Skapa konto", "إنشاء حساب")}
             </button>
           </form>
 
           <p className="auth-mode-switch">
-            {authMode === "login" ? "ليس لديك حساب؟" : "لديك حساب بالفعل؟"}
+            {authMode === "login" ? text("Har du inget konto?", "ليس لديك حساب؟") : text("Har du redan ett konto?", "لديك حساب بالفعل؟")}
             <button
               type="button"
               onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
             >
-              {authMode === "login" ? "إنشاء حساب" : "تسجيل الدخول"}
+              {authMode === "login" ? text("Skapa konto", "إنشاء حساب") : text("Logga in", "تسجيل الدخول")}
             </button>
           </p>
         </div>
       </aside>
 
-      <main className="app-main">
+      <main className={pageClass("app-main")}>
         {children}
       </main>
-      <footer id="contact" className={`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`}>
-        <div className="footer-content">
-          <section className="footer-brand" aria-label="About Alibaba">
-            <a className="footer-logo alibaba-logo" href="/">
+      <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`)}>
+        <div className={pageClass("footer-content")}>
+          <section className={pageClass("footer-brand")} aria-label={text("Om Alibaba", "About Alibaba")}>
+            <a className={pageClass("footer-logo alibaba-logo")} href="/">
               Alibaba
             </a>
             <p>
-              نقدم أشهى الشاورما والوجبات الطازجة بجودة عالية وخدمة سريعة،
-              للاستمتاع بالوجبة داخل المطعم أو أخذها معك.
+              {text("Vi serverar utsökt shawarma och nylagade rätter med hög kvalitet och snabb service. Ät hos oss eller ta med maten.", "نقدم أشهى الشاورما والوجبات الطازجة بجودة عالية وخدمة سريعة، للاستمتاع بالوجبة داخل المطعم أو أخذها معك.")}
             </p>
           </section>
 
-          <nav className="footer-links" aria-label="Quick links">
-            <h2>روابط سريعة</h2>
-            <a href="/">الصفحة الرئيسية</a>
-            <a href="/menu">المنيو</a>
-            <a href="/about">من نحن</a>
-            <a href="/contact">تواصل معنا</a>
+          <nav className={pageClass("footer-links")} aria-label={text("Snabblänkar", "Quick links")}>
+            <h2>{text("Snabblänkar", "روابط سريعة")}</h2>
+            <a href="/">{text("Startsida", "الصفحة الرئيسية")}</a>
+            <a href="/menu">{text("Meny", "المنيو")}</a>
+            <a href="/about">{text("Om oss", "من نحن")}</a>
+            <a href="/contact">{text("Kontakta oss", "تواصل معنا")}</a>
           </nav>
 
-          <section className="footer-contact" aria-labelledby="footer-contact-title">
-            <h2 id="footer-contact-title">تواصل معنا</h2>
+          <section className={pageClass("footer-contact")} aria-labelledby="footer-contact-title">
+            <h2 id="footer-contact-title">{text("Kontakta oss", "تواصل معنا")}</h2>
             <a href="tel:011103358">
               <Phone aria-hidden="true" size={18} strokeWidth={2.3} />
-              <span>الهاتف</span>
+              <span>{text("Telefon: ", "الهاتف")}</span>
               <bdi dir="ltr">011103358</bdi>
             </a>
             <a href="mailto:Blodan17@gmail.com">
               <Mail aria-hidden="true" size={18} strokeWidth={2.3} />
-              <span>البريد</span>
+              <span>{text("E-post: ", "البريد")}</span>
               <bdi dir="ltr">Blodan17@gmail.com</bdi>
             </a>
             <a
@@ -351,15 +353,15 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
               rel="noreferrer"
             >
               <MapPin aria-hidden="true" size={18} strokeWidth={2.3} />
-              <span>العنوان</span>
+              <span>{text("Adress: ", "العنوان")}</span>
               <bdi dir="ltr">Stockholmsvägen 18</bdi>
             </a>
             <a
-              className="footer-social-link"
+              className={pageClass("footer-social-link")}
               href={facebookUrl}
               target="_blank"
               rel="noreferrer"
-              aria-label="Open Alibaba Facebook page"
+              aria-label={text("Öppna Alibabas Facebook-sida", "Open Alibaba Facebook page")}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
                 <path
@@ -370,16 +372,16 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             </a>
           </section>
 
-          <section className="footer-map" aria-label="Alibaba location map">
+          <section className={pageClass("footer-map")} aria-label={text("Karta till Alibaba", "Alibaba location map")}>
             <iframe
-              className="footer-map-preview"
-              title="Alibaba Restaurant location on Google Maps"
+              className={pageClass("footer-map-preview")}
+              title={text("Alibaba restaurang på Google Maps", "Alibaba Restaurant location on Google Maps")}
               src={googleMapsEmbedUrl}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
             />
-            <div className="map-meta">
+            <div className={pageClass("map-meta")}>
               <span>
                 <MapPin aria-hidden="true" size={17} strokeWidth={2.3} />
                 <bdi dir="ltr">Stockholmsvägen 18</bdi>
@@ -390,7 +392,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
                 rel="noreferrer"
               >
                 <span>
-                  فتح في <bdi dir="ltr">Google Maps</bdi>
+                  {text("Öppna i", "فتح في")} <bdi dir="ltr">Google Maps</bdi>
                 </span>
                 <ExternalLink aria-hidden="true" size={15} strokeWidth={2.3} />
               </a>
@@ -398,11 +400,11 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           </section>
         </div>
 
-        <div className="footer-bottom">
+        <div className={pageClass("footer-bottom")}>
           <p dir="ltr">
-            © 2017 <span className="alibaba-logo">Alibaba</span> Restaurant
+            © 2017 <span className={pageClass("alibaba-logo")}>Alibaba</span> Restaurant
           </p>
-          <p>All Rights Reserved</p>
+          <p>{text("Alla rättigheter förbehållna", "All Rights Reserved")}</p>
         </div>
       </footer>
     </div>

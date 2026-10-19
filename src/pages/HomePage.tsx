@@ -1,42 +1,33 @@
-import {
-  PackageCheck,
-  Utensils,
-} from "lucide-react";
-
 export function HomePage() {
+  function chooseOrderType(orderType: "dine-in" | "takeaway") {
+    try {
+      sessionStorage.setItem("alibaba.orderType", orderType);
+    } catch {
+      // The URL retains the choice when browser storage is unavailable.
+    }
+    window.location.href = `/menu?orderType=${orderType}`;
+  }
+
   return (
-    <div className="home-page" aria-label="Alibaba restaurant home page">
-      <section className="hero-section" aria-labelledby="home-title">
-        <div className="hero-food-layer" aria-hidden="true">
-          <img className="hero-food hero-food-pizza" src="/assets/hero-pizza.webp" alt="" />
-          <img className="hero-food hero-food-shawarma" src="/assets/hero-shawarma.webp" alt="" />
-          <img className="hero-food hero-food-coke" src="/assets/hero-coke.webp" alt="" />
-          <img className="hero-food hero-food-pepsi" src="/assets/hero-pepsi.webp" alt="" />
+    <div aria-label="Alibaba restaurang, startsida">
+      <section aria-labelledby="home-title">
+        <div>
+          <h1 id="home-title">Alibaba</h1>
+          <p>Utsökt shawarma med en smak du aldrig glömmer.</p>
         </div>
-        <div className="hero-content">
-          <h1 id="home-title" className="alibaba-logo">Alibaba</h1>
-          <p>ألذ شاورما... بطعم لا ينسى.</p>
-        </div>
-        <svg
-          className="hero-wave"
-          viewBox="0 0 1440 140"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path d="M0 90C72 116 148 123 220 88C298 51 374 50 452 76C536 104 604 122 692 98C786 72 846 42 934 62C1028 83 1090 122 1196 96C1300 70 1368 70 1440 94V140H0V90Z" />
-        </svg>
       </section>
 
-      <section className="order-type-section" aria-label="Choose order type">
-        <button className="order-type-button" type="button">
-          <Utensils aria-hidden="true" size={26} strokeWidth={2.4} />
-          <span>تناول داخل المطعم</span>
-        </button>
-
-        <button className="order-type-button order-type-button-outline" type="button">
-          <PackageCheck aria-hidden="true" size={26} strokeWidth={2.4} />
-          <span>طلب سفري</span>
-        </button>
+      <section aria-label="Välj beställningstyp">
+        <p>
+          <button type="button" onClick={() => chooseOrderType("dine-in")}>
+            <span>Äta här</span>
+          </button>
+        </p>
+        <p>
+          <button type="button" onClick={() => chooseOrderType("takeaway")}>
+            <span>Ta med</span>
+          </button>
+        </p>
       </section>
     </div>
   );
