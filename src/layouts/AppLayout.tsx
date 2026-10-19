@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ExternalLink,
+  ChevronRight,
   ClipboardList,
   Info,
   Home,
@@ -25,6 +26,8 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const menuRef = useRef<HTMLElement>(null);
+  const menuPath = currentPath.replace(/\/+$/, "") || "/";
   const isHomePage = currentPath === "/";
   const isContactPage = currentPath === "/contact";
   const pageClass = (className: string, homeClass?: string) => isHomePage ? homeClass : className;
@@ -62,6 +65,36 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
       window.removeEventListener("keydown", handleEscape);
     };
   }, [isMenuOpen, isCartOpen, isAuthOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const drawer = menuRef.current;
+    const opener = document.activeElement;
+    drawer?.querySelector<HTMLButtonElement>(".side-menu-close")?.focus();
+
+    function keepFocusInMenu(event: KeyboardEvent) {
+      if (event.key !== "Tab" || !drawer) return;
+      const controls = drawer.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)");
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    }
+
+    drawer?.addEventListener("keydown", keepFocusInMenu);
+    return () => {
+      drawer?.removeEventListener("keydown", keepFocusInMenu);
+      if (opener instanceof HTMLElement && drawer?.contains(document.activeElement)) {
+        opener.focus();
+      }
+    };
+  }, [isMenuOpen]);
 
   function openAuthSheet(mode: "login" | "signup" = "login") {
     setAuthMode(mode);
@@ -121,8 +154,13 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
 
       <aside
         id="site-menu"
+        ref={menuRef}
         className={`side-menu ${isMenuOpen ? "is-open" : ""}`}
         aria-hidden={!isMenuOpen}
+        inert={!isMenuOpen}
+        role="dialog"
+        aria-modal={isMenuOpen || undefined}
+        aria-label="Navigationsmeny"
       >
         <div className="side-menu-hero">
           <button
@@ -133,41 +171,46 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           >
             <X aria-hidden="true" size={24} strokeWidth={2.6} />
           </button>
-
-          <span className="side-menu-brand alibaba-logo">Alibaba</span>
         </div>
 
         <nav className="side-menu-nav" aria-label="Huvudmeny">
-          <a href="/" onClick={() => setIsMenuOpen(false)}>
-            <Home aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>Startsida</span>
-            <span className="menu-item-arrow" aria-hidden="true">›</span>
-          </a>
-          <a href="/menu" onClick={() => setIsMenuOpen(false)}>
-            <ClipboardList aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>Meny</span>
-            <span className="menu-item-arrow" aria-hidden="true">›</span>
-          </a>
+          {menuPath !== "/" ? (
+            <a href="/" onClick={() => setIsMenuOpen(false)}>
+              <span className="side-menu-icon"><Home aria-hidden="true" size={21} strokeWidth={1.8} /></span>
+              <span>Startsida</span>
+              <ChevronRight className="menu-item-arrow" aria-hidden="true" size={18} strokeWidth={1.8} />
+            </a>
+          ) : null}
+          {menuPath !== "/menu" ? (
+            <a href="/menu" onClick={() => setIsMenuOpen(false)}>
+              <span className="side-menu-icon"><ClipboardList aria-hidden="true" size={21} strokeWidth={1.8} /></span>
+              <span>Meny</span>
+              <ChevronRight className="menu-item-arrow" aria-hidden="true" size={18} strokeWidth={1.8} />
+            </a>
+          ) : null}
           <button type="button" onClick={() => openAuthSheet("login")}>
-            <LogIn aria-hidden="true" size={22} strokeWidth={2.3} />
+            <span className="side-menu-icon"><LogIn aria-hidden="true" size={21} strokeWidth={1.8} /></span>
             <span>Logga in</span>
-            <span className="menu-item-arrow" aria-hidden="true">›</span>
+            <ChevronRight className="menu-item-arrow" aria-hidden="true" size={18} strokeWidth={1.8} />
           </button>
-          <a href="/about" onClick={() => setIsMenuOpen(false)}>
-            <Info aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>Om oss</span>
-            <span className="menu-item-arrow" aria-hidden="true">›</span>
-          </a>
-          <a href="/contact" onClick={() => setIsMenuOpen(false)}>
-            <MessageCircle aria-hidden="true" size={22} strokeWidth={2.3} />
-            <span>Kontakta oss</span>
-            <span className="menu-item-arrow" aria-hidden="true">›</span>
-          </a>
+          {menuPath !== "/about" ? (
+            <a href="/about" onClick={() => setIsMenuOpen(false)}>
+              <span className="side-menu-icon"><Info aria-hidden="true" size={21} strokeWidth={1.8} /></span>
+              <span>Om oss</span>
+              <ChevronRight className="menu-item-arrow" aria-hidden="true" size={18} strokeWidth={1.8} />
+            </a>
+          ) : null}
+          {menuPath !== "/contact" ? (
+            <a href="/contact" onClick={() => setIsMenuOpen(false)}>
+              <span className="side-menu-icon"><MessageCircle aria-hidden="true" size={21} strokeWidth={1.8} /></span>
+              <span>Kontakta oss</span>
+              <ChevronRight className="menu-item-arrow" aria-hidden="true" size={18} strokeWidth={1.8} />
+            </a>
+          ) : null}
         </nav>
 
         <div className="side-menu-footer">
-          <p>Alibaba Restaurant</p>
-          <span>Utsökt shawarma med en smak du aldrig glömmer.</span>
+          <img src="/assets/alibaba-logo-transparent.png" alt="Alibaba" width="1280" height="1280" />
         </div>
       </aside>
 
