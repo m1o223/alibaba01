@@ -34,37 +34,200 @@ button {
   cursor: pointer;
 }
 
-/* Only spacing, overflow protection, and native typography for the bare homepage. */
 .home-foundation {
-  margin: 8px;
-  padding-top: env(safe-area-inset-top);
-  color: black;
-  font-family: initial;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #f5efe6;
+  color: #29180f;
 }
 
 .home-foundation > header {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  justify-content: space-between;
+  min-height: calc(56px + env(safe-area-inset-top));
+  padding: calc(6px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 6px max(16px, env(safe-area-inset-left));
+  background: #29180f;
+  color: #fff;
 }
 
-.home-foundation > header button,
-.home-foundation > main button {
-  font: revert;
+.home-foundation > header button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
 }
 
-.home-foundation > footer a {
-  display: block;
-  overflow-wrap: anywhere;
+.home-foundation > header button span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 11px;
 }
 
-.home-foundation > footer iframe {
-  max-width: 100%;
+.home-foundation > header button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 
 .home-foundation > aside[aria-hidden="true"] {
   visibility: hidden;
+}
+
+.home-intro {
+  padding: 24px 20px 0;
+  text-align: center;
+}
+
+.home-intro h1 {
+  margin: 0;
+}
+
+.home-logo {
+  display: block;
+  width: min(240px, 72%);
+  height: auto;
+  margin: 0 auto;
+}
+
+.home-description {
+  max-width: 36rem;
+  margin: 12px auto 0;
+  color: #29180f;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.home-order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.home-order-actions p {
+  margin: 0;
+}
+
+.home-order-actions button {
+  min-height: 38px;
+  padding: 8px 18px;
+  border: 1px solid #29180f;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.home-order-primary {
+  background: #29180f;
+  color: #fff;
+}
+
+.home-order-secondary {
+  background: #fff;
+  color: #29180f;
+}
+
+.home-info {
+  width: min(1040px, 100%);
+  margin: 44px auto 0;
+  padding: 0 20px 24px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.home-info-grid {
+  display: grid;
+  gap: 28px;
+}
+
+.home-info-grid > * {
+  min-width: 0;
+}
+
+.home-info h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.home-info p {
+  margin: 0;
+}
+
+.home-info a {
+  color: inherit;
+  overflow-wrap: anywhere;
+  text-underline-offset: 3px;
+}
+
+.home-links a {
+  display: block;
+  padding-block: 4px;
+}
+
+.home-contact a {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-block: 5px;
+}
+
+.home-contact svg,
+.home-map-meta svg {
+  flex-shrink: 0;
+}
+
+.home-contact bdi {
+  min-width: 0;
+}
+
+.home-map iframe {
+  display: block;
+  width: 100%;
+  height: 220px;
+  border: 0;
+  border-radius: 6px;
+}
+
+.home-map-meta {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.home-map-meta > span,
+.home-map-meta > a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.home-copyright {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  margin-top: 28px;
+  font-size: 12px;
+}
+
+@media (min-width: 700px) {
+  .home-logo {
+    width: 280px;
+  }
+
+  .home-info-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
 }
 
 .app-shell {

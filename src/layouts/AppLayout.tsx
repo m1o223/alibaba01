@@ -27,7 +27,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const isHomePage = currentPath === "/";
   const isContactPage = currentPath === "/contact";
-  const pageClass = (className: string) => isHomePage ? undefined : className;
+  const pageClass = (className: string, homeClass?: string) => isHomePage ? homeClass : className;
   const text = (swedish: string, original: string) => isHomePage ? swedish : original;
   const facebookUrl = "https://www.facebook.com/share/1Bkx4G3fua/?mibextid=wwXIfr";
   const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
@@ -42,7 +42,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
       document.head.appendChild(themeColor);
     }
 
-    themeColor.content = "#ffffff";
+    themeColor.content = currentPath === "/" ? "#29180F" : "#ffffff";
   }, [currentPath]);
 
   useEffect(() => {
@@ -87,9 +87,11 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           <Menu aria-hidden="true" size={30} strokeWidth={2.7} />
         </button>
 
-        <a className={pageClass("brand-mark alibaba-logo")} href="/" aria-label={text("Alibaba startsida", "Alibaba home")}>
-          Alibaba
-        </a>
+        {!isHomePage ? (
+          <a className="brand-mark alibaba-logo" href="/" aria-label="Alibaba home">
+            Alibaba
+          </a>
+        ) : null}
 
         <button
           className={pageClass("cart-button")}
@@ -316,18 +318,20 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
       <main className={pageClass("app-main")}>
         {children}
       </main>
-      <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`)}>
-        <div className={pageClass("footer-content")}>
-          <section className={pageClass("footer-brand")} aria-label={text("Om Alibaba", "About Alibaba")}>
-            <a className={pageClass("footer-logo alibaba-logo")} href="/">
-              Alibaba
-            </a>
+      <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`, "home-info")}>
+        <div className={pageClass("footer-content", "home-info-grid")}>
+          <section className={pageClass("footer-brand", "home-info-about")} aria-label={text("Om Alibaba", "About Alibaba")}>
+            {!isHomePage ? (
+              <a className="footer-logo alibaba-logo" href="/">
+                Alibaba
+              </a>
+            ) : null}
             <p>
               {text("Vi serverar utsökt shawarma och nylagade rätter med hög kvalitet och snabb service. Ät hos oss eller ta med maten.", "نقدم أشهى الشاورما والوجبات الطازجة بجودة عالية وخدمة سريعة، للاستمتاع بالوجبة داخل المطعم أو أخذها معك.")}
             </p>
           </section>
 
-          <nav className={pageClass("footer-links")} aria-label={text("Snabblänkar", "Quick links")}>
+          <nav className={pageClass("footer-links", "home-links")} aria-label={text("Snabblänkar", "Quick links")}>
             <h2>{text("Snabblänkar", "روابط سريعة")}</h2>
             <a href="/">{text("Startsida", "الصفحة الرئيسية")}</a>
             <a href="/menu">{text("Meny", "المنيو")}</a>
@@ -335,7 +339,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             <a href="/contact">{text("Kontakta oss", "تواصل معنا")}</a>
           </nav>
 
-          <section className={pageClass("footer-contact")} aria-labelledby="footer-contact-title">
+          <section className={pageClass("footer-contact", "home-contact")} aria-labelledby="footer-contact-title">
             <h2 id="footer-contact-title">{text("Kontakta oss", "تواصل معنا")}</h2>
             <a href="tel:011103358">
               <Phone aria-hidden="true" size={18} strokeWidth={2.3} />
@@ -372,7 +376,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
             </a>
           </section>
 
-          <section className={pageClass("footer-map")} aria-label={text("Karta till Alibaba", "Alibaba location map")}>
+          <section className={pageClass("footer-map", "home-map")} aria-label={text("Karta till Alibaba", "Alibaba location map")}>
             <iframe
               className={pageClass("footer-map-preview")}
               title={text("Alibaba restaurang på Google Maps", "Alibaba Restaurant location on Google Maps")}
@@ -381,7 +385,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
             />
-            <div className={pageClass("map-meta")}>
+            <div className={pageClass("map-meta", "home-map-meta")}>
               <span>
                 <MapPin aria-hidden="true" size={17} strokeWidth={2.3} />
                 <bdi dir="ltr">Stockholmsvägen 18</bdi>
@@ -400,7 +404,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           </section>
         </div>
 
-        <div className={pageClass("footer-bottom")}>
+        <div className={pageClass("footer-bottom", "home-copyright")}>
           <p dir="ltr">
             © 2017 <span className={pageClass("alibaba-logo")}>Alibaba</span> Restaurant
           </p>
