@@ -9,9 +9,10 @@ type AuthBottomSheetProps = {
   onModeChange: (mode: AuthMode) => void;
   onClose: () => void;
   returnFocusRef: RefObject<HTMLButtonElement | null>;
+  onDemoContinue?: () => void;
 };
 
-export function AuthBottomSheet({ isOpen, mode, onModeChange, onClose, returnFocusRef }: AuthBottomSheetProps) {
+export function AuthBottomSheet({ isOpen, mode, onModeChange, onClose, returnFocusRef, onDemoContinue }: AuthBottomSheetProps) {
   const sheetRef = useRef<HTMLElement>(null);
   const gesture = useRef<{ id: number; x: number; y: number } | null>(null);
   const [dragY, setDragY] = useState(0);
@@ -120,6 +121,7 @@ export function AuthBottomSheet({ isOpen, mode, onModeChange, onClose, returnFoc
           </button>
         </div>
         <div className="auth-sheet-body">
+          {onDemoContinue ? <div className="demo-auth-continuation"><p>Demoläge. Inget riktigt konto skapas. Ange inga lösenord eller personuppgifter.</p><button className="auth-primary" type="button" onClick={onDemoContinue}>Fortsätt i demoläge</button></div> : null}
           <div className="auth-tabs" role="tablist" aria-label="Inloggning och registrering">
             {(["login", "signup"] as const).map(tab => (
               <button
@@ -142,7 +144,7 @@ export function AuthBottomSheet({ isOpen, mode, onModeChange, onClose, returnFoc
             ))}
           </div>
           <div id="auth-panel" role="tabpanel" aria-labelledby={`auth-tab-${mode}`}>
-            <form className="auth-form">
+            <form className="auth-form" onSubmit={onDemoContinue ? event => event.preventDefault() : undefined}>
               <label>
                 <span>E-post</span>
                 <input type="email" autoComplete="email" />

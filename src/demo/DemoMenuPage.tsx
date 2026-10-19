@@ -5,6 +5,13 @@ import { DemoProductCard } from "./DemoProductCard";
 import "../styles/menu.css";
 import "./demoMenu.css";
 
+function readQuery(key: string) { return new URLSearchParams(window.location.search).get(key) ?? ""; }
+function saveQuery(key: string, value: string) {
+  const url = new URL(window.location.href);
+  if (value) url.searchParams.set(key, value); else url.searchParams.delete(key);
+  history.replaceState(history.state, "", url);
+}
+
 function subscribeToCategory(callback: () => void) {
   window.addEventListener("hashchange", callback);
   return () => window.removeEventListener("hashchange", callback);
@@ -39,22 +46,23 @@ function ProductResults({ products, global = false, onAdded }: { products: DemoP
 }
 
 function CategoryProducts({ category, onAdded }: { category: DemoCategory; onAdded: (name: string) => void }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => readQuery(`q-${category.slug}`));
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
+    if (typeof history.state?.scrollY === "number") return;
     titleRef.current?.focus({ preventScroll: true });
     titleRef.current?.scrollIntoView({ block: "start" });
   }, [category.slug]);
   return <div className="demo-category-view">
     <a className="demo-back-link" href="#menu-top"><ArrowLeft size={18} aria-hidden="true" />Alla kategorier</a>
     <h2 ref={titleRef} id={category.slug} tabIndex={-1}>{category.name}</h2>
-    <MenuSearch value={query} onChange={setQuery} categoryOnly />
+    <MenuSearch value={query} onChange={value => { setQuery(value); saveQuery(`q-${category.slug}`, value); }} categoryOnly />
     <ProductResults products={searchDemoProducts(query, category)} onAdded={onAdded} />
   </div>;
 }
 
 export function DemoMenuPage() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => readQuery("q"));
   const [addedMessage, setAddedMessage] = useState("");
   const slug = useSyncExternalStore(subscribeToCategory, currentCategory);
   const selected = demoCategories.find(category => category.slug === slug);
@@ -65,8 +73,8 @@ export function DemoMenuPage() {
       <h1 id="menu-page-title">Vår meny</h1>
       <p>Upptäck våra rätter, tillagade med omsorg.</p>
     </div>
-    <p className="demo-menu-notice"><Info size={18} aria-hidden="true" /><span>Demomeny. Produkter och priser är tillfälliga. Beställning och betalning är avstängda.</span></p>
-    <MenuSearch value={query} onChange={setQuery} />
+    <p className="demo-menu-notice"><Info size={18} aria-hidden="true" /><span>Demomeny. Produkter och priser är tillfälliga. Ingen riktig beställning eller betalning genomförs.</span></p>
+    <MenuSearch value={query} onChange={value => { setQuery(value); saveQuery("q", value); }} />
     <p className="demo-added-status" role="status" aria-live="polite" aria-atomic="true">{addedMessage}</p>
     {searching ? (
       <ProductResults products={searchDemoProducts(query)} global onAdded={name => setAddedMessage(`${name} har lagts till i demovarukorgen.`)} />

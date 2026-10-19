@@ -1,5 +1,13 @@
 // Preview-only content. These keys are local UI keys, never backend product IDs.
 export type DemoOption = { key: string; name: string };
+export type CustomizationOption = DemoOption & { priceOre: number };
+export type CustomizationGroup = {
+  key: string;
+  name: string;
+  type: "single" | "multiple";
+  required: boolean;
+  options: readonly CustomizationOption[];
+};
 export type DemoProduct = {
   key: string;
   categorySlug: string;
@@ -11,6 +19,13 @@ export type DemoProduct = {
   requiredOptions?: readonly DemoOption[];
   recipeNeedsReview: boolean;
   demo: true;
+  available: boolean;
+  images: readonly string[];
+  descriptionVerificationStatus: "unverified" | "verified";
+  ingredients: readonly string[];
+  allergens: readonly string[];
+  allergenVerificationStatus: "unverified" | "verified";
+  customizationGroups: readonly CustomizationGroup[];
 };
 export type DemoCategory = { slug: string; name: string; emoji: string; products: DemoProduct[] };
 
@@ -18,6 +33,29 @@ const plateSides: readonly DemoOption[] = [
   { key: "fries", name: "Pommes frites" },
   { key: "rice", name: "Ris" },
 ];
+
+const drinks: CustomizationGroup = {
+  key: "drink", name: "Välj dryck", type: "single", required: false,
+  options: ["Coca-Cola", "Coca-Cola Zero", "Pepsi", "Fanta Orange", "Fanta Exotic", "Sprite", "Vatten"].map((name, index) => ({ key: `drink-${index}`, name, priceOre: 1500 })),
+};
+const extraOptions = {
+  garlic: { key: "garlic", name: "Extra vitlökssås", priceOre: 1500 },
+  hot: { key: "hot", name: "Extra stark sås", priceOre: 1500 },
+  fries: { key: "fries", name: "Extra pommes", priceOre: 1500 },
+  cheese: { key: "cheese", name: "Extra ost", priceOre: 1500 },
+};
+
+function customization(slug: string, key: string, sides?: readonly DemoOption[]): CustomizationGroup[] {
+  const groups: CustomizationGroup[] = [];
+  if (sides) groups.push({ key: "side", name: "Välj tillbehör", type: "single", required: true, options: sides.map(option => ({ ...option, priceOre: 0 })) });
+  const meals = ["offers", "chicken-shawarma", "meat-shawarma", "falafel", "kebab", "grill", "grilled-chicken", "crispy-broasted"];
+  const extras = slug === "pizza" || slug === "manaqish" ? [extraOptions.cheese]
+    : meals.includes(slug) ? [extraOptions.garlic, extraOptions.hot, extraOptions.fries]
+    : slug === "salads" && key === "fries" ? [extraOptions.garlic, extraOptions.hot] : [];
+  if (extras.length) groups.push({ key: "extras", name: "Extra tillval", type: "multiple", required: false, options: extras });
+  if (meals.includes(slug) || ["pizza", "manaqish", "sfiha"].includes(slug)) groups.push(drinks);
+  return groups;
+}
 
 type DemoProductDetails = Pick<DemoProduct, "imageUrl" | "description" | "requiredOptions"> & { emoji?: string };
 type DemoProductRow = [key: string, name: string, priceSek: number, requiresSide?: boolean, details?: DemoProductDetails];
@@ -36,6 +74,13 @@ function category(slug: string, name: string, emoji: string, rows: DemoProductRo
       recipeNeedsReview: slug === "pizza",
       description: details?.description ?? (slug === "pizza" ? "Ingredienser och topping ska bekräftas." : undefined),
       demo: true,
+      available: true,
+      images: details?.imageUrl ? [details.imageUrl] : [],
+      descriptionVerificationStatus: "unverified",
+      ingredients: [],
+      allergens: [],
+      allergenVerificationStatus: "unverified",
+      customizationGroups: customization(slug, key, details?.requiredOptions ?? (requiresSide ? plateSides : undefined)),
     })),
   };
 }

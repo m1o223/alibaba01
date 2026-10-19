@@ -19,6 +19,8 @@ type CartDrawerContentProps = {
   onQuantityChange?: (id: string, quantity: number) => void;
   onRemove?: (id: string) => void;
   onCheckout?: () => void;
+  maxQuantity?: number;
+  subtotalLabel?: string;
 };
 
 export function CartDrawerContent({
@@ -28,6 +30,8 @@ export function CartDrawerContent({
   onQuantityChange,
   onRemove,
   onCheckout,
+  maxQuantity,
+  subtotalLabel,
 }: CartDrawerContentProps) {
   const isEmpty = items.length === 0;
 
@@ -74,7 +78,7 @@ export function CartDrawerContent({
                         type="button"
                         aria-label={`Öka antal ${item.name}`}
                         title="Öka antal"
-                        disabled={!onQuantityChange}
+                        disabled={!onQuantityChange || (maxQuantity !== undefined && item.quantity >= maxQuantity)}
                         onClick={() => onQuantityChange?.(item.id, item.quantity + 1)}
                       >
                         <Plus size={16} aria-hidden="true" />
@@ -100,6 +104,7 @@ export function CartDrawerContent({
       </div>
 
       <section className="cart-drawer-summary" aria-label="Beställningsöversikt">
+        {subtotalLabel ? <div><span>Delsumma</span><strong>{subtotalLabel}</strong></div> : null}
         <div>
           <span>Totalt:</span>
           <strong aria-live="polite">{totalLabel}</strong>

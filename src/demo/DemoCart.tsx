@@ -1,77 +1,48 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { DemoCartContext } from "./DemoCartContext";
-import { formatDemoPrice, getDemoProduct } from "./menuData";
+import { demoProducts, formatDemoPrice, getDemoProduct } from "./menuData";
+import { lineKey, normalizeLines, optionLabels, unitPrice, validateSelections, type DemoLine, type Selections } from "./orderModel";
+import { readStored, writeStored } from "./navigation";
 
-const storageKey = "alibaba.preview.demo-cart.v1";
-type DemoLine = { productKey: string; optionKey?: string; quantity: number };
-function lineKey(line: DemoLine) { return JSON.stringify([line.productKey, line.optionKey ?? null]); }
-
-function validLine(value: unknown): value is DemoLine {
-  if (!value || typeof value !== "object") return false;
-  const line = value as Partial<DemoLine>;
-  const product = typeof line.productKey === "string" ? getDemoProduct(line.productKey) : undefined;
-  if (!product || !Number.isInteger(line.quantity) || line.quantity! < 1 || line.quantity! > 99) return false;
-  return product.requiredOptions
-    ? product.requiredOptions.some(option => option.key === line.optionKey)
-    : line.optionKey === undefined;
-}
-
-function readDemoCart(): DemoLine[] {
-  try {
-    const stored: unknown = JSON.parse(sessionStorage.getItem(storageKey) ?? "[]");
-    if (!Array.isArray(stored)) return [];
-    const unique = new Map<string, DemoLine>();
-    for (const candidate of stored.slice(0, 100)) {
-      if (!validLine(candidate)) continue;
-      const { productKey, optionKey, quantity } = candidate;
-      const line = { productKey, optionKey, quantity };
-      unique.set(lineKey(line), line);
-    }
-    return [...unique.values()];
-  } catch { return []; }
-}
-
+const storageKey = "alibaba.preview.demo-cart.v2";
 export function DemoCartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<DemoLine[]>(readDemoCart);
-  useEffect(() => {
-    try { sessionStorage.setItem(storageKey, JSON.stringify(lines)); } catch { /* In-memory preview still works without storage. */ }
-  }, [lines]);
+  const [lines, setLines] = useState<DemoLine[]>(() => normalizeLines(readStored(storageKey, readStored("alibaba.preview.demo-cart.v1", [])), demoProducts));
+  useEffect(() => { writeStored(storageKey, lines); }, [lines]);
 
-  function add(productKey: string, optionKey?: string) {
-    const next = { productKey, optionKey, quantity: 1 };
-    if (!validLine(next)) return false;
+  function add(productKey: string, selections: Selections = {}, quantity = 1) {
+    const product = getDemoProduct(productKey);
+    if (!product || !validateSelections(product, selections) || !Number.isInteger(quantity) || quantity < 1 || quantity > 20) return false;
+    const next = { productKey, selections: structuredClone(selections), quantity };
+    const existing = lines.find(line => lineKey(line) === lineKey(next));
+    if (existing && existing.quantity + quantity > 20) return false;
     setLines(current => {
-      const existing = current.find(line => lineKey(line) === lineKey(next));
-      return existing
-        ? current.map(line => line === existing ? { ...line, quantity: Math.min(99, line.quantity + 1) } : line)
-        : [...current, next];
+      const match = current.find(line => lineKey(line) === lineKey(next));
+      return match ? current.map(line => line === match ? { ...line, quantity: Math.min(20, line.quantity + quantity) } : line) : [...current, next];
     });
     return true;
   }
-
+  const totalOre = lines.reduce((sum, line) => sum + unitPrice(getDemoProduct(line.productKey)!, line.selections) * line.quantity, 0);
   const items = lines.map(line => {
     const product = getDemoProduct(line.productKey)!;
+    const price = unitPrice(product, line.selections);
     return {
-      id: lineKey(line),
-      name: product.name,
-      imageUrl: product.imageUrl,
-      emoji: product.emoji,
-      options: product.requiredOptions?.filter(option => option.key === line.optionKey).map(option => option.name) ?? [],
-      quantity: line.quantity,
-      unitPriceLabel: formatDemoPrice(product.priceOre),
-      lineTotalLabel: formatDemoPrice(product.priceOre * line.quantity),
+      id: lineKey(line), name: product.name, imageUrl: product.imageUrl, emoji: product.emoji,
+      options: optionLabels(product, line.selections), quantity: line.quantity,
+      unitPriceLabel: formatDemoPrice(price), lineTotalLabel: formatDemoPrice(price * line.quantity),
     };
   });
-
   return <DemoCartContext.Provider value={{
-    items,
-    count: lines.reduce((sum, line) => sum + line.quantity, 0),
-    totalLabel: formatDemoPrice(lines.reduce((sum, line) => sum + getDemoProduct(line.productKey)!.priceOre * line.quantity, 0)),
-    add,
+    lines, items, totalOre, count: lines.reduce((sum, line) => sum + line.quantity, 0), totalLabel: formatDemoPrice(totalOre), add,
     changeQuantity: (key, quantity) => {
-      if (!Number.isInteger(quantity) || quantity < 1) return;
-      setLines(current => current.map(line => lineKey(line) === key ? { ...line, quantity: Math.min(quantity, 99) } : line));
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20) return;
+      setLines(current => current.map(line => lineKey(line) === key ? { ...line, quantity } : line));
     },
     remove: key => setLines(current => current.filter(line => lineKey(line) !== key)),
+    clear: () => setLines([]),
+    consume: consumed => setLines(current => current.flatMap(line => {
+      const match = consumed.find(item => lineKey(item) === lineKey(line));
+      const quantity = line.quantity - (match?.quantity ?? 0);
+      return quantity > 0 ? [{ ...line, quantity }] : [];
+    })),
   }}>{children}</DemoCartContext.Provider>;
 }

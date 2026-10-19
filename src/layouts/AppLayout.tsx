@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { CartDrawerContent } from "../components/CartDrawerContent";
 import { AuthBottomSheet } from "../components/AuthBottomSheet";
 import { useDemoCart } from "../demo/DemoCartContext";
+import { demoLoginEvent, useDemoFlow } from "../demo/DemoFlowContext";
 import { useDrawerFocus } from "../hooks/useDrawerFocus";
 import {
   ExternalLink,
+  ArrowLeft,
   ChevronRight,
   ClipboardList,
   Info,
@@ -23,10 +25,14 @@ import {
 type AppLayoutProps = {
   children: ReactNode;
   currentPath?: string;
+  orderingPage?: boolean;
+  onBack?: () => void;
 };
 
-export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
+export function AppLayout({ children, currentPath = "/", orderingPage = false, onBack }: AppLayoutProps) {
   const demoCart = useDemoCart();
+  const demoFlow = useDemoFlow();
+  const [checkoutAfterAuth, setCheckoutAfterAuth] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -81,6 +87,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
         setIsMenuOpen(false);
         setIsCartOpen(false);
         setIsAuthOpen(false);
+        setCheckoutAfterAuth(false);
       }
     }
 
@@ -98,22 +105,36 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
     setIsAuthOpen(true);
   }
 
+  useEffect(() => {
+    if (!demoFlow) return;
+    function requestDemoLogin() {
+      setCheckoutAfterAuth(true);
+      setIsCartOpen(false);
+      openAuthSheet();
+    }
+    window.addEventListener(demoLoginEvent, requestDemoLogin);
+    return () => window.removeEventListener(demoLoginEvent, requestDemoLogin);
+  }, [demoFlow]);
+
+  function closeAuth() { setIsAuthOpen(false); setCheckoutAfterAuth(false); }
+
   return (
-    <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}${isMenuPage ? " menu-shell" : ""}`} lang="sv">
+    <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}${isMenuPage ? " menu-shell" : ""}${orderingPage ? " demo-ordering-shell" : ""}`} lang="sv">
       <header className={pageClass("app-header")} aria-label="Sidhuvud" inert={isAuthOpen}>
         <button
           ref={menuTriggerRef}
           className={pageClass("icon-button")}
           type="button"
-          aria-label="Öppna meny"
+          aria-label={onBack ? "Tillbaka till menyn" : "Öppna meny"}
           aria-expanded={isMenuOpen}
           aria-controls="site-menu"
           onClick={() => {
+            if (onBack) { onBack(); return; }
             setIsCartOpen(false);
             setIsMenuOpen(true);
           }}
         >
-          <Menu aria-hidden="true" size={30} strokeWidth={2.7} />
+          {onBack ? <ArrowLeft aria-hidden="true" size={24} /> : <Menu aria-hidden="true" size={30} strokeWidth={2.7} />}
         </button>
 
         {!isHomePage ? (
@@ -185,7 +206,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
               <ChevronRight className="menu-item-arrow" aria-hidden="true" size={18} strokeWidth={1.8} />
             </a>
           ) : null}
-          <button type="button" onClick={() => openAuthSheet("login")}>
+          <button type="button" onClick={() => { setCheckoutAfterAuth(false); openAuthSheet("login"); }}>
             <span className="side-menu-icon"><LogIn aria-hidden="true" size={21} strokeWidth={1.8} /></span>
             <span>Logga in</span>
             <ChevronRight className="menu-item-arrow" aria-hidden="true" size={18} strokeWidth={1.8} />
@@ -233,12 +254,19 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           </button>
         </div>
 
-        {demoCart && demoCart.count > 0 ? <p className="demo-cart-notice">Demovarukorg. Tillfälliga priser. Beställning och betalning är avstängda.</p> : null}
+        {demoCart && demoCart.count > 0 ? <p className="demo-cart-notice">Demovarukorg. Tillfälliga priser. Ingen riktig beställning eller betalning genomförs.</p> : null}
         <CartDrawerContent
           items={demoCart?.items ?? []}
           totalLabel={demoCart?.totalLabel ?? "0 kr"}
           onQuantityChange={demoCart?.changeQuantity}
           onRemove={demoCart?.remove}
+          maxQuantity={demoCart ? 20 : undefined}
+          subtotalLabel={demoCart?.totalLabel}
+          onCheckout={demoFlow ? () => {
+            setIsCartOpen(false);
+            if (demoFlow.session) demoFlow.checkout();
+            else { setCheckoutAfterAuth(true); openAuthSheet(); }
+          } : undefined}
           onGoToMenu={() => {
             setIsCartOpen(false);
             window.location.href = __DEMO_MENU__ ? `/menu${window.location.search}` : "/menu";
@@ -250,14 +278,19 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
         isOpen={isAuthOpen}
         mode={authMode}
         onModeChange={setAuthMode}
-        onClose={() => setIsAuthOpen(false)}
+        onClose={closeAuth}
+        onDemoContinue={demoFlow ? () => {
+          demoFlow.continueDemo();
+          closeAuth();
+          if (checkoutAfterAuth) demoFlow.checkout();
+        } : undefined}
         returnFocusRef={menuTriggerRef}
       />
 
       <main className={pageClass("app-main")} inert={isAuthOpen}>
         {children}
       </main>
-      <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`, "home-info")} inert={isAuthOpen}>
+      {!orderingPage ? <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`, "home-info")} inert={isAuthOpen}>
         <div className={pageClass("footer-content", "home-info-grid")}>
           {!isContactPage ? <section className={pageClass("footer-brand", "home-info-about")} aria-label="Om Alibaba">
             {!isHomePage ? (
@@ -336,7 +369,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
           </p>
           <p>Alla rättigheter förbehållna</p>
         </div>
-      </footer>
+      </footer> : null}
     </div>
   );
 }
