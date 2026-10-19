@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { CartDrawerContent } from "../components/CartDrawerContent";
+import { AuthBottomSheet } from "../components/AuthBottomSheet";
 import { useDrawerFocus } from "../hooks/useDrawerFocus";
 import {
   ExternalLink,
@@ -30,6 +31,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const menuRef = useRef<HTMLElement>(null);
   const cartRef = useRef<HTMLElement>(null);
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
   useDrawerFocus(menuRef, isMenuOpen);
   useDrawerFocus(cartRef, isCartOpen);
   const menuPath = currentPath.replace(/\/+$/, "") || "/";
@@ -79,8 +81,9 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
 
   return (
     <div className={isHomePage ? "home-foundation" : "app-shell"} lang="sv">
-      <header className={pageClass("app-header")} aria-label="Sidhuvud">
+      <header className={pageClass("app-header")} aria-label="Sidhuvud" inert={isAuthOpen}>
         <button
+          ref={menuTriggerRef}
           className={pageClass("icon-button")}
           type="button"
           aria-label="Öppna meny"
@@ -132,7 +135,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
         ref={menuRef}
         className={`side-menu ${isMenuOpen ? "is-open" : ""}`}
         aria-hidden={!isMenuOpen}
-        inert={!isMenuOpen}
+        inert={!isMenuOpen || isAuthOpen}
         role="dialog"
         aria-modal={isMenuOpen || undefined}
         aria-label="Navigationsmeny"
@@ -194,7 +197,7 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
         ref={cartRef}
         className={`cart-drawer ${isCartOpen ? "is-open" : ""}`}
         aria-hidden={!isCartOpen}
-        inert={!isCartOpen}
+        inert={!isCartOpen || isAuthOpen}
         role="dialog"
         aria-modal={isCartOpen || undefined}
         aria-labelledby="cart-drawer-title"
@@ -221,77 +224,18 @@ export function AppLayout({ children, currentPath = "/" }: AppLayoutProps) {
         />
       </aside>
 
-      <div
-        className={`auth-overlay ${isAuthOpen ? "is-open" : ""}`}
-        aria-hidden="true"
-        onClick={() => setIsAuthOpen(false)}
+      <AuthBottomSheet
+        isOpen={isAuthOpen}
+        mode={authMode}
+        onModeChange={setAuthMode}
+        onClose={() => setIsAuthOpen(false)}
+        returnFocusRef={menuTriggerRef}
       />
 
-      <aside
-        className={`auth-sheet ${isAuthOpen ? "is-open" : ""}`}
-        aria-hidden={!isAuthOpen}
-        aria-labelledby="auth-sheet-title"
-      >
-        <div className="auth-sheet-hero">
-          <button
-            className="auth-sheet-close"
-            type="button"
-            aria-label="Stäng inloggning"
-            onClick={() => setIsAuthOpen(false)}
-          >
-            <X aria-hidden="true" size={23} strokeWidth={2.6} />
-          </button>
-
-          <span className="auth-sheet-brand alibaba-logo">Alibaba</span>
-        </div>
-
-        <div className="auth-sheet-body">
-          <h2 id="auth-sheet-title">
-            {authMode === "login" ? "Logga in" : "Skapa konto"}
-          </h2>
-
-          <form className="auth-form">
-            <label>
-              <span>E-post</span>
-              <input type="email" autoComplete="email" />
-            </label>
-
-            <label>
-              <span>Lösenord</span>
-              <input
-                type="password"
-                autoComplete={authMode === "login" ? "current-password" : "new-password"}
-              />
-            </label>
-
-            {authMode === "signup" ? (
-              <label>
-                <span>Bekräfta lösenord</span>
-                <input type="password" autoComplete="new-password" />
-              </label>
-            ) : null}
-
-            <button type="button">
-              {authMode === "login" ? "Logga in" : "Skapa konto"}
-            </button>
-          </form>
-
-          <p className="auth-mode-switch">
-            {authMode === "login" ? "Har du inget konto?" : "Har du redan ett konto?"}
-            <button
-              type="button"
-              onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
-            >
-              {authMode === "login" ? "Skapa konto" : "Logga in"}
-            </button>
-          </p>
-        </div>
-      </aside>
-
-      <main className={pageClass("app-main")}>
+      <main className={pageClass("app-main")} inert={isAuthOpen}>
         {children}
       </main>
-      <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`, "home-info")}>
+      <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`, "home-info")} inert={isAuthOpen}>
         <div className={pageClass("footer-content", "home-info-grid")}>
           <section className={pageClass("footer-brand", "home-info-about")} aria-label="Om Alibaba">
             {!isHomePage ? (
