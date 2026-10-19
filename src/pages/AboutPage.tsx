@@ -1,110 +1,104 @@
-import {
-  BadgeDollarSign,
-  Heart,
-  Sparkles,
-  Utensils,
-  Zap,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeDollarSign, Heart, History, Route, Utensils, Zap } from "lucide-react";
+import { useCircularCarousel } from "../hooks/useCircularCarousel";
+import "../styles/about.css";
 
 const highlights = [
-  {
-    icon: Zap,
-    title: "Snabb service",
-    text: "Din mat blir snabbt klar.",
-  },
-  {
-    icon: Utensils,
-    title: "Unik smak",
-    text: "Våra egna recept.",
-  },
-  {
-    icon: BadgeDollarSign,
-    title: "Prisvärt",
-    text: "Kvalitet till ett bra pris.",
-  },
-  {
-    icon: Heart,
-    title: "Lagat med kärlek",
-    text: "Vi bryr oss om varje måltid.",
-  },
+  { icon: Zap, title: "Snabb service", text: "Din mat blir snabbt klar." },
+  { icon: Utensils, title: "Unik smak", text: "Våra egna recept." },
+  { icon: BadgeDollarSign, title: "Prisvärt", text: "Kvalitet till ett bra pris." },
+  { icon: Heart, title: "Lagat med kärlek", text: "Vi bryr oss om varje måltid." },
 ];
 
 const timeline = [
+  { title: "2017", text: "Starten i en liten restaurang." },
+  { title: "Vi växte", text: "Våra gästers förtroende växte." },
+  { title: "Alibaba idag", text: "Större lokaler och fortsatt utveckling." },
+];
+
+const cards = [
   {
-    title: "2017",
-    text: "Starten i en liten restaurang.",
+    title: "Vår historia", icon: History,
+    content: <>
+      <img className="about-logo" src="/assets/alibaba-logo-transparent.png" alt="Alibaba" width="140" height="140" />
+      <h3>Sedan 2017</h3>
+      <p>Vi började med en liten restaurang 2017. Tack vare våra gästers förtroende och Alibabas framgång flyttade vi till större lokaler, och vi fortsätter att utvecklas varje dag.</p>
+    </>,
   },
   {
-    title: "Vi växte",
-    text: "Våra gästers förtroende växte.",
+    title: "Varför välja Alibaba?", icon: Heart,
+    content: <ul className="about-reasons">
+      {highlights.map(({ icon: Icon, title, text }) => <li key={title}>
+        <span className="about-icon" aria-hidden="true"><Icon size={20} /></span>
+        <div><h3>{title}</h3><p>{text}</p></div>
+      </li>)}
+    </ul>,
   },
   {
-    title: "Alibaba idag",
-    text: "Större lokaler och fortsatt utveckling.",
+    title: "Alibabas resa", icon: Route,
+    content: <ol className="about-journey">
+      {timeline.map(({ title, text }, index) => <li key={title}>
+        <span className="about-milestone" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+        <div><h3>{title}</h3><p>{text}</p></div>
+      </li>)}
+    </ol>,
+  },
+  {
+    title: "Vår mat", icon: Utensils,
+    content: <>
+      <img className="about-food" src="/assets/hero-shawarma.webp" alt="Shawarma" width="240" height="160" />
+      <p>Vi serverar utsökt shawarma och nylagade rätter med hög kvalitet och snabb service. Ät hos oss eller ta med maten.</p>
+    </>,
+  },
+  {
+    title: "Upptäck vår meny", icon: Utensils,
+    content: <div className="about-invitation">
+      <img className="about-logo" src="/assets/alibaba-logo-transparent.png" alt="Alibaba" width="140" height="140" />
+      <p>Sedan 2017… och vår historia fortsätter.</p>
+      <a className="about-menu-link" href="/menu">Upptäck menyn <ArrowRight size={18} aria-hidden="true" /></a>
+    </div>,
   },
 ];
 
 export function AboutPage() {
-  return (
-    <div className="about-page" aria-labelledby="about-title">
-      <section className="about-hero">
-        <div className="about-hero-copy">
-          <p>Vår historia</p>
-          <h1 id="about-title">Från en liten början 2017… till Alibaba idag.</h1>
-        </div>
-      </section>
+  const carousel = useCircularCarousel(cards.length);
 
-      <section className="about-story" aria-labelledby="about-story-title">
-        <span className="about-kicker">Vår historia</span>
-        <h2 id="about-story-title">Sedan 2017</h2>
-        <p>
-          Vi började med en liten restaurang 2017. Tack vare våra gästers förtroende och Alibabas framgång flyttade vi till större lokaler, och vi fortsätter att utvecklas varje dag.
-        </p>
-      </section>
-
-      <section className="about-highlights" aria-labelledby="about-highlights-title">
-        <h2 id="about-highlights-title">Varför välja Alibaba?</h2>
-        <div className="about-highlight-grid">
-          {highlights.map((highlight) => {
-            const Icon = highlight.icon;
-
-            return (
-              <article className="about-highlight" key={highlight.title}>
-                <span aria-hidden="true">
-                  <Icon size={24} strokeWidth={2.4} />
-                </span>
-                <h3>{highlight.title}</h3>
-                <p>{highlight.text}</p>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="about-timeline" aria-labelledby="about-timeline-title">
-        <h2 id="about-timeline-title">Alibabas resa</h2>
-        <ol>
-          {timeline.map((item, index) => (
-            <li key={item.title}>
-              <span className="about-timeline-dot" aria-hidden="true">
-                <Sparkles size={17} strokeWidth={2.5} />
-              </span>
-              <div>
-                <strong>{item.title}</strong>
-                <p>{item.text}</p>
-              </div>
-              {index < timeline.length - 1 ? (
-                <span className="about-timeline-arrow" aria-hidden="true">↓</span>
-              ) : null}
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="about-closing" aria-label="Vår fortsatta resa">
-        <p>Sedan 2017… och vår historia fortsätter.</p>
-        <a href="/menu">Upptäck menyn</a>
-      </section>
+  return <div className="about-page" aria-labelledby="about-title">
+    <div className="about-intro">
+      <h1 id="about-title">Om oss</h1>
+      <p>Från en liten början 2017… till Alibaba idag.</p>
     </div>
-  );
+    <div className="about-carousel" role="region" aria-roledescription="karusell" aria-label="Om Alibaba">
+      <div className="about-stage" ref={carousel.stageRef} {...carousel.gestureHandlers}>
+        {cards.map(({ title, icon: Icon, content }, index) => {
+          const active = index === carousel.active;
+          const offset = (index - carousel.active + cards.length) % cards.length;
+          const direction = offset === 1 ? 1 : offset === cards.length - 1 ? -1 : 0;
+          return <article className="about-card" key={title} data-active={active} data-index={index}
+            role="group" aria-roledescription="bild" aria-label={`${index + 1} av ${cards.length}: ${title}`}>
+            <div className="about-card-body" inert={!active} aria-hidden={!active}>
+              <div className="about-card-heading">
+                <span className="about-icon" aria-hidden="true"><Icon size={22} /></span>
+                <h2 tabIndex={-1}>{title}</h2>
+              </div>
+              {content}
+            </div>
+            {!active && direction !== 0 && <button className="about-side-target" type="button"
+              aria-label={`Visa ${title}`} disabled={carousel.moving}
+              onClick={() => carousel.rotate(direction, true)} />}
+          </article>;
+        })}
+      </div>
+      <div className="about-controls">
+        <button type="button" aria-label="Föregående kort" title="Föregående kort" disabled={carousel.moving} onClick={() => carousel.rotate(-1)}>
+          <ArrowLeft size={20} aria-hidden="true" />
+        </button>
+        <output aria-live="polite" aria-atomic="true" aria-label="Aktuellt kort">
+          {String(carousel.active + 1).padStart(2, "0")} <span>/ {String(cards.length).padStart(2, "0")}</span>
+        </output>
+        <button type="button" aria-label="Nästa kort" title="Nästa kort" disabled={carousel.moving} onClick={() => carousel.rotate(1)}>
+          <ArrowRight size={20} aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  </div>;
 }
