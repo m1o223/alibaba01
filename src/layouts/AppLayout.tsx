@@ -76,8 +76,8 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
       document.head.appendChild(themeColor);
     }
 
-    themeColor.content = currentPath === "/" ? "#29180F" : "#ffffff";
-  }, [currentPath]);
+    themeColor.content = "#29180F";
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen || isCartOpen || isAuthOpen ? "hidden" : "";
@@ -120,10 +120,10 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
 
   return (
     <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}${isMenuPage ? " menu-shell" : ""}${orderingPage ? " demo-ordering-shell" : ""}`} lang="sv">
-      <header className={pageClass("app-header")} aria-label="Sidhuvud" inert={isAuthOpen}>
+      <header className="app-header" aria-label="Sidhuvud" inert={isAuthOpen}>
         <button
           ref={menuTriggerRef}
-          className={pageClass("icon-button")}
+          className="header-action icon-button"
           type="button"
           aria-label={onBack ? "Tillbaka till menyn" : "Öppna meny"}
           aria-expanded={isMenuOpen}
@@ -144,7 +144,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
         ) : null}
 
         <button
-          className={pageClass("cart-button")}
+          className="header-action cart-button"
           type="button"
           aria-label="Öppna varukorg"
           aria-expanded={isCartOpen}
@@ -155,7 +155,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
           }}
         >
           <ShoppingCart aria-hidden="true" size={26} strokeWidth={2.5} />
-          <span className={pageClass("cart-count")} aria-label="Varor i varukorgen">
+          <span className="cart-count" aria-label="Varor i varukorgen">
             {demoCart?.count ?? 0}
           </span>
         </button>

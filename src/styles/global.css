@@ -38,7 +38,8 @@ button {
   color: #29180f;
 }
 
-.home-foundation > header {
+/* One website header, using the approved homepage dimensions and colors. */
+.app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -46,9 +47,10 @@ button {
   padding: calc(6px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 6px max(16px, env(safe-area-inset-left));
   background: #29180f;
   color: #fff;
+  line-height: normal;
 }
 
-.home-foundation > header button {
+.app-header > .header-action {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -61,16 +63,21 @@ button {
   background: transparent;
 }
 
-.home-foundation > header button span {
+.app-header > .header-action .cart-count {
   position: absolute;
   top: 0;
   right: 0;
   font-size: 11px;
 }
 
-.home-foundation > header button:focus-visible {
+.app-header > .header-action:focus-visible {
   outline: 2px solid white;
   outline-offset: 2px;
+}
+
+.app-header > .brand-mark {
+  color: #fff;
+  text-decoration: none;
 }
 
 .home-foundation > aside[aria-hidden="true"] {
@@ -259,19 +266,6 @@ button {
   background: #fff;
   line-height: 1.5;
   overflow-wrap: anywhere;
-}
-
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: calc(8px + env(safe-area-inset-top)) 16px 8px;
-}
-
-.app-header button {
-  min-width: 44px;
-  min-height: 44px;
 }
 
 .app-main,

@@ -4,10 +4,6 @@
   background: var(--drawer-background);
 }
 
-.contact-shell > .app-header {
-  background: #fff;
-}
-
 .contact-shell > .app-main {
   padding: 28px max(20px, env(safe-area-inset-right)) 32px max(20px, env(safe-area-inset-left));
 }
