@@ -20,7 +20,9 @@ async function configurePlate(page) {
 async function openBag(page) { await page.getByRole('button', { name: 'Öppna varukorg', exact: true }).click(); await settle(page); }
 async function addDrink(page) {
   await page.goto(base + '/menu?orderType=takeaway#drinks');
-  await page.getByRole('button', { name: 'Lägg i påsen: Coca-Cola', exact: true }).click();
+  await page.getByRole('link', { name: 'Visa Coca-Cola', exact: true }).click();
+  await page.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
+  await page.getByRole('button', { name: 'Tillbaka till menyn', exact: true }).click();
   await openBag(page);
 }
 

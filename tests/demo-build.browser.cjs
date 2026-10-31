@@ -16,7 +16,8 @@ const preview = process.env.TEST_BUILD_MODE === 'preview';
     assert.equal(await page.locator('.menu-category-card').count(), preview ? 14 : 15);
     if (preview) {
       await page.locator('a[href="#drinks"]').click();
-      await page.getByRole('button', { name: 'Lägg i påsen: Coca-Cola', exact: true }).click();
+      await page.getByRole('link', { name: 'Visa Coca-Cola', exact: true }).click();
+      await page.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
     } else assert.equal(await page.locator('.demo-menu').count(), 0);
     await page.getByRole('button', { name: 'Öppna varukorg', exact: true }).click();
     await page.waitForTimeout(350);

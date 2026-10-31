@@ -4,9 +4,10 @@ import { useDemoCart } from "./DemoCartContext";
 import { formatDemoPrice, type DemoProduct } from "./menuData";
 import { DemoLink, navigate, productHref } from "./navigation";
 import { ProductMedia } from "./DemoUi";
+import { categoryCardMedia } from "./categoryCardMedia";
 
-type Props = { product: DemoProduct; categoryName?: string; onAdded: (name: string) => void };
-export function DemoProductCard({ product, categoryName, onAdded }: Props) {
+type Props = { product: DemoProduct; categoryName?: string; onAdded: (name: string) => void; presentation?: "category" | "search" };
+export function DemoProductCard({ product, categoryName, onAdded, presentation = "search" }: Props) {
   const [addedCount, setAddedCount] = useState(0);
   const cart = useDemoCart();
   useEffect(() => {
@@ -15,6 +16,18 @@ export function DemoProductCard({ product, categoryName, onAdded }: Props) {
     return () => window.clearTimeout(timer);
   }, [addedCount]);
   const href = productHref(product.key);
+  if (presentation === "category") {
+    const media = categoryCardMedia(product);
+    return <li className="demo-product-card category-product-card" data-product-key={product.key}>
+      <DemoLink className="demo-product-link category-product-link" href={href} aria-label={`Visa ${product.name}`} title={media.temporary ? "Tillfällig exempelbild, inte ett foto av restaurangens rätt." : undefined}>
+        <div className="category-product-media">
+          <ProductMedia key={media.src ?? product.key} src={media.src} emoji={media.emoji} name={media.temporary ? `Tillfällig illustration: ${product.name}` : product.name} />
+        </div>
+        <h3>{product.name}</h3>
+        <strong className="category-product-price">Från {formatDemoPrice(product.priceOre)}</strong>
+      </DemoLink>
+    </li>;
+  }
   return <li className="demo-product-card" data-product-key={product.key}>
     <DemoLink className="demo-product-top demo-product-link" href={href} aria-label={`Visa ${product.name}`}>
       <div className="demo-product-image" aria-hidden="true"><ProductMedia src={product.imageUrl} emoji={product.emoji} name="" /></div>

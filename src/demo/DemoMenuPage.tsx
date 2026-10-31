@@ -40,7 +40,7 @@ function ProductResults({ products, global = false, onAdded }: { products: DemoP
       {products.length ? `${products.length} ${products.length === 1 ? "produkt" : "produkter"}` : "Inga produkter hittades"}
     </p>
     <ul className="demo-product-grid" aria-label="Maträtter">
-      {products.map(product => <DemoProductCard key={product.key} product={product} categoryName={global ? demoCategories.find(category => category.slug === product.categorySlug)?.name : undefined} onAdded={onAdded} />)}
+      {products.map(product => <DemoProductCard key={product.key} product={product} presentation={global ? "search" : "category"} categoryName={global ? demoCategories.find(category => category.slug === product.categorySlug)?.name : undefined} onAdded={onAdded} />)}
     </ul>
   </>;
 }
