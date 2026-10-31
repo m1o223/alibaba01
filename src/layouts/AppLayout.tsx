@@ -15,7 +15,6 @@ import {
   LogIn,
   Mail,
   MapPin,
-  Menu,
   MessageCircle,
   Phone,
   X,
@@ -133,7 +132,13 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
             setIsMenuOpen(true);
           }}
         >
-          {onBack ? <ArrowLeft aria-hidden="true" size={24} /> : <Menu aria-hidden="true" size={30} strokeWidth={2.7} />}
+          {onBack ? <ArrowLeft aria-hidden="true" size={24} /> : (
+            <svg className="header-menu-icon" viewBox="0 0 64 48" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" aria-hidden="true" focusable="false">
+              <path className="header-menu-icon-top" d="M13 16H51" />
+              <path className="header-menu-icon-bottom" d="M13 32H39" />
+              <circle className="header-menu-icon-dot" cx="47" cy="32" r="2" fill="currentColor" stroke="none" />
+            </svg>
+          )}
         </button>
 
         {!isHomePage ? (

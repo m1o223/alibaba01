@@ -80,6 +80,49 @@ button {
   text-decoration: none;
 }
 
+.header-menu-icon {
+  color: #fff;
+  flex: none;
+}
+
+.header-menu-icon path,
+.header-menu-icon circle {
+  transform-box: view-box;
+  transition: transform 225ms ease-in-out, opacity 225ms ease-in-out;
+}
+
+.header-menu-icon-top {
+  transform-origin: 32px 16px;
+}
+
+.header-menu-icon-bottom {
+  transform-origin: 26px 32px;
+}
+
+.header-menu-icon-dot {
+  transform-origin: 47px 32px;
+}
+
+.header-action[aria-expanded="true"] .header-menu-icon-top {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.header-action[aria-expanded="true"] .header-menu-icon-bottom {
+  transform: translate(6px, -8px) rotate(-45deg) scaleX(1.461538);
+}
+
+.header-action[aria-expanded="true"] .header-menu-icon-dot {
+  opacity: 0;
+  transform: scale(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-menu-icon path,
+  .header-menu-icon circle {
+    transition: none;
+  }
+}
+
 .home-foundation > aside[aria-hidden="true"] {
   visibility: hidden;
 }
