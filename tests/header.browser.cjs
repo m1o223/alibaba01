@@ -53,7 +53,7 @@ async function screenshot(page, name, headerOnly = false) {
       page.on('request', request => { if (request.method() !== 'GET') writes.push(request.url()); });
       await page.route('https://www.google.com/maps**', route => route.fulfill({ body: '', contentType: 'text/html' }));
       await page.goto(base);
-      await page.getByRole('button', { name: 'Äta här', exact: true }).waitFor();
+      await page.getByRole('button', { name: 'Se menyn & beställ', exact: true }).waitFor();
       await page.evaluate(() => document.fonts.ready);
       const expected = await signature(page);
       await screenshot(page, `header-home-${width}`, true);

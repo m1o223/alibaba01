@@ -39,7 +39,7 @@ async function addDrink(page) {
     for (const width of [320, 390, 768, 1440]) {
       const page = await newPage(width);
       await page.goto(base);
-      await page.getByRole('button', { name: 'Äta här', exact: true }).click();
+      await page.getByRole('button', { name: 'Se menyn & beställ', exact: true }).click();
       await page.waitForURL(url => url.pathname === '/menu');
       await page.locator('.menu-category-card').first().waitFor();
       assert.equal(await page.locator('.menu-category-card').count(), 14);
@@ -49,7 +49,7 @@ async function addDrink(page) {
       await page.getByRole('button', { name: 'Lägg i påsen: Kycklingshawarmatallrik', exact: true }).click();
       await page.locator('.demo-product-page').waitFor();
       assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
-      assert.equal(new URL(page.url()).searchParams.get('orderType'), 'dine-in');
+      assert.equal(new URL(page.url()).searchParams.get('orderType'), null);
       assert(await page.getByText('Ingredienser och allergener är ännu inte bekräftade. Kontakta restaurangen vid allergi.', { exact: true }).isVisible());
       await configurePlate(page);
       await screenshot(page, `ordering-product-${width}`);
@@ -80,7 +80,7 @@ async function addDrink(page) {
       await screenshot(page, `ordering-auth-${width}`);
       await auth.getByRole('button', { name: 'Fortsätt i demoläge', exact: true }).click();
       await page.locator('.demo-checkout').waitFor();
-      assert(await page.getByRole('radio', { name: 'Äta här', exact: true }).isChecked());
+      await page.getByRole('radio', { name: 'Äta här', exact: true }).check();
       assert(await page.getByRole('button', { name: 'Simulera betalning', exact: true }).isDisabled());
       await page.getByRole('radio', { name: 'Swish', exact: true }).check();
       assert.equal(money(await page.locator('.demo-payment-preview .demo-total strong').innerText()), 525);
@@ -112,11 +112,11 @@ async function addDrink(page) {
       await page.locator('.demo-receipt').waitFor();
       assert.equal(await page.locator('header .cart-count').innerText(), '1', 'Old receipts must not clear a new bag');
       await page.getByRole('button', { name: 'Starta en ny demobeställning', exact: true }).click();
-      await page.getByRole('button', { name: 'Ta med', exact: true }).waitFor();
-      await page.getByRole('button', { name: 'Ta med', exact: true }).click();
+      await page.getByRole('button', { name: 'Se menyn & beställ', exact: true }).waitFor();
+      await page.getByRole('button', { name: 'Se menyn & beställ', exact: true }).click();
       await page.waitForURL(url => url.pathname === '/menu');
       await page.locator('.menu-category-card').first().waitFor();
-      assert.equal(new URL(page.url()).searchParams.get('orderType'), 'takeaway');
+      assert.equal(new URL(page.url()).searchParams.get('orderType'), null);
       assert.equal(await page.locator('header .cart-count').innerText(), '0');
       console.log(JSON.stringify({ width, fullJourney: 'PASS', subtotal: 350, quantityChangedTotal: 525, status: 'ready', receiptReload: 'PASS', orderTypes: 'PASS' }));
       await page.close();
