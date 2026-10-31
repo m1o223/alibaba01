@@ -62,6 +62,7 @@ async function addDrink(page) {
       await page.getByRole('link', { name: 'Visa Kycklingshawarmatallrik', exact: true }).click();
       await configurePlate(page);
       await page.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
+      await page.waitForFunction(() => !document.querySelector('.bag-flight'));
       assert.equal(await page.locator('header .cart-count').innerText(), '2');
       await openBag(page);
       const bag = page.locator('#cart-drawer');
@@ -190,7 +191,7 @@ async function addDrink(page) {
     await edge.getByRole('radio', { name: /^Ris/ }).check();
     await edge.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
     await edge.getByRole('radio', { name: /^Pommes frites/ }).check();
-    await edge.getByRole('button', { name: 'Tillagd i påsen', exact: true }).click();
+    await edge.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
     await openBag(edge);
     assert.equal(await edge.locator('#cart-drawer li').count(), 3, 'Sides stay separate');
     await edge.getByRole('button', { name: 'Stäng varukorg', exact: true }).click();
@@ -203,7 +204,7 @@ async function addDrink(page) {
     for (let i = 1; i < 20; i++) await edge.getByRole('button', { name: 'Öka antal', exact: true }).click();
     assert(await edge.getByRole('button', { name: 'Öka antal', exact: true }).isDisabled());
     await edge.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
-    await edge.getByRole('button', { name: 'Tillagd i påsen', exact: true }).click();
+    await edge.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
     assert.match(await edge.locator('.demo-feedback').innerText(), /Högst 20/);
     await openBag(edge);
     assert(await edge.getByRole('button', { name: 'Öka antal Vatten', exact: true }).isDisabled());

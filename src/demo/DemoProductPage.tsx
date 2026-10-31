@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Check, Info, ShoppingBag } from "lucide-react";
 import { useDemoCart } from "./DemoCartContext";
 import { formatDemoPrice, getDemoProduct, type DemoProduct } from "./menuData";
@@ -6,6 +6,7 @@ import { unitPrice, validateSelections, type Selections } from "./orderModel";
 import { DemoLink, withOrderType } from "./navigation";
 import { ProductMedia, Quantity } from "./DemoUi";
 import { IngredientExclusions } from "./IngredientExclusions";
+import { useAddToBagFeedback } from "../components/BagAnimation";
 
 function ProductDetails({ product }: { product: DemoProduct }) {
   const cart = useDemoCart()!;
@@ -13,16 +14,12 @@ function ProductDetails({ product }: { product: DemoProduct }) {
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
   const [message, setMessage] = useState("");
-  const [added, setAdded] = useState(false);
+  const feedback = useAddToBagFeedback();
+  const addButton = useRef<HTMLButtonElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const images = product.images;
   const total = unitPrice(product, selections) * quantity;
   const valid = validateSelections(product, selections);
-  useEffect(() => {
-    if (!added) return;
-    const timer = setTimeout(() => setAdded(false), 1600);
-    return () => clearTimeout(timer);
-  }, [added]);
   function select(group: string, key: string, multiple: boolean) {
     setMessage("");
     setSelections(current => ({ ...current, [group]: multiple ? current[group]?.includes(key) ? current[group].filter(value => value !== key) : [...(current[group] ?? []), key] : key ? [key] : [] }));
@@ -48,8 +45,9 @@ function ProductDetails({ product }: { product: DemoProduct }) {
       </section>
       <form onSubmit={event => {
         event.preventDefault();
+        feedback.reset();
         if (!valid) { setMessage("Välj obligatoriska tillbehör innan du lägger till produkten."); return; }
-        if (cart.add(product.key, selections, quantity)) { setAdded(true); setMessage(`${quantity} × ${product.name} har lagts i påsen.`); }
+        if (cart.add(product.key, selections, quantity)) { if (addButton.current) feedback.confirm(addButton.current, quantity); setMessage(`${quantity} × ${product.name} har lagts i påsen.`); }
         else setMessage("Högst 20 av samma kombination kan finnas i påsen. Ändra antalet i påsen först.");
       }}>
         {product.customizationGroups.map(group => <Fragment key={group.key}><fieldset className="demo-option-group">
@@ -64,7 +62,7 @@ function ProductDetails({ product }: { product: DemoProduct }) {
         <div className="demo-purchase">
           <div className="demo-purchase-row"><span>Antal</span><Quantity value={quantity} onChange={setQuantity} /></div>
           <div className="demo-total"><span>Totalt</span><strong aria-live="polite">{formatDemoPrice(total)}</strong></div>
-          <button className="demo-primary" type="submit" disabled={!valid}>{added ? <Check size={19} /> : <ShoppingBag size={19} />}{added ? "Tillagd i påsen" : "Lägg i påsen"}</button>
+          <button ref={addButton} className="demo-primary bag-add-button" type="submit" disabled={!valid} aria-label="Lägg i påsen" data-confirmed={feedback.confirmed || undefined}><span className="bag-add-label"><ShoppingBag size={19} aria-hidden="true" />Lägg i påsen</span>{feedback.confirmed ? <Check className="bag-add-check" size={19} aria-hidden="true" /> : null}</button>
           <p className="demo-muted">Demo – ingen riktig beställning skickas.</p>
           {!valid ? <p className="demo-muted">Välj tillbehör för att fortsätta.</p> : null}
           <p className="demo-feedback" role="status">{message}</p>

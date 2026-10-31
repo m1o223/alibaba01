@@ -91,7 +91,7 @@
 @keyframes demo-enter { from { opacity: .4; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 @media (min-width: 760px) {
   .demo-product-page { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 36px; }
-  .demo-product-gallery { align-self: start; position: sticky; top: 24px; }
+  .demo-product-gallery { align-self: start; position: sticky; top: calc(80px + env(safe-area-inset-top)); }
   .demo-checkout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
   .demo-ordering h1 { font-size: 32px; }
 }

@@ -40,6 +40,9 @@ button {
 
 /* One website header, using the approved homepage dimensions and colors. */
 .app-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -49,6 +52,28 @@ button {
   color: #fff;
   line-height: normal;
 }
+
+html { scroll-padding-top: calc(56px + env(safe-area-inset-top)); }
+
+.bag-flight-layer { position: fixed; inset: 0; z-index: 35; pointer-events: none; }
+.bag-flight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #79513b;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.bag-flight img { display: block; }
+.bag-add-button { position: relative; }
+.bag-add-label { display: inline-flex; align-items: center; justify-content: center; gap: inherit; }
+.bag-add-button[data-confirmed] .bag-add-label { visibility: hidden; }
+.bag-add-check { position: absolute; inset: 0; margin: auto; }
 
 .app-header > .header-action {
   position: relative;

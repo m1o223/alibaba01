@@ -91,6 +91,7 @@ async function screenshot(page, name, headerOnly = false) {
       await check(page, expected);
       await page.getByRole('link', { name: 'Visa Coca-Cola', exact: true }).click();
       await page.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
+      await page.waitForFunction(() => !document.querySelector('.bag-flight'));
       assert.equal(await page.locator('header .cart-count').innerText(), '1');
       await check(page, expected);
       if (width === 390 || width === 1440) await screenshot(page, `header-product-${width}`);

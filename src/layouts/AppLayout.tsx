@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { CartDrawerContent } from "../components/CartDrawerContent";
 import { AuthBottomSheet } from "../components/AuthBottomSheet";
+import { BagAnimationContext, useBagAnimation } from "../components/BagAnimation";
+import { TakeawayBagIcon } from "../components/TakeawayBagIcon";
 import { useDemoCart } from "../demo/DemoCartContext";
 import { demoLoginEvent, useDemoFlow } from "../demo/DemoFlowContext";
 import { useDrawerFocus } from "../hooks/useDrawerFocus";
@@ -34,6 +36,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const bagAnimation = useBagAnimation(demoCart?.count ?? 0, currentPath, isMenuOpen || isCartOpen || isAuthOpen);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const menuRef = useRef<HTMLElement>(null);
   const cartRef = useRef<HTMLElement>(null);
@@ -117,6 +120,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
   function closeAuth() { setIsAuthOpen(false); setCheckoutAfterAuth(false); }
 
   return (
+    <BagAnimationContext.Provider value={bagAnimation.animate}>
     <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}${isMenuPage ? " menu-shell" : ""}${orderingPage ? " demo-ordering-shell" : ""}`} lang="sv">
       <header className="app-header" aria-label="Sidhuvud" inert={isAuthOpen}>
         <button
@@ -158,9 +162,9 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
             setIsCartOpen(true);
           }}
         >
-          <img src="/assets/takeaway-bag.svg" alt="" aria-hidden="true" width="26" height="26" draggable={false} />
+          <TakeawayBagIcon ref={bagAnimation.target} />
           <span className="cart-count" aria-label="Varor i varukorgen">
-            {demoCart?.count ?? 0}
+            {bagAnimation.count}
           </span>
         </button>
       </header>
@@ -375,5 +379,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
         </div>
       </footer> : null}
     </div>
+    {bagAnimation.layer}
+    </BagAnimationContext.Provider>
   );
 }

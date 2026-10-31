@@ -1,20 +1,15 @@
-import { useEffect, useState } from "react";
 import { Check, Plus } from "lucide-react";
 import { useDemoCart } from "./DemoCartContext";
 import { formatDemoPrice, type DemoProduct } from "./menuData";
 import { DemoLink, navigate, productHref } from "./navigation";
 import { ProductMedia } from "./DemoUi";
 import { categoryCardMedia } from "./categoryCardMedia";
+import { useAddToBagFeedback } from "../components/BagAnimation";
 
 type Props = { product: DemoProduct; categoryName?: string; onAdded: (name: string) => void; presentation?: "category" | "search" };
 export function DemoProductCard({ product, categoryName, onAdded, presentation = "search" }: Props) {
-  const [addedCount, setAddedCount] = useState(0);
+  const feedback = useAddToBagFeedback();
   const cart = useDemoCart();
-  useEffect(() => {
-    if (!addedCount) return;
-    const timer = window.setTimeout(() => setAddedCount(0), 1500);
-    return () => window.clearTimeout(timer);
-  }, [addedCount]);
   const href = productHref(product.key);
   if (presentation === "category") {
     const media = categoryCardMedia(product);
@@ -35,11 +30,12 @@ export function DemoProductCard({ product, categoryName, onAdded, presentation =
     </DemoLink>
     <div className="demo-product-actions">
       <strong>Från {formatDemoPrice(product.priceOre)}</strong>
-      <button type="button" disabled={!cart || !product.available} aria-label={`Lägg i påsen: ${product.name}`} onClick={() => {
+      <button className="bag-add-button" data-confirmed={feedback.confirmed || undefined} type="button" disabled={!cart || !product.available} aria-label={`Lägg i påsen: ${product.name}`} onClick={event => {
+        feedback.reset();
         if (product.customizationGroups.some(group => group.required)) { navigate(href); return; }
-        if (cart?.add(product.key)) { setAddedCount(count => count + 1); onAdded(product.name); }
+        if (cart?.add(product.key)) { feedback.confirm(event.currentTarget, 1); onAdded(product.name); }
         else navigate(href);
-      }}>{addedCount ? <Check aria-hidden="true" size={18} /> : <Plus aria-hidden="true" size={18} />}{addedCount ? "Tillagd" : "Lägg i påsen"}</button>
+      }}><span className="bag-add-label"><Plus aria-hidden="true" size={18} />Lägg i påsen</span>{feedback.confirmed ? <Check className="bag-add-check" aria-hidden="true" size={18} /> : null}</button>
     </div>
   </li>;
 }
