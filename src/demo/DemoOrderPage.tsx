@@ -49,6 +49,11 @@ export function DemoOrderPage({ reference }: { reference: string }) {
         <fieldset className="demo-simulator">
           <legend>Demokontroller · utveckling</legend>
           <p>Restaurangen är inte ansluten. Ändra status manuellt för att testa flödet.</p>
+          <details className="demo-restaurant-preview">
+            <summary>Restaurangvy (demo)</summary>
+            <p>Orderunderlag för test. Inte skickat till restaurangen.</p>
+            <OrderLines lines={order.lines} />
+          </details>
           {order.status === "waiting" ? <><label className="demo-estimate-input">Simulerad tid (minuter)<input type="number" min="1" max="120" value={Number.isNaN(estimate) ? "" : estimate} onChange={event => setEstimate(event.target.valueAsNumber)} /></label><button className="demo-primary" disabled={!Number.isInteger(estimate) || estimate < 1 || estimate > 120} onClick={() => flow.dispatch({ type: "order_accepted", estimateMinutes: estimate })}>Simulera godkännande</button></> : null}
           {order.status === "accepted" ? <button className="demo-primary" onClick={() => flow.dispatch({ type: "order_preparing" })}>Simulera tillagning</button> : null}
           {order.status === "preparing" ? <button className="demo-primary" onClick={() => flow.dispatch({ type: "order_ready" })}>Markera som redo i demo</button> : null}

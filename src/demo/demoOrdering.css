@@ -31,6 +31,10 @@
 .demo-allergens svg { vertical-align: middle; }
 .demo-option-group { border: 0; padding: 0; min-width: 0; margin: 24px 0; }
 .demo-option-group legend { font-size: 17px; font-weight: 600; padding: 0; margin-bottom: 12px; }
+.demo-ingredient-exclusions { border: 0; padding: 0; min-width: 0; margin: 24px 0; }
+.demo-ingredient-exclusions legend { font-size: 17px; font-weight: 600; padding: 0; margin-bottom: 12px; }
+.demo-restaurant-preview { margin: 16px 0; min-width: 0; }
+.demo-restaurant-preview summary { cursor: pointer; color: #4a2818; font-weight: 600; padding-block: 10px; }
 .demo-option { display: flex; align-items: center; gap: 10px; padding: 12px; min-height: 48px; margin: 8px 0; border: 1px solid #dfd2c3; border-radius: 8px; background: white; font-size: 14px; cursor: pointer; transition: border-color 180ms; }
 .demo-option:has(input:checked) { border-color: #4a2818; }
 .demo-option input { width: 18px; height: 18px; flex-shrink: 0; accent-color: #4a2818; margin: 0; }

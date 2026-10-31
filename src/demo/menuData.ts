@@ -1,4 +1,5 @@
 // Preview-only content. These keys are local UI keys, never backend product IDs.
+import { demoIngredientExclusions, type IngredientExclusionConfig } from "./ingredientExclusionConfig.ts";
 export type DemoOption = { key: string; name: string };
 export type CustomizationOption = DemoOption & { priceOre: number };
 export type CustomizationGroup = {
@@ -26,6 +27,7 @@ export type DemoProduct = {
   allergens: readonly string[];
   allergenVerificationStatus: "unverified" | "verified";
   customizationGroups: readonly CustomizationGroup[];
+  ingredientExclusions: IngredientExclusionConfig;
 };
 export type DemoCategory = { slug: string; name: string; emoji: string; products: DemoProduct[] };
 
@@ -81,6 +83,7 @@ function category(slug: string, name: string, emoji: string, rows: DemoProductRo
       allergens: [],
       allergenVerificationStatus: "unverified",
       customizationGroups: customization(slug, key, details?.requiredOptions ?? (requiresSide ? plateSides : undefined)),
+      ingredientExclusions: demoIngredientExclusions(`demo:${slug}:${key}`, slug),
     })),
   };
 }

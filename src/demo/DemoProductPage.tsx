@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Check, Info, ShoppingBag } from "lucide-react";
 import { useDemoCart } from "./DemoCartContext";
 import { formatDemoPrice, getDemoProduct, type DemoProduct } from "./menuData";
 import { unitPrice, validateSelections, type Selections } from "./orderModel";
 import { DemoLink, withOrderType } from "./navigation";
-import { DemoNotice, ProductMedia, Quantity } from "./DemoUi";
+import { ProductMedia, Quantity } from "./DemoUi";
+import { IngredientExclusions } from "./IngredientExclusions";
 
 function ProductDetails({ product }: { product: DemoProduct }) {
   const cart = useDemoCart()!;
@@ -26,6 +27,7 @@ function ProductDetails({ product }: { product: DemoProduct }) {
     setMessage("");
     setSelections(current => ({ ...current, [group]: multiple ? current[group]?.includes(key) ? current[group].filter(value => value !== key) : [...(current[group] ?? []), key] : key ? [key] : [] }));
   }
+  const exclusions = <IngredientExclusions config={product.ingredientExclusions} selected={selections.exclusions ?? []} onToggle={key => select("exclusions", key, true)} />;
   return <article className="demo-ordering demo-product-page">
     <div className="demo-product-gallery">
       <div className="demo-large-image" onTouchStart={event => { const touch = event.touches[0]; touchStart.current = { x: touch.clientX, y: touch.clientY }; }} onTouchEnd={event => {
@@ -39,32 +41,31 @@ function ProductDetails({ product }: { product: DemoProduct }) {
     <div className="demo-product-content">
       <h1 tabIndex={-1}>{product.name}</h1>
       <p className="demo-base-price">Från {formatDemoPrice(product.priceOre)}</p>
-      <p>{product.description ?? (product.categorySlug === "drinks" ? "En dryck från vår tillfälliga demomeny." : product.categorySlug === "sauces" ? "Ett tillbehör från vår tillfälliga demomeny." : "Anpassa din rätt med tillvalen nedan. Produktbeskrivningen är ännu inte bekräftad.")}</p>
+      {product.description && product.description !== "Ingredienser och topping ska bekräftas." ? <p>{product.description}</p> : null}
       <section className="demo-allergens" aria-label="Ingredienser och allergener">
-        <h2>Ingredienser</h2>
-        {product.allergenVerificationStatus === "verified" ? <p>{product.ingredients.join(", ")}</p> : null}
-        <h2>Allergener</h2>
-        {product.allergenVerificationStatus === "verified" ? <p>{product.allergens.join(", ")}</p> : <p><Info size={18} aria-hidden="true" /> Ingredienser och allergener är ännu inte bekräftade. Kontakta restaurangen vid allergi.</p>}
+        {product.allergenVerificationStatus === "verified" ? <><h2>Ingredienser</h2><p>{product.ingredients.join(", ")}</p><h2>Allergener</h2><p>{product.allergens.join(", ")}</p></> : <><h2>Ingredienser och allergener</h2><p><Info size={18} aria-hidden="true" /> Ingredienser och allergener är ännu inte bekräftade. Kontakta restaurangen vid allergi.</p></>}
+        <p>Att ta bort en ingrediens garanterar inte allergenfri mat.</p>
       </section>
-      <DemoNotice />
       <form onSubmit={event => {
         event.preventDefault();
         if (!valid) { setMessage("Välj obligatoriska tillbehör innan du lägger till produkten."); return; }
         if (cart.add(product.key, selections, quantity)) { setAdded(true); setMessage(`${quantity} × ${product.name} har lagts i påsen.`); }
         else setMessage("Högst 20 av samma kombination kan finnas i påsen. Ändra antalet i påsen först.");
       }}>
-        {product.customizationGroups.map(group => <fieldset className="demo-option-group" key={group.key}>
+        {product.customizationGroups.map(group => <Fragment key={group.key}><fieldset className="demo-option-group">
           <legend>{group.name}{group.required ? " (obligatoriskt)" : ""}</legend>
           {!group.required && group.type === "single" ? <label className="demo-option"><input type="radio" name={group.key} checked={!selections[group.key]?.length} onChange={() => select(group.key, "", false)} /><span>Ingen dryck</span><span>0 kr</span></label> : null}
           {group.options.map(option => <label className="demo-option" key={option.key}>
             <input type={group.type === "multiple" ? "checkbox" : "radio"} name={group.key} checked={selections[group.key]?.includes(option.key) ?? false} required={group.required && group.type === "single"} onChange={() => select(group.key, option.key, group.type === "multiple")} />
             <span>{option.name}</span><span>{option.priceOre ? `+${formatDemoPrice(option.priceOre)}` : "0 kr"}</span>
           </label>)}
-        </fieldset>)}
+        </fieldset>{group.key === "extras" ? exclusions : null}</Fragment>)}
+        {!product.customizationGroups.some(group => group.key === "extras") ? exclusions : null}
         <div className="demo-purchase">
           <div className="demo-purchase-row"><span>Antal</span><Quantity value={quantity} onChange={setQuantity} /></div>
           <div className="demo-total"><span>Totalt</span><strong aria-live="polite">{formatDemoPrice(total)}</strong></div>
           <button className="demo-primary" type="submit" disabled={!valid}>{added ? <Check size={19} /> : <ShoppingBag size={19} />}{added ? "Tillagd i påsen" : "Lägg i påsen"}</button>
+          <p className="demo-muted">Demo – ingen riktig beställning skickas.</p>
           {!valid ? <p className="demo-muted">Välj tillbehör för att fortsätta.</p> : null}
           <p className="demo-feedback" role="status">{message}</p>
         </div>

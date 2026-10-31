@@ -1,4 +1,5 @@
 import type { DemoProduct } from "./menuData";
+import { exclusionsVerifiedForRealOrders, type IngredientExclusion } from "./ingredientExclusionConfig.ts";
 
 export type Selections = Record<string, string[]>;
 export type DemoLine = { productKey: string; selections: Selections; quantity: number };
@@ -23,7 +24,7 @@ export type OrderEvent =
   | { type: "order_rejected" }
   | { type: "order_preparing" }
   | { type: "order_ready" };
-export type ReceiptLine = DemoLine & { name: string; emoji: string; options: string[]; unitPriceOre: number };
+export type ReceiptLine = DemoLine & { name: string; emoji: string; options: string[]; exclusions: IngredientExclusion[]; unitPriceOre: number };
 export type DemoOrder = {
   reference: string;
   createdAt: string;
@@ -39,7 +40,13 @@ export type DemoOrder = {
 
 export function validateSelections(product: DemoProduct, selections: Selections): boolean {
   if (!product.available || !selections || typeof selections !== "object" || Array.isArray(selections)) return false;
-  if (Object.keys(selections).some(key => !product.customizationGroups.some(group => group.key === key))) return false;
+  if (Object.keys(selections).some(key => key !== "exclusions" && !product.customizationGroups.some(group => group.key === key))) return false;
+  if (Object.prototype.hasOwnProperty.call(selections, "exclusions")) {
+    const excluded = selections.exclusions;
+    if (!Array.isArray(excluded) || new Set(excluded).size !== excluded.length
+      || !excluded.every(key => product.ingredientExclusions.options.some(option => option.key === key))) return false;
+    if (excluded.length && !product.demo && !exclusionsVerifiedForRealOrders(product.ingredientExclusions, product.allergenVerificationStatus === "verified")) return false;
+  }
   return product.customizationGroups.every(group => {
     if (Object.prototype.hasOwnProperty.call(selections, group.key) && !Array.isArray(selections[group.key])) return false;
     const selected = selections[group.key] ?? [];
@@ -59,7 +66,12 @@ export function unitPrice(product: DemoProduct, selections: Selections): number 
 }
 
 export function optionLabels(product: DemoProduct, selections: Selections): string[] {
-  return product.customizationGroups.flatMap(group => group.options.filter(option => selections[group.key]?.includes(option.key)).map(option => option.name));
+  return [...product.customizationGroups.flatMap(group => group.options.filter(option => selections[group.key]?.includes(option.key)).map(option => option.name)),
+    ...exclusionChoices(product, selections).map(option => option.name)];
+}
+
+export function exclusionChoices(product: DemoProduct, selections: Selections): IngredientExclusion[] {
+  return product.ingredientExclusions.options.filter(option => selections.exclusions?.includes(option.key)).map(option => ({ ...option }));
 }
 
 export function normalizeLines(raw: unknown, products: readonly DemoProduct[]): DemoLine[] {
@@ -80,7 +92,7 @@ export function normalizeLines(raw: unknown, products: readonly DemoProduct[]): 
 export function receiptLines(lines: DemoLine[], products: readonly DemoProduct[]): ReceiptLine[] {
   return normalizeLines(lines, products).map(line => {
     const product = products.find(item => item.key === line.productKey)!;
-    return { ...line, selections: structuredClone(line.selections), name: product.name, emoji: product.emoji, options: optionLabels(product, line.selections), unitPriceOre: unitPrice(product, line.selections) };
+    return { ...line, selections: structuredClone(line.selections), name: product.name, emoji: product.emoji, options: optionLabels(product, line.selections), exclusions: exclusionChoices(product, line.selections), unitPriceOre: unitPrice(product, line.selections) };
   });
 }
 
