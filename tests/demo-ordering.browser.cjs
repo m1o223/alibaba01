@@ -83,7 +83,7 @@ async function addDrink(page) {
       await screenshot(page, `ordering-auth-${width}`);
       await auth.getByRole('button', { name: 'Fortsätt i demoläge', exact: true }).click();
       await page.locator('.demo-checkout').waitFor();
-      await page.getByRole('radio', { name: 'Äta här', exact: true }).check();
+      await page.getByRole('radio', { name: 'Äta på plats', exact: true }).check();
       assert(await page.getByRole('button', { name: 'Simulera betalning', exact: true }).isDisabled());
       await page.getByRole('radio', { name: 'Swish', exact: true }).check();
       assert.equal(money(await page.locator('.demo-payment-preview .demo-total strong').innerText()), 525);

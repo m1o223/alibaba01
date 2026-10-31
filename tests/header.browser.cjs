@@ -103,7 +103,7 @@ async function screenshot(page, name, headerOnly = false) {
       await page.getByRole('button', { name: 'Fortsätt i demoläge', exact: true }).click();
       await page.locator('.demo-checkout').waitFor();
       await check(page, expected);
-      await page.getByRole('radio', { name: 'Ta med', exact: true }).check();
+      await page.getByRole('radio', { name: 'Hämta själv', exact: true }).check();
       if (width === 390 || width === 1440) await screenshot(page, `header-checkout-${width}`);
       await page.getByRole('radio', { name: 'Swish', exact: true }).check();
       await page.getByRole('button', { name: 'Simulera betalning', exact: true }).click();

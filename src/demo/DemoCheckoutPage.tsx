@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CreditCard, LoaderCircle, Smartphone, Wallet } from "lucide-react";
+import { CreditCard, LoaderCircle, Wallet } from "lucide-react";
 import { useDemoCart } from "./DemoCartContext";
 import { useDemoFlow } from "./DemoFlowContext";
 import { demoProducts } from "./menuData";
@@ -8,6 +8,9 @@ import { paymentLabels, receiptLines, type OrderType, type PaymentMethod } from 
 import { DemoNotice, OrderLines } from "./DemoUi";
 
 const methods = Object.keys(paymentLabels) as PaymentMethod[];
+const paymentMarks: Record<PaymentMethod, string[]> = {
+  swish: ["swish"], apple: ["apple-pay"], google: ["google-pay"], card: ["visa", "mastercard"],
+};
 export function DemoCheckoutPage() {
   const cart = useDemoCart()!;
   const flow = useDemoFlow()!;
@@ -28,7 +31,6 @@ export function DemoCheckoutPage() {
   }
   return <section className="demo-ordering demo-checkout" aria-labelledby="checkout-heading" aria-busy={processing}>
     <h1 id="checkout-heading" tabIndex={-1}>Kassan</h1>
-    <DemoNotice />
     <div className="demo-checkout-grid">
       <section className="demo-summary-panel">
         <h2>Din beställning</h2>
@@ -41,16 +43,22 @@ export function DemoCheckoutPage() {
             setOrderType(type);
             try { sessionStorage.setItem("alibaba.orderType", type); } catch { /* URL also retains the selection. */ }
             const url = new URL(window.location.href); url.searchParams.set("orderType", type); history.replaceState(history.state, "", url);
-          }} /><span>{type === "dine-in" ? "Äta här" : "Ta med"}</span></label>)}
+          }} /><span>{type === "dine-in" ? "Äta på plats" : "Hämta själv"}</span></label>)}
+          <label className="demo-option checkout-delivery-placeholder">
+            <input type="radio" name="order-type" disabled checked={false} readOnly />
+            <span>Hemleverans</span>
+          </label>
         </fieldset>
       </section>
       <section className="demo-payment-section">
         <fieldset className="demo-option-group" disabled={processing}>
-          <legend>Välj demobetalning</legend>
+          <legend>Välj betalsätt</legend>
           {methods.map(value => <label className="demo-option demo-payment-option" key={value}>
             <input type="radio" name="payment-method" value={value} checked={method === value} onChange={() => setMethod(value)} />
-            {value === "card" ? <CreditCard size={20} /> : value === "swish" ? <Smartphone size={20} /> : <Wallet size={20} />}
             <span>{paymentLabels[value]}</span>
+            <span className="checkout-payment-marks" aria-hidden="true">
+              {paymentMarks[value].map(mark => <img key={mark} className={`checkout-payment-mark checkout-payment-mark--${mark}`} src={`/assets/payments/${mark}.${mark === "mastercard" ? "png" : "svg"}`} alt="" />)}
+            </span>
           </label>)}
         </fieldset>
         {method ? <div className="demo-payment-preview" key={method}>
@@ -59,10 +67,10 @@ export function DemoCheckoutPage() {
           <p>Ingen betalningsleverantör är ansluten.</p>
           <div className="demo-total"><span>Demobelopp</span><strong>{cart.totalLabel}</strong></div>
         </div> : null}
+        <p className="demo-muted checkout-demo-status" role="status">{processing ? "Skapar ett demokvitto. Ingen riktig betalning genomförs." : "Demo – ingen riktig betalning genomförs"}</p>
         <button className="demo-primary" type="button" disabled={!method || !orderType || processing} onClick={simulatePayment}>
           {processing ? <LoaderCircle className="demo-spinner" size={19} /> : <Wallet size={19} />}{processing ? "Simulerar betalning…" : "Simulera betalning"}
         </button>
-        <p className="demo-muted" role="status">{processing ? "Skapar ett demokvitto. Ingen riktig betalning genomförs." : "Demo – ingen riktig betalning genomförs"}</p>
       </section>
     </div>
   </section>;

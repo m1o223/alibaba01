@@ -58,6 +58,13 @@
 .demo-order-lines li > strong { flex-shrink: 0; white-space: nowrap; }
 .demo-order-lines p { color: #76675b; font-size: 13px; margin: 5px 0; }
 .demo-payment-section .demo-option-group { margin-top: 0; }
+.demo-checkout .checkout-delivery-placeholder { color: #76675b; cursor: default; }
+.demo-checkout .checkout-payment-marks { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex: 0 0 auto; }
+.demo-checkout .checkout-payment-mark { display: block; width: 60px; height: 28px; object-fit: contain; }
+.demo-checkout .checkout-payment-mark--google-pay { width: 72px; height: 40px; }
+.demo-checkout .checkout-payment-mark--visa { width: 48px; height: 32px; }
+.demo-checkout .checkout-payment-mark--mastercard { width: 36px; }
+.demo-checkout .checkout-demo-status { margin: 12px 0; }
 .demo-payment-preview { padding: 16px; margin-bottom: 20px; background: white; border: 1px solid #dfd2c3; border-radius: 8px; animation: demo-enter 180ms ease-out; }
 .demo-payment-preview p { font-size: 14px; }
 .demo-card-visual { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; background: #eae0d4; border-radius: 8px; font-size: 14px; }
