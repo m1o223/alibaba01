@@ -22,7 +22,6 @@ export function MenuPage() {
       <div className="menu-page-header">
         {legacyCategories.map(category => <span id={category.slug} key={category.slug} aria-hidden="true" />)}
         <h1 id="menu-page-title">Vår meny</h1>
-        <p>Upptäck våra rätter, tillagade med omsorg.</p>
       </div>
 
       <div className="menu-search" role="search" aria-label="Sök menykategorier">
@@ -41,7 +40,7 @@ export function MenuPage() {
         </button> : null}
       </div>
 
-      <p className="menu-search-status" role="status" aria-live="polite" aria-atomic="true">
+      <p className="menu-search-status" role="status" aria-live="polite" aria-atomic="true" hidden={!searchTerm}>
         {results.length ? `${results.length} ${results.length === 1 ? "kategori" : "kategorier"}` : "Inga kategorier matchar din sökning."}
       </p>
 

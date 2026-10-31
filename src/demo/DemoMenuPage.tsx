@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { ArrowLeft, ChevronRight, Info, Search, X } from "lucide-react";
+import { ArrowLeft, ChevronRight, Search, X } from "lucide-react";
 import { demoCategories, searchDemoProducts, type DemoCategory, type DemoProduct } from "./menuData";
 import { DemoProductCard } from "./DemoProductCard";
 import "../styles/menu.css";
@@ -71,9 +71,7 @@ export function DemoMenuPage() {
   return <section className="menu-page demo-menu" aria-labelledby="menu-page-title">
     <div className="menu-page-header" id="menu-top">
       <h1 id="menu-page-title">Vår meny</h1>
-      <p>Upptäck våra rätter, tillagade med omsorg.</p>
     </div>
-    <p className="demo-menu-notice"><Info size={18} aria-hidden="true" /><span>Demomeny. Produkter och priser är tillfälliga. Ingen riktig beställning eller betalning genomförs.</span></p>
     <MenuSearch value={query} onChange={value => { setQuery(value); saveQuery("q", value); }} />
     <p className="demo-added-status" role="status" aria-live="polite" aria-atomic="true">{addedMessage}</p>
     {searching ? (
@@ -81,7 +79,6 @@ export function DemoMenuPage() {
     ) : selected ? (
       <CategoryProducts key={selected.slug} category={selected} onAdded={name => setAddedMessage(`${name} har lagts till i demovarukorgen.`)} />
     ) : <>
-      <p className="menu-search-status">14 kategorier</p>
       <nav className="menu-categories" aria-label="Menykategorier">
         {demoCategories.map(category => <a className="menu-category-card" href={`#${category.slug}`} key={category.slug} aria-label={`Öppna kategori ${category.name}`}>
           <span className="menu-category-media demo-category-emoji" aria-hidden="true">{category.emoji}</span>
