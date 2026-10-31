@@ -18,7 +18,6 @@ import {
   Menu,
   MessageCircle,
   Phone,
-  ShoppingCart,
   X,
 } from "lucide-react";
 
@@ -154,7 +153,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
             setIsCartOpen(true);
           }}
         >
-          <ShoppingCart aria-hidden="true" size={26} strokeWidth={2.5} />
+          <img src="/assets/takeaway-bag.svg" alt="" aria-hidden="true" width="26" height="26" draggable={false} />
           <span className="cart-count" aria-label="Varor i varukorgen">
             {demoCart?.count ?? 0}
           </span>

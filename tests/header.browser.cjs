@@ -25,6 +25,12 @@ async function check(page, expected) {
   assert.deepEqual(await signature(page), expected, `Header differs on ${page.url()}`);
   assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'), '#29180F');
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  const bag = page.locator('.app-header .cart-button img');
+  assert.equal(await bag.getAttribute('src'), '/assets/takeaway-bag.svg');
+  await bag.evaluate(img => img.decode());
+  assert.deepEqual(await bag.evaluate(img => ({ width: img.width, height: img.height })), { width: 26, height: 26 });
+  assert.equal(await bag.getAttribute('alt'), '');
+  assert.equal(await page.locator('.app-header .cart-button svg').count(), 0);
   const brand = page.locator('header .brand-mark');
   if (await brand.count()) {
     const box = await brand.boundingBox();
