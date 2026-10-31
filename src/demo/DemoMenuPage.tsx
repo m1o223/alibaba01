@@ -21,13 +21,13 @@ function currentCategory() {
   return slug === "fries" ? "salads" : slug;
 }
 
-function MenuSearch({ value, onChange, categoryOnly = false }: { value: string; onChange: (value: string) => void; categoryOnly?: boolean }) {
+function MenuSearch({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const label = categoryOnly ? "Sök i denna kategori" : "Sök efter mat";
+  const label = "Sök efter mat";
   return <div className="menu-search" role="search" aria-label={label}>
     <Search aria-hidden="true" size={20} strokeWidth={1.8} />
     <input ref={inputRef} type="search" placeholder={`${label}…`} aria-label={label} value={value} onChange={event => onChange(event.target.value)} />
-    {value ? <button type="button" aria-label={`Rensa ${categoryOnly ? "kategorisökning" : "sökning"}`} title="Rensa sökning" onClick={() => {
+    {value ? <button type="button" aria-label="Rensa sökning" title="Rensa sökning" onClick={() => {
       onChange("");
       inputRef.current?.focus();
     }}><X aria-hidden="true" size={20} /></button> : null}
@@ -36,9 +36,9 @@ function MenuSearch({ value, onChange, categoryOnly = false }: { value: string; 
 
 function ProductResults({ products, global = false, onAdded }: { products: DemoProduct[]; global?: boolean; onAdded: (name: string) => void }) {
   return <>
-    <p className="menu-search-status" role="status" aria-live="polite" aria-atomic="true">
+    {global ? <p className="menu-search-status" role="status" aria-live="polite" aria-atomic="true">
       {products.length ? `${products.length} ${products.length === 1 ? "produkt" : "produkter"}` : "Inga produkter hittades"}
-    </p>
+    </p> : null}
     <ul className="demo-product-grid" aria-label="Maträtter">
       {products.map(product => <DemoProductCard key={product.key} product={product} presentation={global ? "search" : "category"} categoryName={global ? demoCategories.find(category => category.slug === product.categorySlug)?.name : undefined} onAdded={onAdded} />)}
     </ul>
@@ -46,7 +46,6 @@ function ProductResults({ products, global = false, onAdded }: { products: DemoP
 }
 
 function CategoryProducts({ category, onAdded }: { category: DemoCategory; onAdded: (name: string) => void }) {
-  const [query, setQuery] = useState(() => readQuery(`q-${category.slug}`));
   const titleRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     if (typeof history.state?.scrollY === "number") return;
@@ -56,8 +55,7 @@ function CategoryProducts({ category, onAdded }: { category: DemoCategory; onAdd
   return <div className="demo-category-view">
     <a className="demo-back-link" href="#menu-top"><ArrowLeft size={18} aria-hidden="true" />Alla kategorier</a>
     <h2 ref={titleRef} id={category.slug} tabIndex={-1}>{category.name}</h2>
-    <MenuSearch value={query} onChange={value => { setQuery(value); saveQuery(`q-${category.slug}`, value); }} categoryOnly />
-    <ProductResults products={searchDemoProducts(query, category)} onAdded={onAdded} />
+    <ProductResults products={category.products} onAdded={onAdded} />
   </div>;
 }
 
@@ -68,16 +66,18 @@ export function DemoMenuPage() {
   const selected = demoCategories.find(category => category.slug === slug);
   const searching = query.trim().length > 0;
 
-  return <section className="menu-page demo-menu" aria-labelledby="menu-page-title">
-    <div className="menu-page-header" id="menu-top">
-      <h1 id="menu-page-title">Vår meny</h1>
-    </div>
-    <MenuSearch value={query} onChange={value => { setQuery(value); saveQuery("q", value); }} />
+  return <section className="menu-page demo-menu" aria-labelledby={selected ? selected.slug : "menu-page-title"}>
+    {!selected ? <>
+      <div className="menu-page-header" id="menu-top">
+        <h1 id="menu-page-title">Vår meny</h1>
+      </div>
+      <MenuSearch value={query} onChange={value => { setQuery(value); saveQuery("q", value); }} />
+    </> : null}
     <p className="demo-added-status" role="status" aria-live="polite" aria-atomic="true">{addedMessage}</p>
-    {searching ? (
-      <ProductResults products={searchDemoProducts(query)} global onAdded={name => setAddedMessage(`${name} har lagts till i demovarukorgen.`)} />
-    ) : selected ? (
+    {selected ? (
       <CategoryProducts key={selected.slug} category={selected} onAdded={name => setAddedMessage(`${name} har lagts till i demovarukorgen.`)} />
+    ) : searching ? (
+      <ProductResults products={searchDemoProducts(query)} global onAdded={name => setAddedMessage(`${name} har lagts till i demovarukorgen.`)} />
     ) : <>
       <nav className="menu-categories" aria-label="Menykategorier">
         {demoCategories.map(category => <a className="menu-category-card" href={`#${category.slug}`} key={category.slug} aria-label={`Öppna kategori ${category.name}`}>

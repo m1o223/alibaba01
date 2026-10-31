@@ -147,10 +147,7 @@ async function addDrink(page) {
       await page.goto(base + '/menu?orderType=takeaway#' + category.slug);
       await page.locator('.demo-product-card').first().waitFor();
       assert.equal(await page.locator('.demo-product-card').count(), category.products.length);
-      const search = page.getByRole('searchbox', { name: 'Sök i denna kategori', exact: true });
-      await search.fill('xyz-no-results');
-      assert.equal(await page.locator('.demo-product-card').count(), 0);
-      await page.getByRole('button', { name: 'Rensa kategorisökning', exact: true }).click();
+      assert.equal(await page.getByRole('searchbox').count(), 0);
       const first = category.products[0];
       await page.getByRole('link', { name: 'Visa ' + first.name, exact: true }).click();
       await page.locator('.demo-product-page').waitFor();
@@ -187,7 +184,8 @@ async function addDrink(page) {
     assert.equal(new URL(edge.url()).pathname, '/menu');
     assert.equal(await edge.evaluate(() => sessionStorage.getItem('alibaba.preview.demo-order.v1')), 'null', 'Leaving payment must cancel the simulation');
     await edge.goto(base + '/menu?orderType=takeaway#chicken-shawarma');
-    await edge.getByRole('searchbox', { name: 'Sök i denna kategori', exact: true }).fill('tallrik');
+    await edge.locator('.demo-category-view h2').waitFor();
+    assert.equal(await edge.getByRole('searchbox').count(), 0);
     await edge.getByRole('link', { name: 'Visa Kycklingshawarmatallrik', exact: true }).click();
     await edge.getByRole('radio', { name: /^Ris/ }).check();
     await edge.getByRole('button', { name: 'Lägg i påsen', exact: true }).click();
@@ -198,7 +196,9 @@ async function addDrink(page) {
     await edge.getByRole('button', { name: 'Stäng varukorg', exact: true }).click();
     await settle(edge);
     await edge.getByRole('button', { name: 'Tillbaka till menyn', exact: true }).click();
-    assert.equal(await edge.getByRole('searchbox', { name: 'Sök i denna kategori', exact: true }).inputValue(), 'tallrik');
+    await edge.locator('.demo-category-view h2').waitFor();
+    assert.equal(await edge.getByRole('searchbox').count(), 0);
+    assert.equal(await edge.locator('.demo-product-card').count(), 5);
     await edge.goto(base + '/menu/product/' + encodeURIComponent('demo:drinks:water'));
     for (let i = 1; i < 20; i++) await edge.getByRole('button', { name: 'Öka antal', exact: true }).click();
     assert(await edge.getByRole('button', { name: 'Öka antal', exact: true }).isDisabled());

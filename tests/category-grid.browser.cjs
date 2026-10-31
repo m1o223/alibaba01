@@ -42,10 +42,9 @@ const money = value => Number(value.replace(/[^0-9]/g, ''));
           fs.mkdirSync(process.env.TEST_SCREENSHOTS, { recursive: true });
           await page.locator('.demo-category-view').screenshot({ path: path.join(process.env.TEST_SCREENSHOTS, `${category.slug}-${width}.png`) });
         }
-        const search = page.getByRole('searchbox', { name: 'S\u00f6k i denna kategori', exact: true });
-        await search.fill('xyz-no-results');
-        await page.getByText('Inga produkter hittades', { exact: true }).waitFor();
-        await page.getByRole('button', { name: 'Rensa kategoris\u00f6kning', exact: true }).click();
+        assert.equal(await page.getByRole('searchbox').count(), 0);
+        assert.equal(await page.locator('.menu-page-header, .menu-search-status').count(), 0);
+        assert.equal(await page.evaluate(() => document.querySelector('.demo-category-view .demo-product-grid').getBoundingClientRect().top - document.querySelector('.demo-category-view h2').getBoundingClientRect().bottom), 16);
         const products = width === 390 ? category.products : [category.products[0]];
         for (const [index, product] of products.entries()) {
           const card = page.locator(`[data-product-key="${product.key}"]`);
@@ -67,6 +66,10 @@ const money = value => Number(value.replace(/[^0-9]/g, ''));
           assert.ok(Math.abs(await page.evaluate(() => scrollY) - scroll) < 3, 'Category scroll restoration');
         }
         checked += category.products.length;
+        await page.getByRole('link', { name: 'Alla kategorier', exact: true }).click();
+        await page.locator('.menu-category-card').first().waitFor();
+        assert.equal(await page.getByRole('searchbox').count(), 1);
+        assert.equal(await page.locator('.menu-category-card').count(), categories.length);
       }
       assert.equal(checked, 84);
       await page.goto(base + '/menu?q=shawarma', { waitUntil: 'domcontentloaded' });
@@ -74,6 +77,14 @@ const money = value => Number(value.replace(/[^0-9]/g, ''));
       assert.equal(await page.locator('.demo-product-card').count(), 13);
       assert.equal(await page.locator('.category-product-card').count(), 0, 'Global search presentation unchanged');
       assert.equal(await page.locator('.demo-product-actions button').count(), 13);
+      await page.goto(base + '/menu?q=shawarma&q-drinks=xyz-no-results#drinks', { waitUntil: 'domcontentloaded' });
+      await page.locator('.demo-category-view h2[id="drinks"]').waitFor();
+      assert.equal(await page.getByRole('searchbox').count(), 0);
+      assert.equal(await page.locator('.category-product-card').count(), 11, 'Hidden saved searches must not filter category products');
+      await page.getByRole('link', { name: 'Alla kategorier', exact: true }).click();
+      await page.getByRole('searchbox').waitFor();
+      assert.equal(await page.getByRole('searchbox').inputValue(), 'shawarma');
+      assert.equal(await page.locator('.demo-product-card').count(), 13);
       console.log(`${safari ? 'WebKit' : 'Chromium'} ${width}px: all 14 categories / 84 prices, grid, images, search, detail navigation and scroll PASS`);
       await page.close();
     }
