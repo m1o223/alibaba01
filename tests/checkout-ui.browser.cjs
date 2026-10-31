@@ -25,15 +25,13 @@ const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4174';
       assert.equal(await page.locator('input[name="order-type"]').count(), 3);
       assert(await page.getByRole('radio', { name: 'Hämta själv', exact: true }).isChecked());
       const delivery = page.getByRole('radio', { name: 'Hemleverans', exact: true });
-      assert(await delivery.isDisabled());
-      const beforeUrl = page.url();
+      assert(await delivery.isEnabled());
       const beforeTotals = await page.locator('.demo-summary-panel .demo-total').allTextContents();
-      await delivery.scrollIntoViewIfNeeded();
-      const deliveryBox = await page.getByText('Hemleverans', { exact: true }).boundingBox();
-      await page.mouse.click(deliveryBox.x + deliveryBox.width / 2, deliveryBox.y + deliveryBox.height / 2);
-      await delivery.evaluate(input => input.click());
-      assert.equal(await delivery.isChecked(), false);
-      assert.equal(page.url(), beforeUrl);
+      await delivery.check();
+      await page.getByRole('dialog', { name: 'Leveransuppgifter', exact: true }).waitFor();
+      await page.getByRole('button', { name: 'Stäng leveransuppgifter', exact: true }).click();
+      assert(await page.getByRole('button', { name: 'Simulera betalning', exact: true }).isDisabled());
+      await page.getByRole('radio', { name: 'Hämta själv', exact: true }).check();
       assert.deepEqual(await page.locator('.demo-summary-panel .demo-total').allTextContents(), beforeTotals);
       assert.equal(await page.locator('input[name*="address"]').count(), 0);
       for (const [label, value] of [['Äta på plats', 'dine-in'], ['Hämta själv', 'takeaway']]) {
@@ -41,9 +39,6 @@ const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4174';
         await option.check();
         assert.equal(new URL(page.url()).searchParams.get('orderType'), value);
         assert.equal(await page.evaluate(() => sessionStorage.getItem('alibaba.orderType')), value);
-        await option.focus();
-        await page.keyboard.press('ArrowDown');
-        assert.equal(await delivery.isChecked(), false, 'Keyboard navigation skips disabled delivery');
       }
       await page.getByRole('radio', { name: 'Hämta själv', exact: true }).check();
       assert.equal(await page.locator('.demo-checkout .demo-notice').count(), 0);
@@ -74,7 +69,7 @@ const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4174';
       assert.equal((await page.locator('.demo-receipt .demo-total strong').innerText()).replace(/[^0-9]/g, ''), '25');
       assert.deepEqual(writes, [], 'No order or payment requests');
       assert.deepEqual(errors, []);
-      console.log(`${engine} ${width}px: checkout labels, disabled delivery, original logos, unchanged totals and demo receipt PASS`);
+      console.log(`${engine} ${width}px: checkout labels, delivery payment blocked, original logos, unchanged totals and demo receipt PASS`);
       await page.close();
     }
   } finally { await browser.close(); }

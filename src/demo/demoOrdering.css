@@ -58,7 +58,6 @@
 .demo-order-lines li > strong { flex-shrink: 0; white-space: nowrap; }
 .demo-order-lines p { color: #76675b; font-size: 13px; margin: 5px 0; }
 .demo-payment-section .demo-option-group { margin-top: 0; }
-.demo-checkout .checkout-delivery-placeholder { color: #76675b; cursor: default; }
 .demo-checkout .checkout-payment-marks { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex: 0 0 auto; }
 .demo-checkout .checkout-payment-mark { display: block; width: 60px; height: 28px; object-fit: contain; }
 .demo-checkout .checkout-payment-mark--google-pay { width: 72px; height: 40px; }

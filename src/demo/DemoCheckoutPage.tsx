@@ -6,6 +6,7 @@ import { demoProducts } from "./menuData";
 import { DemoLink, getOrderType, withOrderType } from "./navigation";
 import { paymentLabels, receiptLines, type OrderType, type PaymentMethod } from "./orderModel";
 import { DemoNotice, OrderLines } from "./DemoUi";
+import { DeliveryAddressSection } from "./delivery/DeliveryAddressSection";
 
 const methods = Object.keys(paymentLabels) as PaymentMethod[];
 const paymentMarks: Record<PaymentMethod, string[]> = {
@@ -14,7 +15,7 @@ const paymentMarks: Record<PaymentMethod, string[]> = {
 export function DemoCheckoutPage() {
   const cart = useDemoCart()!;
   const flow = useDemoFlow()!;
-  const [orderType, setOrderType] = useState<OrderType | null>(getOrderType);
+  const [orderType, setOrderType] = useState<OrderType | "delivery" | null>(getOrderType);
   const [method, setMethod] = useState<PaymentMethod | null>(null);
   const [processing, setProcessing] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -24,7 +25,7 @@ export function DemoCheckoutPage() {
   if (!flow.session) return <section className="demo-ordering"><h1>Fortsätt till kassan</h1><DemoNotice /><p>Öppna inloggningen och välj demoläget. Inget riktigt konto skapas.</p><button className="demo-primary" onClick={flow.requestLogin}>Logga in</button></section>;
 
   function simulatePayment() {
-    if (!method || !orderType || locked.current) return;
+    if (!method || !orderType || orderType === "delivery" || locked.current) return;
     locked.current = true;
     setProcessing(true);
     timer.current = setTimeout(() => flow.pay(method, orderType), 900);
@@ -44,10 +45,16 @@ export function DemoCheckoutPage() {
             try { sessionStorage.setItem("alibaba.orderType", type); } catch { /* URL also retains the selection. */ }
             const url = new URL(window.location.href); url.searchParams.set("orderType", type); history.replaceState(history.state, "", url);
           }} /><span>{type === "dine-in" ? "Äta på plats" : "Hämta själv"}</span></label>)}
-          <label className="demo-option checkout-delivery-placeholder">
-            <input type="radio" name="order-type" disabled checked={false} readOnly />
+          <label className="demo-option">
+            <input type="radio" name="order-type" checked={orderType === "delivery"} onChange={() => {
+              setOrderType("delivery");
+              // A reload must not silently turn an unfinished delivery into pickup.
+              try { sessionStorage.removeItem("alibaba.orderType"); } catch { /* Delivery still remains blocked in memory. */ }
+              const url = new URL(window.location.href); url.searchParams.delete("orderType"); history.replaceState(history.state, "", url);
+            }} aria-describedby={orderType === "delivery" ? "delivery-unavailable" : undefined} />
             <span>Hemleverans</span>
           </label>
+          <DeliveryAddressSection active={orderType === "delivery"} />
         </fieldset>
       </section>
       <section className="demo-payment-section">
@@ -68,7 +75,7 @@ export function DemoCheckoutPage() {
           <div className="demo-total"><span>Demobelopp</span><strong>{cart.totalLabel}</strong></div>
         </div> : null}
         <p className="demo-muted checkout-demo-status" role="status">{processing ? "Skapar ett demokvitto. Ingen riktig betalning genomförs." : "Demo – ingen riktig betalning genomförs"}</p>
-        <button className="demo-primary" type="button" disabled={!method || !orderType || processing} onClick={simulatePayment}>
+        <button className="demo-primary" type="button" disabled={!method || !orderType || orderType === "delivery" || processing} onClick={simulatePayment}>
           {processing ? <LoaderCircle className="demo-spinner" size={19} /> : <Wallet size={19} />}{processing ? "Simulerar betalning…" : "Simulera betalning"}
         </button>
       </section>
