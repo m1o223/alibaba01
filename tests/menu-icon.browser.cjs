@@ -19,8 +19,13 @@ const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4174';
         const icon = trigger.locator('.header-menu-icon');
         await icon.waitFor();
         assert.equal(await icon.getAttribute('viewBox'), '0 0 64 48');
-        assert.equal(await icon.locator('path').count(), 2);
-        assert.equal(await icon.locator('circle').count(), 1);
+        assert.equal(await icon.locator('path').count(), 3);
+        assert.equal(await icon.locator('circle').count(), 0);
+        assert.deepEqual(await icon.locator('path').evaluateAll(lines => lines.map(line => line.getAttribute('d'))), ['M12 12H54', 'M12 24H44', 'M12 36H34']);
+        assert.equal(await icon.getAttribute('stroke-width'), '4');
+        assert.equal(await icon.getAttribute('stroke-linecap'), 'round');
+        const visibleWidth = await icon.evaluate(el => (el.querySelector('path').getBBox().width + 4) * el.getScreenCTM().a);
+        assert.ok(visibleWidth >= 30 && visibleWidth <= 34);
         const before = await trigger.boundingBox();
         assert.equal(before.width, 44);
         assert.equal(before.height, 44);
@@ -40,21 +45,22 @@ const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4174';
           assert.equal(await page.locator('#site-menu').getAttribute('aria-hidden'), 'false');
           assert.equal(await page.evaluate(() => document.body.style.overflow), 'hidden');
           const state = await icon.evaluate(el => ({
-            dot: getComputedStyle(el.querySelector('circle')).opacity,
+            middle: getComputedStyle(el.querySelector('.header-menu-icon-middle')).opacity,
             lines: [...el.querySelectorAll('path')].map(line => {
               const matrix = new DOMMatrix(getComputedStyle(line).transform);
               return { a: matrix.a, b: matrix.b };
             }),
           }));
-          assert.equal(state.dot, '0');
+          assert.equal(state.middle, '0');
           assert.ok(Math.abs(state.lines[0].a - Math.SQRT1_2) < 0.001);
-          assert.ok(state.lines[0].b > 0 && state.lines[1].b < 0);
+          assert.ok(state.lines[0].b > 0 && state.lines[2].b < 0);
           if (close === 'escape') await page.keyboard.press('Escape');
           else if (close === 'button') await page.locator('.side-menu-close').click();
           else await page.locator('.menu-overlay').click({ position: { x: width - 10, y: 300 } });
           await page.waitForTimeout(300);
           assert.equal(await trigger.getAttribute('aria-expanded'), 'false');
-          assert.equal(await icon.locator('circle').evaluate(el => getComputedStyle(el).opacity), '1');
+          assert.equal(await icon.locator('.header-menu-icon-middle').evaluate(el => getComputedStyle(el).opacity), '1');
+          assert.ok(await icon.locator('path').evaluateAll(lines => lines.every(line => new DOMMatrix(getComputedStyle(line).transform).isIdentity)));
           assert.equal(await page.evaluate(() => document.body.style.overflow), '');
           assert.deepEqual(await trigger.boundingBox(), before);
         }

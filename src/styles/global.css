@@ -85,40 +85,38 @@ button {
   flex: none;
 }
 
-.header-menu-icon path,
-.header-menu-icon circle {
+.header-menu-icon path {
   transform-box: view-box;
   transition: transform 225ms ease-in-out, opacity 225ms ease-in-out;
 }
 
 .header-menu-icon-top {
-  transform-origin: 32px 16px;
+  transform-origin: 33px 12px;
 }
 
 .header-menu-icon-bottom {
-  transform-origin: 26px 32px;
+  transform-origin: 23px 36px;
 }
 
-.header-menu-icon-dot {
-  transform-origin: 47px 32px;
+.header-menu-icon-middle {
+  transform-origin: 28px 24px;
 }
 
 .header-action[aria-expanded="true"] .header-menu-icon-top {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(12px) rotate(45deg);
 }
 
 .header-action[aria-expanded="true"] .header-menu-icon-bottom {
-  transform: translate(6px, -8px) rotate(-45deg) scaleX(1.461538);
+  transform: translate(10px, -12px) rotate(-45deg) scaleX(1.909091);
 }
 
-.header-action[aria-expanded="true"] .header-menu-icon-dot {
+.header-action[aria-expanded="true"] .header-menu-icon-middle {
   opacity: 0;
-  transform: scale(0);
+  transform: scaleX(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header-menu-icon path,
-  .header-menu-icon circle {
+  .header-menu-icon path {
     transition: none;
   }
 }

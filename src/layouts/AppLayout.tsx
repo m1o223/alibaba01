@@ -133,10 +133,10 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
           }}
         >
           {onBack ? <ArrowLeft aria-hidden="true" size={24} /> : (
-            <svg className="header-menu-icon" viewBox="0 0 64 48" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" aria-hidden="true" focusable="false">
-              <path className="header-menu-icon-top" d="M13 16H51" />
-              <path className="header-menu-icon-bottom" d="M13 32H39" />
-              <circle className="header-menu-icon-dot" cx="47" cy="32" r="2" fill="currentColor" stroke="none" />
+            <svg className="header-menu-icon" viewBox="0 0 64 48" width="44" height="33" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" aria-hidden="true" focusable="false">
+              <path className="header-menu-icon-top" d="M12 12H54" />
+              <path className="header-menu-icon-middle" d="M12 24H44" />
+              <path className="header-menu-icon-bottom" d="M12 36H34" />
             </svg>
           )}
         </button>
