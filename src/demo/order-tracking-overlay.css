@@ -1,0 +1,45 @@
+.order-tracking-screen {
+  position: fixed; inset: 0; height: 100dvh; z-index: 160; overflow: hidden;
+  background: #EDECE6; color: #241C18; line-height: 1.5;
+  animation: tracking-screen-up 350ms ease-out both;
+}
+.order-tracking-screen *, .order-tracking-screen *::before, .order-tracking-screen *::after { box-sizing: border-box; letter-spacing: 0; }
+.order-tracking-screen.is-closing { animation: tracking-screen-down 350ms ease-in both; pointer-events: none; }
+.tracking-map { position: absolute; inset: 0 0 auto; height: 30%; overflow: hidden; background: #EDECE6; transition: height 300ms ease-in-out; }
+.is-map-expanded .tracking-map { height: 100%; }
+.tracking-map-illustration, .tracking-map-streets { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tracking-map-marker { position: absolute; transform: translate(-50%, -50%); display: grid; justify-items: center; }
+.tracking-marker-symbol { display: grid; place-items: center; border: 3px solid #fff; border-radius: 50%; }
+.tracking-map-restaurant .tracking-marker-symbol { width: 50px; height: 50px; background: #4A2818; color: #fff; }
+.tracking-map-customer .tracking-marker-symbol { width: 34px; height: 34px; background: #fff; color: #4A2818; border-color: #4A2818; border-width: 2px; }
+.tracking-marker-label { position: absolute; top: calc(100% + 5px); white-space: nowrap; font-size: 11px; font-weight: 600; color: #4A2818; background: #fff; border-radius: 4px; padding: 2px 5px; }
+.tracking-map-demo { position: absolute; top: max(12px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left)); max-width: calc(100% - 84px); margin: 0; padding: 6px 9px; background: #fff; color: #4A2818; border-radius: 4px; font-size: 12px; pointer-events: none; }
+.tracking-map-expand { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: 0; padding: 0; cursor: pointer; }
+.tracking-screen-close { position: absolute; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #DFD2C3; border-radius: 8px; color: #4A2818; background: #fff; cursor: pointer; }
+.order-tracking-screen button[hidden] { display: none; }
+.order-tracking-screen button:focus-visible { outline: 2px solid #4A2818; outline-offset: -4px; }
+.tracking-details { position: absolute; inset: 30% 0 0; overflow-y: auto; overscroll-behavior: contain; border-radius: 20px 20px 0 0; background: #fff; transition: transform 300ms ease-in-out, opacity 300ms ease-in-out; }
+.is-map-expanded .tracking-details { transform: translateY(100%); opacity: 0; pointer-events: none; }
+.tracking-details:focus-visible { outline: 2px solid #4A2818; outline-offset: -4px; }
+.tracking-details-inner { max-width: 680px; margin: 0 auto; padding: 20px max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
+.tracking-countdown { position: relative; width: 180px; height: 180px; margin: 0 auto; }
+.tracking-countdown > svg { width: 100%; height: 100%; display: block; }
+.tracking-countdown > div { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.tracking-countdown [role="timer"] { font-size: 38px; line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; color: #4A2818; }
+.tracking-countdown-ring { transition: stroke-dashoffset 250ms linear; }
+.tracking-estimate-label { margin: 4px 0 16px; text-align: center; color: #76675B; font-size: 13px; }
+.tracking-details h2 { text-align: center; margin: 0 0 6px; font-size: 22px; line-height: 1.35; overflow-wrap: anywhere; }
+.tracking-reference { margin: 0 0 24px; text-align: center; color: #76675B; font-size: 14px; overflow-wrap: anywhere; }
+.tracking-details .demo-order-lines { margin: 0; padding: 0; list-style: none; }
+.tracking-details .demo-order-lines li { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 16px 0; border-bottom: 1px solid #DFD2C3; font-size: 14px; }
+.tracking-details .demo-order-lines li > div { min-width: 0; overflow-wrap: anywhere; }
+.tracking-details .demo-order-lines li > strong { flex-shrink: 0; white-space: nowrap; color: #4A2818; }
+.tracking-details .demo-order-lines p { margin: 5px 0; color: #76675B; font-size: 13px; }
+.tracking-details .demo-order-lines small { color: #76675B; }
+.tracking-total { display: flex; justify-content: space-between; gap: 16px; margin: 20px 0 0; font-size: 18px; font-weight: 700; color: #4A2818; }
+.tracking-total dd { margin: 0; white-space: nowrap; }
+@keyframes tracking-screen-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes tracking-screen-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@media (min-width: 768px) { .tracking-details-inner { padding-top: 24px; } .tracking-countdown { width: 200px; height: 200px; } }
+@media (prefers-reduced-motion: reduce) { .order-tracking-screen, .order-tracking-screen * { animation: none !important; transition: none !important; } }
+@media print { .order-tracking-screen { display: none !important; } }

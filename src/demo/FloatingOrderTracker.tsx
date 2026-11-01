@@ -1,15 +1,14 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDemoPath } from "./navigation";
-import { formatCountdown, remainingSeconds, trackingStatus, type TrackedOrder } from "./trackingModel";
+import { formatCountdown, remainingSeconds, type TrackedOrder } from "./trackingModel";
+import { OrderTrackingOverlay } from "./OrderTrackingOverlay";
 
 export function FloatingOrderTracker({ order }: { order: TrackedOrder }) {
   const [now, setNow] = useState(Date.now);
   const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 16, y: 80, panelX: 16, panelY: 160 });
+  const [position, setPosition] = useState({ x: 16, y: 80 });
   const layer = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
-  const panel = useRef<HTMLElement>(null);
   const path = useDemoPath();
   const seconds = remainingSeconds(order, now);
   const countdown = formatCountdown(seconds);
@@ -25,6 +24,7 @@ export function FloatingOrderTracker({ order }: { order: TrackedOrder }) {
   useLayoutEffect(() => {
     let frame = 0;
     function place() {
+      if (open) return;
       const host = layer.current, button = trigger.current;
       if (!host || !button) return;
       const inset = getComputedStyle(host);
@@ -50,10 +50,7 @@ export function FloatingOrderTracker({ order }: { order: TrackedOrder }) {
         }
         if (best.score === 0) break;
       }
-      const panelWidth = Math.min(320, innerWidth - left - parseFloat(inset.paddingRight));
-      const panelHeight = panel.current?.offsetHeight ?? 300;
-      const next = { x: best.x, y: best.y, panelX: Math.max(left, Math.min(best.x + size - panelWidth, innerWidth - panelWidth - parseFloat(inset.paddingRight))),
-        panelY: best.y - panelHeight - 12 >= top ? best.y - panelHeight - 12 : Math.min(top, Math.max(0, bottom - panelHeight - 12)) };
+      const next = { x: best.x, y: best.y };
       setPosition(current => Object.keys(next).every(key => next[key as keyof typeof next] === current[key as keyof typeof next]) ? current : next);
     }
     function schedule() { cancelAnimationFrame(frame); frame = requestAnimationFrame(place); }
@@ -61,7 +58,6 @@ export function FloatingOrderTracker({ order }: { order: TrackedOrder }) {
     const observer = new ResizeObserver(schedule);
     const main = document.querySelector("main");
     if (main) observer.observe(main);
-    if (panel.current) observer.observe(panel.current);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     window.visualViewport?.addEventListener("resize", schedule);
@@ -69,19 +65,12 @@ export function FloatingOrderTracker({ order }: { order: TrackedOrder }) {
   }, [path, open]);
 
   useEffect(() => { setOpen(false); }, [path]);
-  useEffect(() => { if (open) panel.current?.querySelector<HTMLButtonElement>("button")?.focus({ preventScroll: true }); }, [open]);
-  function close() { setOpen(false); trigger.current?.focus({ preventScroll: true }); }
+  const close = useCallback(() => setOpen(false), []);
   return <div className="order-tracker-layer" ref={layer} lang="sv">
     <button ref={trigger} type="button" className="order-tracker-circle" style={{ left: position.x, top: position.y }}
       aria-label={`Visa demobeställning ${order.summary.reference}`} aria-expanded={open} aria-controls="order-tracker-panel" onClick={() => setOpen(value => !value)}>
       <span className="order-tracker-time" aria-hidden="true">{countdown}</span><span className="order-tracker-demo">Demo</span>
     </button>
-    {open ? <section ref={panel} id="order-tracker-panel" className="order-tracker-panel" style={{ left: position.panelX, top: position.panelY }}
-      role="dialog" aria-labelledby="order-tracker-title" onKeyDown={event => { if (event.key === "Escape") { event.stopPropagation(); close(); } }}>
-      <div className="order-tracker-heading"><h2 id="order-tracker-title">Ali Baba <span>Demo</span></h2><button type="button" onClick={close} aria-label="Stäng orderinformation"><X size={20} aria-hidden="true" /></button></div>
-      <p>Ordernummer #{order.summary.reference}</p>
-      <p className="order-tracker-status" role="status">{trackingStatus(order, now)}</p>
-      <p className="order-tracker-estimate">Simulerad återstående tid <strong role="timer" aria-live="off">{countdown}</strong></p>
-    </section> : null}
+    {open ? <OrderTrackingOverlay order={order} now={now} onClose={close} /> : null}
   </div>;
 }
