@@ -194,7 +194,7 @@ async function stable(page) {
     failed.on('pageerror', e => expectedErrors.push(e.message));
     await failed.route('**/assets/DemoPreview-*.js', route => route.abort());
     await failed.goto(base + '/menu');
-    await failed.getByRole('heading', { name: 'Sidan kunde inte visas' }).waitFor();
+    await failed.getByRole('heading', { name: 'Hoppsan! Något gick fel.' }).waitFor();
     assert(await failed.locator('.app-header').isVisible(), 'Failed chunk has shell and recoverable error');
     await failed.close();
     assert.deepEqual(errors, []);

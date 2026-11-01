@@ -1,0 +1,43 @@
+.app-shell:has(.app-error) { background: #f5efe6; }
+.app-main .app-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: min(62svh, 560px);
+  margin: 0;
+  padding: 36px 8px;
+  color: #4a2818;
+  text-align: center;
+}
+.error-illustration { position: relative; width: 160px; height: 140px; margin-bottom: 20px; flex: none; }
+.error-bag { width: 120px; height: 120px; margin-inline: auto; transform-origin: 50% 85%; animation: error-bag-entrance 550ms ease-out both; }
+.error-bag img { display: block; width: 120px; height: 120px; object-fit: contain; }
+.error-exclamation { position: absolute; right: 4px; top: 12px; font-size: 32px; font-weight: 700; line-height: 1; animation: error-mark-entrance 200ms ease-out 350ms both; }
+.app-error h1 { max-width: 100%; margin: 0 0 12px; font-size: 28px; line-height: 1.2; overflow-wrap: anywhere; }
+.app-error h1:focus { outline: none; }
+.app-error p { max-width: 32rem; margin: 0; font-size: 16px; line-height: 1.6; }
+.error-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
+.app-error .error-actions button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 16px; border: 1px solid #4a2818; border-radius: 8px;
+  font: inherit; font-size: 14px; font-weight: 600; line-height: 1.5;
+}
+.error-primary { background: #4a2818; color: #fff; }
+.error-secondary { background: #fff; color: #4a2818; }
+.app-error .error-actions button:focus-visible { outline: 2px solid #4a2818; outline-offset: 3px; }
+@keyframes error-bag-entrance {
+  0% { opacity: 0; transform: translateY(6px) rotate(0); }
+  25% { opacity: 1; transform: translateY(0) rotate(0); }
+  40% { transform: translateX(-3px) rotate(-4deg); }
+  58% { transform: translateX(3px) rotate(4deg); }
+  76% { transform: translateX(-2px) rotate(-2deg); }
+  100% { opacity: 1; transform: translateX(0) rotate(0); }
+}
+@keyframes error-mark-entrance {
+  from { opacity: 0; transform: scale(.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .error-bag, .error-exclamation { animation: none; }
+}

@@ -80,7 +80,8 @@ function renderNavigation(change: () => void, destinationPath = location.pathnam
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // Checkout can reopen a delivery sheet after mounting. Snapshotting across its
   // fixed-body/blur layers crashes WebKit; retain the lightweight entrance there.
-  const modalLocked = document.body.style.position === "fixed" || Boolean(document.querySelector("main[inert]"))
+  // Recovery screens also use the fallback to avoid WebKit snapshot crashes.
+  const modalLocked = document.body.style.position === "fixed" || Boolean(document.querySelector("main[inert], .app-error"))
     || destinationPath === "/demo/checkout" || new URL(renderedLocation).pathname === "/demo/checkout";
   if (document.startViewTransition && !reduced && !modalLocked) {
     transition = document.startViewTransition(update);
@@ -106,7 +107,22 @@ export function navigate(href: string) {
     return;
   }
   rememberScroll(true);
-  renderNavigation(() => history.pushState({ demoNavigation: true, ...(url.hash ? {} : { scrollY: 0 }) }, "", url), url.pathname);
+  const previousEntryValid = !document.querySelector(".app-error") && isInternalRoute(new URL(location.href));
+  const previousValidUrl = previousEntryValid ? location.href : history.state?.previousValidUrl;
+  renderNavigation(() => history.pushState({ demoNavigation: true, previousEntryValid, previousValidUrl, ...(url.hash ? {} : { scrollY: 0 }) }, "", url), url.pathname);
+}
+
+export function goBackFromError() {
+  const candidate = history.state?.previousValidUrl || document.referrer;
+  try {
+    const previous = new URL(candidate);
+    if (isInternalRoute(previous) && previous.href !== location.href) {
+      if (history.state?.previousEntryValid) history.back();
+      else navigate(previous.href);
+      return;
+    }
+  } catch { /* Direct visits have no known valid previous page. */ }
+  navigate("/");
 }
 
 export function installNavigation() {

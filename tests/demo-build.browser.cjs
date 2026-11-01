@@ -39,7 +39,7 @@ const preview = process.env.TEST_BUILD_MODE === 'preview';
       assert.equal(await page.getByRole('button', { name: 'Fortsätt i demoläge', includeHidden: true }).count(), 0);
       await page.goto(base + '/demo/checkout');
       assert.equal(await page.locator('.demo-checkout').count(), 0);
-      await page.getByRole('button', { name: 'Se menyn & beställ', exact: true }).waitFor();
+      await page.getByRole('heading', { name: 'Sidan kunde inte hittas', exact: true }).waitFor();
     }
     assert.deepEqual(errors, []);
     assert.deepEqual(writes, []);

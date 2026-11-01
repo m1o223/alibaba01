@@ -3,7 +3,7 @@ import { Check, Info, ShoppingBag } from "lucide-react";
 import { useDemoCart } from "./DemoCartContext";
 import { formatDemoPrice, getDemoProduct, type DemoProduct } from "./menuData";
 import { unitPrice, validateSelections, type Selections } from "./orderModel";
-import { DemoLink, withOrderType } from "./navigation";
+import { ErrorPage } from "../components/ErrorPage";
 import { ProductMedia, Quantity } from "./DemoUi";
 import { IngredientExclusions } from "./IngredientExclusions";
 import { useAddToBagFeedback } from "../components/BagAnimation";
@@ -74,5 +74,5 @@ function ProductDetails({ product }: { product: DemoProduct }) {
 }
 export function DemoProductPage({ productKey }: { productKey: string }) {
   const product = getDemoProduct(productKey);
-  return product ? <ProductDetails key={product.key} product={product} /> : <section className="demo-ordering"><h1>Produkten hittades inte</h1><DemoLink href={withOrderType("/menu")}>Tillbaka till menyn</DemoLink></section>;
+  return product ? <ProductDetails key={product.key} product={product} /> : <ErrorPage kind="not-found" />;
 }
