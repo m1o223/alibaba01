@@ -131,6 +131,14 @@ async function addDrink(page) {
       await settle(page);
       await page.getByRole('button', { name: 'Fortsätt i demoläge', exact: true }).click();
       await page.getByRole('radio', { name: method, exact: true }).check();
+      if (method === 'Betalkort – Visa / Mastercard') {
+        assert.equal(await page.locator('.checkout-card-preview input:disabled').count(), 4);
+        assert(await page.getByRole('button', { name: 'Betala säkert', exact: true }).isDisabled());
+        assert.equal(await page.getByRole('button', { name: 'Simulera betalning', exact: true }).count(), 0);
+        console.log(method + ': visual prototype only, payment disabled PASS');
+        await page.close();
+        continue;
+      }
       assert.equal(await page.locator('.demo-checkout input:not([type=radio])').count(), 0, 'No payment credentials');
       await page.getByRole('button', { name: 'Simulera betalning', exact: true }).click();
       await page.getByRole('button', { name: 'Simulera avvisning', exact: true }).waitFor();

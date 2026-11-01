@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CreditCard, LoaderCircle, Wallet } from "lucide-react";
+import { LoaderCircle, Wallet } from "lucide-react";
 import { useDemoCart } from "./DemoCartContext";
 import { useDemoFlow } from "./DemoFlowContext";
 import { demoProducts } from "./menuData";
@@ -7,6 +7,7 @@ import { DemoLink, getOrderType, withOrderType } from "./navigation";
 import { paymentLabels, receiptLines, type OrderType, type PaymentMethod } from "./orderModel";
 import { DemoNotice, OrderLines } from "./DemoUi";
 import { DeliveryAddressSection } from "./delivery/DeliveryAddressSection";
+import { CardPaymentPreview } from "./CardPaymentPreview";
 
 const methods = Object.keys(paymentLabels) as PaymentMethod[];
 const paymentMarks: Record<PaymentMethod, string[]> = {
@@ -25,7 +26,7 @@ export function DemoCheckoutPage() {
   if (!flow.session) return <section className="demo-ordering"><h1>Fortsätt till kassan</h1><DemoNotice /><p>Öppna inloggningen och välj demoläget. Inget riktigt konto skapas.</p><button className="demo-primary" onClick={flow.requestLogin}>Logga in</button></section>;
 
   function simulatePayment() {
-    if (!method || !orderType || orderType === "delivery" || locked.current) return;
+    if (!method || method === "card" || !orderType || orderType === "delivery" || locked.current) return;
     locked.current = true;
     setProcessing(true);
     timer.current = setTimeout(() => flow.pay(method, orderType), 900);
@@ -68,9 +69,10 @@ export function DemoCheckoutPage() {
             </span>
           </label>)}
         </fieldset>
+        {method === "card" ? <CardPaymentPreview /> : <>
         {method ? <div className="demo-payment-preview" key={method}>
           <h2>{paymentLabels[method]} · Demo</h2>
-          {method === "card" ? <div className="demo-card-visual"><CreditCard size={26} /><strong>DEMO · TESTKORT</strong><span>Inga kortuppgifter behövs</span></div> : <p>{method === "swish" ? "Swish öppnas inte. Ingen QR-kod eller betalningsbegäran skapas." : "Ingen plånbok öppnas och inget konto debiteras."}</p>}
+          <p>{method === "swish" ? "Swish öppnas inte. Ingen QR-kod eller betalningsbegäran skapas." : "Ingen plånbok öppnas och inget konto debiteras."}</p>
           <p>Ingen betalningsleverantör är ansluten.</p>
           <div className="demo-total"><span>Demobelopp</span><strong>{cart.totalLabel}</strong></div>
         </div> : null}
@@ -78,6 +80,7 @@ export function DemoCheckoutPage() {
         <button className="demo-primary" type="button" disabled={!method || !orderType || orderType === "delivery" || processing} onClick={simulatePayment}>
           {processing ? <LoaderCircle className="demo-spinner" size={19} /> : <Wallet size={19} />}{processing ? "Simulerar betalning…" : "Simulera betalning"}
         </button>
+        </>}
       </section>
     </div>
   </section>;
