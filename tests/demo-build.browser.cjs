@@ -27,11 +27,13 @@ const preview = process.env.TEST_BUILD_MODE === 'preview';
       await page.getByRole('button', { name: 'Fortsätt i demoläge', exact: true }).click();
       await page.getByRole('radio', { name: 'Swish', exact: true }).check();
       await page.getByRole('button', { name: 'Simulera betalning', exact: true }).click();
-      await page.locator('.demo-receipt').waitFor();
-      assert.match(await page.locator('.demo-receipt').innerText(), /Ta med/);
-      assert.equal((await page.locator('.demo-receipt .demo-total strong').innerText()).replace(/[^0-9]/g, ''), '25');
+      await page.locator('.payment-demo-receipt').waitFor();
+      assert.match(await page.locator('.payment-demo-receipt').innerText(), /Hämta själv/);
+      assert.equal((await page.locator('.payment-demo-grand-total dd').innerText()).replace(/[^0-9]/g, ''), '25');
       await page.reload();
-      await page.locator('.demo-receipt').waitFor();
+      await page.locator('.demo-checkout').waitFor();
+      assert.equal(await page.locator('.payment-demo-modal').count(), 0);
+      assert.equal(await page.locator('header .cart-count').innerText(), '1');
     } else {
       assert(await page.getByRole('button', { name: 'Till kassan', exact: true }).isDisabled());
       assert.equal(await page.getByRole('button', { name: 'Fortsätt i demoläge', includeHidden: true }).count(), 0);

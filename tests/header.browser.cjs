@@ -107,9 +107,10 @@ async function screenshot(page, name, headerOnly = false) {
       if (width === 390 || width === 1440) await screenshot(page, `header-checkout-${width}`);
       await page.getByRole('radio', { name: 'Swish', exact: true }).check();
       await page.getByRole('button', { name: 'Simulera betalning', exact: true }).click();
-      await page.locator('.demo-receipt').waitFor();
+      await page.locator('.payment-demo-receipt').waitFor();
+      await page.getByRole('button', { name: 'Stäng', exact: true }).click();
       await check(page, expected);
-      assert.equal(await page.locator('header .cart-count').innerText(), '0');
+      assert.equal(await page.locator('header .cart-count').innerText(), '2');
       if (width === 390 || width === 1440) await screenshot(page, `header-receipt-${width}`);
       console.log(`Shared header ${width}px: all routes, unchanged home, navigation, auth, cart counter, checkout and receipt PASS`);
       await page.close();

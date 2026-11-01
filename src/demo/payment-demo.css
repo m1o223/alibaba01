@@ -1,0 +1,44 @@
+.payment-demo-layer { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+.payment-demo-backdrop { position: absolute; inset: 0; background: rgb(36 28 24 / 35%); }
+.payment-demo-modal.demo-ordering { position: relative; margin: 0; padding: 24px; width: 100%; max-width: 540px; max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; border: 1px solid #DFD2C3; border-radius: 8px; background: #FFFFFF; color: #241C18; box-shadow: 0 12px 40px rgb(36 28 24 / 12%); animation: payment-demo-appear 200ms ease-out; }
+.payment-demo-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.payment-demo-badge { padding: 4px 10px; border-radius: 4px; background: #EAE0D4; color: #4A2818; font-size: 13px; font-weight: 700; }
+.payment-demo-close, .payment-demo-secondary { display: inline-flex; justify-content: center; align-items: center; min-height: 44px; border: 1px solid #DFD2C3; border-radius: 8px; background: #F5EFE6; color: #4A2818; cursor: pointer; }
+.payment-demo-close { width: 44px; flex: 0 0 44px; padding: 0; }
+.payment-demo-secondary { padding: 10px 18px; }
+.payment-demo-modal button:focus-visible { outline: 2px solid #4A2818; outline-offset: 3px; }
+.payment-demo-modal h2:focus { outline: none; }
+.payment-demo-progress { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 270px; text-align: center; gap: 16px; }
+.payment-demo-symbol { width: 72px; height: 72px; display: grid; place-items: center; color: #4A2818; }
+.payment-demo-progress h2 { font-size: 22px; margin: 0; overflow-wrap: anywhere; }
+.payment-demo-progress p { margin: 0; color: #76675B; }
+.payment-demo-spinner { animation: payment-demo-spin 1s linear infinite; }
+.payment-demo-check { animation: payment-demo-appear 250ms ease-out; }
+.payment-demo-receipt { animation: payment-demo-appear 250ms ease-out; overflow-wrap: anywhere; }
+.payment-demo-receipt-heading { padding: 16px 0; text-align: center; }
+.payment-demo-receipt-heading h2 { margin: 0 0 4px; font-size: 26px; color: #4A2818; }
+.payment-demo-receipt-heading p { margin: 0; color: #76675B; }
+.payment-demo-meta, .payment-demo-totals { margin: 0; padding: 16px 0; border-top: 1px solid #DFD2C3; display: grid; gap: 10px; font-size: 14px; }
+.payment-demo-meta > div, .payment-demo-totals > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.payment-demo-meta dt { color: #76675B; }
+.payment-demo-meta dd, .payment-demo-totals dd { margin: 0; text-align: right; }
+.payment-demo-grand-total { font-weight: 700; font-size: 18px; }
+.payment-demo-safety { font-size: 13px; line-height: 1.6; color: #76675B; margin: 16px 0 0; }
+.payment-demo-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px; padding-top: 20px; }
+.payment-demo-modal .demo-order-lines { margin: 0; }
+.payment-demo-modal .demo-order-lines li { break-inside: avoid; }
+@keyframes payment-demo-spin { to { transform: rotate(360deg); } }
+@keyframes payment-demo-appear { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 380px) { .payment-demo-modal.demo-ordering { padding: 16px; } .payment-demo-progress h2 { font-size: 20px; } }
+@media (prefers-reduced-motion: reduce) { .payment-demo-layer *, .payment-demo-modal.demo-ordering { animation: none; transition: none; } }
+@media print {
+  body:has(.payment-demo-layer[data-phase="receipt"]) { position: static !important; overflow: visible !important; width: auto !important; background: white !important; }
+  body:has(.payment-demo-layer[data-phase="receipt"]) > :not(.payment-demo-layer) { display: none !important; }
+  .payment-demo-layer[data-phase="receipt"] { position: static; display: block; padding: 0; }
+  .payment-demo-layer[data-phase="receipt"] * { animation: none !important; transition: none !important; }
+  .payment-demo-layer[data-phase="receipt"] .payment-demo-modal { max-height: none; max-width: none; overflow: visible; padding: 0; border: 0; box-shadow: none; animation: none; }
+  .payment-demo-layer[data-phase="receipt"] .payment-demo-backdrop,
+  .payment-demo-layer[data-phase="receipt"] .payment-demo-close,
+  .payment-demo-layer[data-phase="receipt"] .payment-demo-actions { display: none; }
+  .payment-demo-safety, .payment-demo-badge { color: black; }
+}

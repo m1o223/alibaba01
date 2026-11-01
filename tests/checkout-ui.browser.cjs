@@ -60,8 +60,8 @@ const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4174';
           }
           assert(await card.locator('input').evaluateAll(inputs => inputs.every(input => input.readOnly && input.disabled && input.value === '' && !input.name && input.autocomplete === 'off')));
           assert.equal(await card.locator('form').count(), 0);
-          assert.equal(await page.locator('.demo-payment-preview, .demo-card-visual, .checkout-demo-status').count(), 0);
-          assert.equal(await pay.count(), 0);
+          assert.equal(await page.locator('.demo-payment-preview, .demo-card-visual').count(), 0);
+          assert(await pay.isEnabled());
           assert.equal(await card.getByText('Kortbetalning är ännu inte tillgänglig.', { exact: true }).count(), 1);
           const securePay = card.getByRole('button', { name: 'Betala säkert', exact: true });
           assert(await securePay.isDisabled());
@@ -93,9 +93,11 @@ const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4174';
       }
       await page.getByRole('radio', { name: 'Swish', exact: true }).check();
       await pay.click();
-      await page.locator('.demo-receipt').waitFor();
-      assert.match(await page.locator('.demo-receipt').innerText(), /Ta med/);
-      assert.equal((await page.locator('.demo-receipt .demo-total strong').innerText()).replace(/[^0-9]/g, ''), '25');
+      await page.locator('.payment-demo-receipt').waitFor();
+      assert.match(await page.locator('.payment-demo-receipt').innerText(), /Hämta själv/);
+      assert.equal((await page.locator('.payment-demo-grand-total dd').innerText()).replace(/[^0-9]/g, ''), '25');
+      assert.equal(new URL(page.url()).pathname, '/demo/checkout');
+      assert.equal(await page.locator('header .cart-count').innerText(), '1');
       assert.deepEqual(writes, [], 'No order or payment requests');
       assert.deepEqual(errors, []);
       console.log(`${engine} ${width}px: disabled card UI, no credentials/storage/requests/submission, unchanged totals and Swish demo receipt PASS`);

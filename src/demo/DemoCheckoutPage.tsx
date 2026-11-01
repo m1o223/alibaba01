@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { LoaderCircle, Wallet } from "lucide-react";
 import { useDemoCart } from "./DemoCartContext";
 import { useDemoFlow } from "./DemoFlowContext";
@@ -8,6 +8,7 @@ import { paymentLabels, receiptLines, type OrderType, type PaymentMethod } from 
 import { DemoNotice, OrderLines } from "./DemoUi";
 import { DeliveryAddressSection } from "./delivery/DeliveryAddressSection";
 import { CardPaymentPreview } from "./CardPaymentPreview";
+import { PaymentDemoModal, type PaymentPreview } from "./PaymentDemoModal";
 
 const methods = Object.keys(paymentLabels) as PaymentMethod[];
 const paymentMarks: Record<PaymentMethod, string[]> = {
@@ -18,18 +19,21 @@ export function DemoCheckoutPage() {
   const flow = useDemoFlow()!;
   const [orderType, setOrderType] = useState<OrderType | "delivery" | null>(getOrderType);
   const [method, setMethod] = useState<PaymentMethod | null>(null);
-  const [processing, setProcessing] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [preview, setPreview] = useState<PaymentPreview | null>(null);
+  const processing = preview !== null;
   const locked = useRef(false);
-  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  const closePreview = useCallback(() => { setPreview(null); locked.current = false; }, []);
   if (!cart.count) return <section className="demo-ordering"><h1>Din varukorg är tom</h1><DemoNotice /><DemoLink className="demo-primary" href={withOrderType("/menu")}>Gå till menyn</DemoLink></section>;
   if (!flow.session) return <section className="demo-ordering"><h1>Fortsätt till kassan</h1><DemoNotice /><p>Öppna inloggningen och välj demoläget. Inget riktigt konto skapas.</p><button className="demo-primary" onClick={flow.requestLogin}>Logga in</button></section>;
 
   function simulatePayment() {
-    if (!method || method === "card" || !orderType || orderType === "delivery" || locked.current) return;
+    if (!method || !orderType || orderType === "delivery" || locked.current) return;
     locked.current = true;
-    setProcessing(true);
-    timer.current = setTimeout(() => flow.pay(method, orderType), 900);
+    setPreview({
+      reference: `DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+      createdAt: new Date().toISOString(), orderType, paymentMethod: method,
+      lines: receiptLines(cart.lines, demoProducts), totalOre: cart.totalOre,
+    });
   }
   return <section className="demo-ordering demo-checkout" aria-labelledby="checkout-heading" aria-busy={processing}>
     <h1 id="checkout-heading" tabIndex={-1}>Kassan</h1>
@@ -69,8 +73,7 @@ export function DemoCheckoutPage() {
             </span>
           </label>)}
         </fieldset>
-        {method === "card" ? <CardPaymentPreview /> : <>
-        {method ? <div className="demo-payment-preview" key={method}>
+        {method === "card" ? <CardPaymentPreview /> : method ? <div className="demo-payment-preview" key={method}>
           <h2>{paymentLabels[method]} · Demo</h2>
           <p>{method === "swish" ? "Swish öppnas inte. Ingen QR-kod eller betalningsbegäran skapas." : "Ingen plånbok öppnas och inget konto debiteras."}</p>
           <p>Ingen betalningsleverantör är ansluten.</p>
@@ -80,8 +83,8 @@ export function DemoCheckoutPage() {
         <button className="demo-primary" type="button" disabled={!method || !orderType || orderType === "delivery" || processing} onClick={simulatePayment}>
           {processing ? <LoaderCircle className="demo-spinner" size={19} /> : <Wallet size={19} />}{processing ? "Simulerar betalning…" : "Simulera betalning"}
         </button>
-        </>}
       </section>
     </div>
+    {preview ? <PaymentDemoModal receipt={preview} onClose={closePreview} /> : null}
   </section>;
 }

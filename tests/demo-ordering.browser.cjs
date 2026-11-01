@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const { openLegacyOrder } = require('./legacy-order-fixture.cjs');
 const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4173';
 const shots = process.env.TEST_SCREENSHOTS;
 const money = text => Number(text.replace(/[^0-9]/g, ''));
@@ -90,7 +91,12 @@ async function addDrink(page) {
       await noOverflow(page);
       await screenshot(page, `ordering-checkout-${width}`);
       await page.getByRole('button', { name: 'Simulera betalning', exact: true }).click();
-      await page.locator('.demo-receipt').waitFor();
+      await page.locator('.payment-demo-receipt').waitFor();
+      assert.equal(new URL(page.url()).pathname, '/demo/checkout');
+      assert.equal(await page.locator('header .cart-count').innerText(), '3');
+      assert.equal(money(await page.locator('.payment-demo-grand-total dd').innerText()), 525);
+      await page.getByRole('button', { name: 'Stäng', exact: true }).click();
+      await openLegacyOrder(page, base);
       assert.match(page.url(), /DEMO-[A-F0-9]{8}/);
       assert.equal(money(await page.locator('.demo-receipt .demo-total strong').innerText()), 525);
       assert.match(await page.locator('.demo-receipt').innerText(), /3 × Kycklingshawarmatallrik/);
@@ -134,13 +140,13 @@ async function addDrink(page) {
       if (method === 'Betalkort – Visa / Mastercard') {
         assert.equal(await page.locator('.checkout-card-preview input:disabled').count(), 4);
         assert(await page.getByRole('button', { name: 'Betala säkert', exact: true }).isDisabled());
-        assert.equal(await page.getByRole('button', { name: 'Simulera betalning', exact: true }).count(), 0);
-        console.log(method + ': visual prototype only, payment disabled PASS');
-        await page.close();
-        continue;
-      }
-      assert.equal(await page.locator('.demo-checkout input:not([type=radio])').count(), 0, 'No payment credentials');
+      } else assert.equal(await page.locator('.demo-checkout input:not([type=radio])').count(), 0, 'No payment credentials');
       await page.getByRole('button', { name: 'Simulera betalning', exact: true }).click();
+      await page.locator('.payment-demo-receipt').waitFor();
+      assert.match(await page.locator('.payment-demo-receipt').innerText(), new RegExp(method));
+      assert.equal(await page.locator('header .cart-count').innerText(), '1');
+      await page.getByRole('button', { name: 'Stäng', exact: true }).click();
+      await openLegacyOrder(page, base, method === 'Apple Pay' ? 'apple' : method === 'Google Pay' ? 'google' : 'card');
       await page.getByRole('button', { name: 'Simulera avvisning', exact: true }).waitFor();
       await page.getByRole('button', { name: 'Simulera avvisning', exact: true }).click();
       assert.equal(await page.locator('.demo-current-status').innerText(), 'Beställning avvisad i demo');
@@ -188,8 +194,9 @@ async function addDrink(page) {
     await edge.getByRole('button', { name: 'Till kassan', exact: true }).click();
     await edge.getByRole('radio', { name: 'Swish', exact: true }).check();
     await edge.getByRole('button', { name: 'Simulera betalning', exact: true }).click();
+    await edge.keyboard.press('Escape');
     await edge.getByRole('button', { name: 'Tillbaka till menyn', exact: true }).click();
-    await edge.waitForTimeout(1100);
+    await edge.waitForTimeout(4200);
     assert.equal(new URL(edge.url()).pathname, '/menu');
     assert.equal(await edge.evaluate(() => sessionStorage.getItem('alibaba.preview.demo-order.v1')), 'null', 'Leaving payment must cancel the simulation');
     await edge.goto(base + '/menu?orderType=takeaway#chicken-shawarma');
@@ -243,8 +250,8 @@ async function addDrink(page) {
     await blocked.getByRole('button', { name: 'Fortsätt i demoläge', exact: true }).click();
     await blocked.getByRole('radio', { name: 'Swish', exact: true }).check();
     await blocked.getByRole('button', { name: 'Simulera betalning', exact: true }).click();
-    await blocked.locator('.demo-receipt').waitFor();
-    assert.match(await blocked.locator('.demo-receipt').innerText(), /Ta med/);
+    await blocked.locator('.payment-demo-receipt').waitFor();
+    assert.match(await blocked.locator('.payment-demo-receipt').innerText(), /Hämta själv/);
     await blocked.close();
     assert.deepEqual(errors, []);
     assert.deepEqual(writes, []);
