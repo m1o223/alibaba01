@@ -5,6 +5,7 @@ import { formatDemoPrice } from "./menuData";
 import { paymentLabels, type OrderType, type PaymentMethod, type ReceiptLine } from "./orderModel";
 import { OrderLines } from "./DemoUi";
 import "./payment-demo.css";
+import { useDemoTracking } from "./DemoTracking";
 
 // A memory-only display snapshot, deliberately separate from persisted demo orders.
 export type PaymentPreview = {
@@ -19,6 +20,7 @@ export type PaymentPreview = {
 const orderTypeLabels = { "dine-in": "Äta på plats", takeaway: "Hämta själv", delivery: "Hemleverans" };
 
 export function PaymentDemoModal({ receipt, onClose }: { receipt: PaymentPreview; onClose: () => void }) {
+  const beginTracking = useDemoTracking();
   const [phase, setPhase] = useState<"processing" | "confirmed" | "receipt">("processing");
   const panel = useRef<HTMLElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
@@ -94,6 +96,7 @@ export function PaymentDemoModal({ receipt, onClose }: { receipt: PaymentPreview
       {phase === "receipt" ? <div className="payment-demo-actions">
         <button type="button" className="payment-demo-secondary" onClick={onClose}>Stäng</button>
         <button type="button" className="demo-primary" onClick={() => window.print()}><Printer size={18} aria-hidden="true" />Skriv ut</button>
+        <button type="button" className="demo-primary" onClick={() => { onClose(); beginTracking(receipt); }}>Fortsätt</button>
       </div> : null}
     </section>
   </div>, document.body);

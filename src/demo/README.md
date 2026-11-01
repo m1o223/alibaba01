@@ -38,9 +38,10 @@ use `VERCEL_ENV=production` and must contain no DemoPreview assets or demo data.
   bottom sheet exposes `Fortsätt i demoläge`. No real authentication provider
   or authenticated-user state existed in this checkout prototype. This flag
   does not claim real authentication, store credentials, or invoke Google.
-- `/demo/order/:demoReference` displays a snapshot receipt and explicit
+- The legacy `/demo/order/:demoReference` displays a snapshot receipt and explicit
   simulation controls. The cart is consumed only after this view mounts.
-  Reopening a receipt never consumes a newly added cart a second time.
+  Reopening a receipt never consumes a newly added cart a second time. Current
+  checkout does not navigate to this legacy route or consume the bag.
 - `DemoFlow.tsx` owns demo session and receipt lifecycle. `orderModel.ts` owns
   selection validation, integer-ore totals, canonical line identity and the
   pure order-event reducer. There are no network transports.
@@ -64,12 +65,38 @@ demo catalog. Storage failure falls back to memory for the active page session.
 
 Payment interfaces are explanatory simulations, not provider SDKs. The short
 processing timer is canceled if the customer leaves checkout. Restaurant
-acceptance is never automatic: only receipt creation advances automatically
-to waiting. Explicit demo events handle acceptance (1-120 simulated minutes),
-rejection, preparation and ready. These event types are a future frontend
-adapter boundary, not implemented backend events.
+acceptance is never automatic. The legacy order page retains its explicit demo
+events for acceptance (1-120 simulated minutes), rejection, preparation and ready.
+The current checkout uses the separate fixed 25-minute preview described below.
+Neither event system implements backend transport.
 
-## Verification
+## Current Confirmation and Tracking Preview
+
+`PaymentDemoModal` retains its 3-second processing and 900ms confirmation stages.
+Its receipt remains readable/printable until the customer chooses `Fortsätt`.
+That explicit action starts the new confirmation flow; closing the receipt does
+not create tracking state. Neither path clears or mutates the shopping bag.
+
+`DemoTracking` owns the new isolated session key `alibaba.preview.tracking.v1`.
+`trackingModel.ts` validates restored data and exposes a pure event reducer.
+Only the visibly labeled demo controls can accept or reject. Acceptance stores
+the timestamp and a temporary 1500-second estimate. OK acknowledges the accepted
+state and returns home; rejected orders never create a tracker. A rejected new
+attempt does not remove an earlier accepted order. Its last rejection remains
+in session storage but is not reopened after acknowledgement.
+
+`FloatingOrderTracker` derives remaining seconds from the accepted timestamp,
+including after navigation, refresh, tab suspension and visibility changes.
+Expiry displays `Beräknad tid uppnådd`, never a ready-for-pickup claim. Closing
+its information panel does not remove state. The tracker chooses a clear viewport
+edge below the header without changing page layout. State is tab-session-local,
+contains no address or payment credentials, and is not an official order record.
+If browser storage is blocked, state works in memory until a full page load.
+
+These components exist only inside the lazy Preview provider. They add no API
+requests, polling, WebSockets, staff notifications or payment integrations.
+
+## Verification Commands
 
 - `npm test`: exact catalog/prices, Swedish search, configuration validity,
   integer totals, distinct line identities, storage validation, receipt snapshots
@@ -86,6 +113,13 @@ adapter boundary, not implemented backend events.
   and optionally `BROWSER_EXECUTABLE` and `TEST_SCREENSHOTS`.
   Map requests are stubbed; all non-GET requests and JavaScript errors fail the
   suite. Tests never submit orders or real payments.
+- `node tests/order-tracking.browser.cjs`: accept/reject journeys, receipt identity,
+  bag preservation, persisted timestamps, expiry, panel interaction, keyboard
+  focus, reduced motion and tracker placement at 307/375/390/430/768/1440px.
+  Runs against a compiled Preview on port 4174. Set `TEST_BROWSER=webkit` for
+  WebKit, `TEST_WIDTHS` to narrow the matrix, and `SCREENSHOT_DIR` for captures.
+- `node tests/payment-demo.browser.cjs`: unchanged four-method payment animation,
+  exact timing, printing, no network activity and no cart mutations.
 
 Deploy to Vercel Preview only. Do not promote or copy a Preview build to
 Production. Production must be rebuilt without `VERCEL_ENV=preview`.

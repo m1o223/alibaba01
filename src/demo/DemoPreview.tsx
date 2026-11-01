@@ -8,9 +8,10 @@ import { DemoCheckoutPage } from "./DemoCheckoutPage";
 import { DemoOrderPage } from "./DemoOrderPage";
 import { backToMenu, navigate, useDemoPath, withOrderType } from "./navigation";
 import "./demoOrdering.css";
+import { DemoTrackingProvider } from "./DemoTracking";
 
 export default function DemoPreview({ currentPath, page }: { currentPath: string; page: ReactNode }) {
-  return <DemoCartProvider><DemoFlowProvider><DemoRoutes initialPath={currentPath} page={page} /></DemoFlowProvider></DemoCartProvider>;
+  return <DemoCartProvider><DemoFlowProvider><DemoTrackingProvider><DemoRoutes initialPath={currentPath} page={page} /></DemoTrackingProvider></DemoFlowProvider></DemoCartProvider>;
 }
 
 function DemoRoutes({ initialPath, page }: { initialPath: string; page: ReactNode }) {

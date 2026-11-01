@@ -1,0 +1,41 @@
+.order-confirmation-layer { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)); }
+.order-confirmation-backdrop { position: absolute; inset: 0; background: rgb(36 28 24 / 35%); }
+.order-confirmation { position: relative; background: #fff; border: 1px solid #DFD2C3; border-radius: 8px; width: min(100%, 480px); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; padding: 24px; text-align: center; color: #241C18; line-height: 1.6; animation: order-tracking-enter 240ms ease-out; }
+.order-confirmation *, .order-tracker-layer * { box-sizing: border-box; letter-spacing: 0; }
+.order-demo-label { display: inline-block; background: #EAE0D4; color: #4A2818; border-radius: 4px; padding: 3px 9px; font-size: 13px; font-weight: 700; }
+.order-confirmation-brand { font-size: 24px; font-weight: 700; color: #4A2818; margin: 16px 0 4px; }
+.order-confirmation-reference { font-size: 14px; overflow-wrap: anywhere; color: #76675B; margin: 0 0 24px; }
+.order-confirmation-state { animation: order-tracking-enter 240ms ease-out; }
+.order-confirmation h2 { font-size: 22px; line-height: 1.4; margin: 16px 0 12px; overflow-wrap: anywhere; }
+.order-confirmation h2:focus { outline: none; }
+.order-confirmation p { overflow-wrap: anywhere; }
+.order-confirmation .order-demo-note { color: #76675B; font-size: 13px; margin: 16px 0 0; }
+.order-waiting-icon { color: #4A2818; animation: order-tracking-wait 1.4s linear infinite; }
+.order-accepted-icon { color: #4A2818; animation: order-tracking-enter 280ms ease-out; }
+.order-rejected-icon { color: #A33028; }
+.order-test-controls { margin: 24px 0; }
+.order-test-controls p { color: #76675B; font-size: 13px; margin: 0 0 10px; }
+.order-test-controls > div { display: flex; justify-content: center; gap: 16px; }
+.order-test-controls button, .order-tracker-heading button { min-width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #DFD2C3; border-radius: 8px; cursor: pointer; }
+.order-test-accept { background: #EEF6EF; color: #246B38; }
+.order-test-reject { background: #FBEFED; color: #A33028; }
+.order-confirmation-primary { margin-top: 24px; min-height: 44px; padding: 10px 24px; background: #4A2818; color: white; font: inherit; font-weight: 600; border: 1px solid #4A2818; border-radius: 8px; cursor: pointer; }
+.order-confirmation button:focus-visible, .order-tracker-layer button:focus-visible { outline: 2px solid #4A2818; outline-offset: 3px; }
+.order-tracker-layer { position: fixed; inset: 0; z-index: 25; padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); pointer-events: none; color: #241C18; }
+.order-tracker-circle { position: fixed; width: 76px; height: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid #4A2818; border-radius: 50%; background: #fff; color: #4A2818; padding: 4px; cursor: pointer; pointer-events: auto; box-shadow: 0 2px 8px rgb(36 28 24 / 8%); animation: order-tracker-fade 250ms ease-out; }
+.order-tracker-time { font-size: 19px; line-height: 1.4; font-weight: 700; font-variant-numeric: tabular-nums; }
+.order-tracker-demo { font-size: 10px; line-height: 1.2; }
+.order-tracker-panel { position: fixed; width: min(320px, calc(100vw - 32px)); max-height: calc(100dvh - 100px); overflow-y: auto; overscroll-behavior: contain; padding: 16px; background: #fff; border: 1px solid #DFD2C3; border-radius: 8px; box-shadow: 0 4px 18px rgb(36 28 24 / 10%); pointer-events: auto; animation: order-tracking-enter 220ms ease-out; line-height: 1.6; overflow-wrap: anywhere; }
+.order-tracker-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.order-tracker-heading h2 { font-size: 18px; margin: 0; color: #4A2818; }
+.order-tracker-heading h2 span { font-size: 11px; font-weight: 500; margin-left: 4px; }
+.order-tracker-heading button { background: #F5EFE6; color: #4A2818; flex-shrink: 0; }
+.order-tracker-panel p { font-size: 14px; margin: 12px 0 0; }
+.order-tracker-estimate { color: #76675B; }
+.order-tracker-estimate strong { display: block; color: #4A2818; font-size: 24px; font-variant-numeric: tabular-nums; }
+@keyframes order-tracking-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes order-tracking-wait { to { transform: rotate(360deg); } }
+@keyframes order-tracker-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 600px) { .order-tracker-circle { width: 66px; height: 66px; } .order-tracker-time { font-size: 17px; } .order-confirmation { padding: 20px 16px; } .order-confirmation h2 { font-size: 20px; } }
+@media (prefers-reduced-motion: reduce) { .order-confirmation, .order-confirmation *, .order-tracker-layer * { animation: none !important; transition: none !important; } }
+@media print { .order-confirmation-layer, .order-tracker-layer { display: none !important; } }
