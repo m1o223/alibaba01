@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { navigate, restorePagePosition, useLocation } from "../navigation";
+import { PageBoundary } from "../components/PageBoundary";
 import { CartDrawerContent } from "../components/CartDrawerContent";
 import { AuthBottomSheet } from "../components/AuthBottomSheet";
 import { BagAnimationContext, useBagAnimation } from "../components/BagAnimation";
@@ -27,9 +29,12 @@ type AppLayoutProps = {
   currentPath?: string;
   orderingPage?: boolean;
   onBack?: () => void;
+  loading?: boolean;
 };
 
-export function AppLayout({ children, currentPath = "/", orderingPage = false, onBack }: AppLayoutProps) {
+export function AppLayout({ children, currentPath = "/", orderingPage = false, onBack, loading = false }: AppLayoutProps) {
+  const locationKey = useLocation();
+  useLayoutEffect(() => { if (!loading) restorePagePosition(); }, [locationKey, loading]);
   const demoCart = useDemoCart();
   const demoFlow = useDemoFlow();
   const [checkoutAfterAuth, setCheckoutAfterAuth] = useState(false);
@@ -121,10 +126,11 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
 
   return (
     <BagAnimationContext.Provider value={bagAnimation.animate}>
-    <div className={isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}${isMenuPage ? " menu-shell" : ""}${orderingPage ? " demo-ordering-shell" : ""}`} lang="sv">
-      <header className="app-header" aria-label="Sidhuvud" inert={isAuthOpen}>
+    <div className={`${isHomePage ? "home-foundation" : `app-shell${isContactPage ? " contact-shell" : ""}${isMenuPage ? " menu-shell" : ""}${orderingPage ? " demo-ordering-shell" : ""}`}${loading ? " route-pending" : ""}`} lang="sv">
+      <header className="app-header" aria-label="Sidhuvud" inert={isAuthOpen} aria-busy={loading || undefined}>
         <button
           ref={menuTriggerRef}
+          disabled={loading}
           className="header-action icon-button"
           type="button"
           aria-label={onBack ? "Tillbaka till menyn" : "Öppna meny"}
@@ -153,6 +159,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
 
         <button
           className="header-action cart-button"
+          disabled={loading}
           type="button"
           aria-label="Öppna varukorg"
           aria-expanded={isCartOpen}
@@ -277,7 +284,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
           } : undefined}
           onGoToMenu={() => {
             setIsCartOpen(false);
-            window.location.href = __DEMO_MENU__ ? `/menu${window.location.search}` : "/menu";
+            navigate(__DEMO_MENU__ ? `/menu${window.location.search}` : "/menu");
           }}
         />
       </aside>
@@ -296,7 +303,7 @@ export function AppLayout({ children, currentPath = "/", orderingPage = false, o
       />
 
       <main className={pageClass("app-main")} inert={isAuthOpen}>
-        {children}
+        <PageBoundary key={currentPath}>{children}</PageBoundary>
       </main>
       {!orderingPage ? <footer id="contact" className={pageClass(`app-footer ${isContactPage ? "app-footer-contact-page" : ""}`, "home-info")} inert={isAuthOpen}>
         <div className={pageClass("footer-content", "home-info-grid")}>

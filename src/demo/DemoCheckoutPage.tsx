@@ -9,6 +9,8 @@ import { DemoNotice, OrderLines } from "./DemoUi";
 import { DeliveryAddressSection } from "./delivery/DeliveryAddressSection";
 import { CardPaymentPreview } from "./CardPaymentPreview";
 import { PaymentDemoModal, type PaymentPreview } from "./PaymentDemoModal";
+import { useNavigationDraft } from "../hooks/useNavigationDraft";
+import { replacePageUrl } from "../navigation";
 
 const methods = Object.keys(paymentLabels) as PaymentMethod[];
 const paymentMarks: Record<PaymentMethod, string[]> = {
@@ -17,8 +19,8 @@ const paymentMarks: Record<PaymentMethod, string[]> = {
 export function DemoCheckoutPage() {
   const cart = useDemoCart()!;
   const flow = useDemoFlow()!;
-  const [orderType, setOrderType] = useState<OrderType | "delivery" | null>(getOrderType);
-  const [method, setMethod] = useState<PaymentMethod | null>(null);
+  const [orderType, setOrderType] = useNavigationDraft<OrderType | "delivery" | null>("checkout:orderType", getOrderType);
+  const [method, setMethod] = useNavigationDraft<PaymentMethod | null>("checkout:paymentMethod", null);
   const [preview, setPreview] = useState<PaymentPreview | null>(null);
   const processing = preview !== null;
   const locked = useRef(false);
@@ -48,14 +50,14 @@ export function DemoCheckoutPage() {
           {(["dine-in", "takeaway"] as const).map(type => <label className="demo-option" key={type}><input type="radio" name="order-type" checked={orderType === type} onChange={() => {
             setOrderType(type);
             try { sessionStorage.setItem("alibaba.orderType", type); } catch { /* URL also retains the selection. */ }
-            const url = new URL(window.location.href); url.searchParams.set("orderType", type); history.replaceState(history.state, "", url);
+            const url = new URL(window.location.href); url.searchParams.set("orderType", type); replacePageUrl(url);
           }} /><span>{type === "dine-in" ? "Äta på plats" : "Hämta själv"}</span></label>)}
           <label className="demo-option">
             <input type="radio" name="order-type" checked={orderType === "delivery"} onChange={() => {
               setOrderType("delivery");
               // A reload must not silently turn an unfinished delivery into pickup.
               try { sessionStorage.removeItem("alibaba.orderType"); } catch { /* Delivery still remains blocked in memory. */ }
-              const url = new URL(window.location.href); url.searchParams.delete("orderType"); history.replaceState(history.state, "", url);
+              const url = new URL(window.location.href); url.searchParams.delete("orderType"); replacePageUrl(url);
             }} aria-describedby={orderType === "delivery" ? "delivery-unavailable" : undefined} />
             <span>Hemleverans</span>
           </label>

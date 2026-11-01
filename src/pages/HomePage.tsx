@@ -1,3 +1,5 @@
+import { navigate } from "../navigation";
+
 export function HomePage() {
   return (
     <div className="home-intro" aria-label="Alibaba restaurang, startsida">
@@ -13,7 +15,7 @@ export function HomePage() {
 
       <section className="home-order-actions" aria-label="Meny och beställning">
         <p>
-          <button className="home-order-primary" type="button" onClick={() => { window.location.href = "/menu"; }}>
+          <button className="home-order-primary" type="button" onClick={() => navigate("/menu")}>
             <span>Se menyn &amp; beställ</span>
           </button>
         </p>

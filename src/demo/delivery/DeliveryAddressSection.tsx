@@ -3,13 +3,14 @@ import { Pencil, Trash2 } from "lucide-react";
 import { DeliveryAddressSheet } from "./DeliveryAddressSheet";
 import { addressStorageKey, emptyAddress, forgetAddress, handoffTypes, readRememberedAddress, rememberAddress, type DeliveryAddress } from "./addressModel";
 import "./delivery.css";
+import { useNavigationDraft } from "../../hooks/useNavigationDraft";
 
 function readSaved() { try { return readRememberedAddress(localStorage); } catch { return null; } }
 
 export function DeliveryAddressSection({ active }: { active: boolean }) {
   const [saved, setSaved] = useState(readSaved);
-  const [confirmed, setConfirmed] = useState<DeliveryAddress | null>(null);
-  const [draft, setDraft] = useState(emptyAddress);
+  const [confirmed, setConfirmed] = useNavigationDraft<DeliveryAddress | null>("checkout:deliveryAddress", null);
+  const [draft, setDraft] = useNavigationDraft("checkout:deliveryDraft", emptyAddress);
   const [open, setOpen] = useState(false);
   const [notice, setNotice] = useState("");
   const previousActive = useRef(false);

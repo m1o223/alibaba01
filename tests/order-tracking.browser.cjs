@@ -118,13 +118,20 @@ async function layout(page) {
       await page.locator('.order-tracker-circle').waitFor();
       assert.equal((await stored(page)).active.acceptedAt, acceptance);
       assert.notEqual(await time(page), '25:00');
-      for (const route of ['/about', '/contact', '/menu/product/demo%3Adrinks%3Awater']) {
-        await page.goto(base + route);
+      for (const route of ['/about', '/contact', '/menu']) {
+        await page.locator(`a[href="${route}"]`).first().evaluate(el => el.click());
+        await page.waitForURL(url => url.pathname === route);
         await settleNavigation(page);
         await page.locator('.order-tracker-circle').waitFor();
         await layout(page);
         assert.equal((await stored(page)).active.acceptedAt, acceptance);
       }
+      await page.locator('a[href="#drinks"]').evaluate(el => el.click());
+      await settleNavigation(page);
+      await page.getByRole('link', { name: 'Visa Vatten', exact: true }).evaluate(el => el.click());
+      await settleNavigation(page);
+      await layout(page);
+      assert.equal((await stored(page)).active.acceptedAt, acceptance);
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
       await layout(page);
       await page.emulateMedia({ reducedMotion: 'reduce' });

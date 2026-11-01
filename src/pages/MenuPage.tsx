@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { useNavigationDraft } from "../hooks/useNavigationDraft";
 import { ChevronRight, Search, UtensilsCrossed, X } from "lucide-react";
 import { menuCategories } from "../data/menuCategories";
 import "../styles/menu.css";
@@ -7,7 +8,7 @@ const visibleCategories = menuCategories.filter(category => !category.hidden);
 const legacyCategories = menuCategories.filter(category => category.hidden);
 
 export function MenuPage() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useNavigationDraft("menu:query", "");
   const searchRef = useRef<HTMLInputElement>(null);
   const searchTerm = query.trim().toLocaleLowerCase("sv-SE");
   const results = visibleCategories.filter(category => category.name.toLocaleLowerCase("sv-SE").includes(searchTerm));

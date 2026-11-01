@@ -1,10 +1,12 @@
 import { ExternalLink, Mail, MapPin, Phone, Send } from "lucide-react";
 import "../styles/contact.css";
+import { useNavigationDraft } from "../hooks/useNavigationDraft";
 
 const googleMapsUrl = "https://maps.app.goo.gl/zz8XnzbbCyZCgfGe7?g_st=it";
 const googleMapsEmbedUrl = "https://www.google.com/maps?q=Ali%20Baba%20resturang%20%26%20Pizzaria%2C%20Stockholmsv%C3%A4gen%2018%2C%20602%2017%20Norrk%C3%B6ping&ftid=0x46593a33e8b252b1:0x3363eb694b6ccaf5&output=embed";
 
 export function ContactPage() {
+  const [draft, setDraft] = useNavigationDraft("contact:form", { name: "", email: "", message: "" });
   return (
     <div className="contact-page" aria-labelledby="contact-page-title">
       <section className="contact-hero">
@@ -51,17 +53,17 @@ export function ContactPage() {
 
         <label>
           <span>Namn</span>
-          <input name="name" type="text" autoComplete="name" required />
+          <input name="name" type="text" autoComplete="name" required value={draft.name} onChange={event => setDraft({ ...draft, name: event.target.value })} />
         </label>
 
         <label>
           <span>E-post</span>
-          <input name="email" type="email" autoComplete="email" required />
+          <input name="email" type="email" autoComplete="email" required value={draft.email} onChange={event => setDraft({ ...draft, email: event.target.value })} />
         </label>
 
         <label>
           <span>Meddelande</span>
-          <textarea name="message" rows={5} required />
+          <textarea name="message" rows={5} required value={draft.message} onChange={event => setDraft({ ...draft, message: event.target.value })} />
         </label>
 
         <button type="submit">

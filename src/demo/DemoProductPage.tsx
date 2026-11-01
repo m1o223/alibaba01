@@ -7,11 +7,12 @@ import { DemoLink, withOrderType } from "./navigation";
 import { ProductMedia, Quantity } from "./DemoUi";
 import { IngredientExclusions } from "./IngredientExclusions";
 import { useAddToBagFeedback } from "../components/BagAnimation";
+import { useNavigationDraft } from "../hooks/useNavigationDraft";
 
 function ProductDetails({ product }: { product: DemoProduct }) {
   const cart = useDemoCart()!;
-  const [selections, setSelections] = useState<Selections>({});
-  const [quantity, setQuantity] = useState(1);
+  const [selections, setSelections] = useNavigationDraft<Selections>(`product:${product.key}:selections`, {});
+  const [quantity, setQuantity] = useNavigationDraft(`product:${product.key}:quantity`, 1);
   const [imageIndex, setImageIndex] = useState(0);
   const [message, setMessage] = useState("");
   const feedback = useAddToBagFeedback();

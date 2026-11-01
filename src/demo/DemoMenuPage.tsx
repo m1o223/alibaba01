@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState } from "react";
+import { replacePageUrl, useLocation } from "../navigation";
 import { ArrowLeft, ChevronRight, Search, X } from "lucide-react";
 import { demoCategories, searchDemoProducts, type DemoCategory, type DemoProduct } from "./menuData";
 import { DemoProductCard } from "./DemoProductCard";
@@ -9,13 +10,9 @@ function readQuery(key: string) { return new URLSearchParams(window.location.sea
 function saveQuery(key: string, value: string) {
   const url = new URL(window.location.href);
   if (value) url.searchParams.set(key, value); else url.searchParams.delete(key);
-  history.replaceState(history.state, "", url);
+  replacePageUrl(url);
 }
 
-function subscribeToCategory(callback: () => void) {
-  window.addEventListener("hashchange", callback);
-  return () => window.removeEventListener("hashchange", callback);
-}
 function currentCategory() {
   const slug = window.location.hash.slice(1);
   return slug === "fries" ? "salads" : slug;
@@ -47,11 +44,6 @@ function ProductResults({ products, global = false, onAdded }: { products: DemoP
 
 function CategoryProducts({ category, onAdded }: { category: DemoCategory; onAdded: (name: string) => void }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    if (typeof history.state?.scrollY === "number") return;
-    titleRef.current?.focus({ preventScroll: true });
-    titleRef.current?.scrollIntoView({ block: "start" });
-  }, [category.slug]);
   return <div className="demo-category-view">
     <a className="demo-back-link" href="#menu-top"><ArrowLeft size={18} aria-hidden="true" />Alla kategorier</a>
     <h2 ref={titleRef} id={category.slug} tabIndex={-1}>{category.name}</h2>
@@ -60,9 +52,11 @@ function CategoryProducts({ category, onAdded }: { category: DemoCategory; onAdd
 }
 
 export function DemoMenuPage() {
-  const [query, setQuery] = useState(() => readQuery("q"));
+  useLocation();
+  const query = readQuery("q");
+  const [, refreshQuery] = useState(0);
   const [addedMessage, setAddedMessage] = useState("");
-  const slug = useSyncExternalStore(subscribeToCategory, currentCategory);
+  const slug = currentCategory();
   const selected = demoCategories.find(category => category.slug === slug);
   const searching = query.trim().length > 0;
 
@@ -71,7 +65,7 @@ export function DemoMenuPage() {
       <div className="menu-page-header" id="menu-top">
         <h1 id="menu-page-title">Vår meny</h1>
       </div>
-      <MenuSearch value={query} onChange={value => { setQuery(value); saveQuery("q", value); }} />
+      <MenuSearch value={query} onChange={value => { saveQuery("q", value); refreshQuery(value => value + 1); }} />
     </> : null}
     <p className="demo-added-status" role="status" aria-live="polite" aria-atomic="true">{addedMessage}</p>
     {selected ? (

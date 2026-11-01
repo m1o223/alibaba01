@@ -1,23 +1,13 @@
-import { useSyncExternalStore, type ComponentProps } from "react";
+import { type ComponentProps } from "react";
+import { isInternalRoute, navigate } from "../navigation";
+export { navigate, usePathname as useDemoPath } from "../navigation";
 import type { OrderType } from "./orderModel";
 
-const navigationEvent = "alibaba:demo-navigation";
-function subscribe(callback: () => void) {
-  window.addEventListener("popstate", callback);
-  window.addEventListener(navigationEvent, callback);
-  return () => { window.removeEventListener("popstate", callback); window.removeEventListener(navigationEvent, callback); };
-}
-export function useDemoPath() { return useSyncExternalStore(subscribe, () => window.location.pathname); }
-export function navigate(href: string) {
-  history.replaceState({ ...history.state, scrollY: window.scrollY }, "");
-  history.pushState({ demoNavigation: true }, "", href);
-  window.dispatchEvent(new Event(navigationEvent));
-  window.scrollTo(0, 0);
-}
 export function DemoLink({ href = "/menu", onClick, ...props }: ComponentProps<"a">) {
   return <a {...props} href={href} onClick={event => {
     onClick?.(event);
     if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+    if ((props.target && props.target !== "_self") || (props.download !== undefined && props.download !== false) || !isInternalRoute(new URL(href, location.href))) return;
     event.preventDefault(); navigate(href);
   }} />;
 }

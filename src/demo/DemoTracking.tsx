@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
 import { demoProducts } from "./menuData";
-import { readStored, writeStored } from "./navigation";
+import { navigate, readStored, writeStored } from "./navigation";
 import { parseTracking, trackingStorageKey, transitionTracking, type TrackingEvent } from "./trackingModel";
 import type { PaymentPreview } from "./PaymentDemoModal";
 import { OrderConfirmation } from "./OrderConfirmation";
@@ -17,7 +17,7 @@ export function DemoTrackingProvider({ children }: { children: ReactNode }) {
     const next = transitionTracking(current.current, event);
     if (next === current.current) return;
     current.current = next;
-    // Persist before full-document navigation; never store addresses or payment credentials here.
+    // Persist before navigation; never store addresses or payment credentials here.
     writeStored(trackingStorageKey, next);
     setState(next);
   }, []);
@@ -28,7 +28,7 @@ export function DemoTrackingProvider({ children }: { children: ReactNode }) {
     {state.confirmation && !state.confirmation.acknowledged ? <OrderConfirmation order={state.confirmation} onAccept={() => dispatch({ type: "order_accepted", at: Date.now() })}
       onReject={() => dispatch({ type: "order_rejected" })} onHome={() => {
         dispatch({ type: "confirmation_dismissed" });
-        window.location.assign("/");
+        navigate("/");
       }} /> : null}
   </TrackingContext.Provider>;
 }

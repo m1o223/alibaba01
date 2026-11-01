@@ -1,0 +1,26 @@
+/* Only content participates. The header, drawers and tracker stay live and stable. */
+:root { view-transition-name: none; background-color: #f5efe6; }
+body { background-color: #f5efe6; }
+main { view-transition-name: page-content; }
+footer { view-transition-name: page-footer; }
+::view-transition { pointer-events: none; clip-path: inset(calc(56px + env(safe-area-inset-top)) 0 0); }
+::view-transition-group(*) { animation-duration: 0s; }
+::view-transition-old(page-content),
+::view-transition-old(page-footer) { animation: page-leave 125ms ease-out both; }
+::view-transition-new(page-content),
+::view-transition-new(page-footer) { animation: page-arrive 250ms ease-out both; }
+::view-transition-image-pair(*) { isolation: auto; }
+::view-transition-old(*), ::view-transition-new(*) { mix-blend-mode: normal; }
+@keyframes page-leave { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes page-arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* Avoid a second entrance on the existing ordering page container. */
+main > .demo-ordering,
+main .demo-menu .demo-product-card { animation: none; }
+.route-pending { background: #f5efe6; }
+.route-status { min-height: 45vh; padding: 24px; background: #f5efe6; color: #241c18; }
+.route-loading span { display: block; max-width: 32rem; height: 14px; margin-block: 20px; border-radius: 4px; background: #eae0d4; }
+.route-loading span:first-child { width: 35%; height: 24px; }
+.route-loading span:last-child { width: 65%; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none; }
+}
